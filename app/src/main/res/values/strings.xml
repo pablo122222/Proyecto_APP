@@ -42,6 +42,6 @@
     <string name="register_has_account">¿Ya tienes cuenta?</string>
     <string name="register_login">Iniciar sesión</string>
     <string name="register_error_name">Escribe tu nombre para continuar.</string>
-    <string name="register_error_email">Escribe un correo electrónico válido.</string>
+    <string name="register_error_email">Escribe un correo electrónico válido, por ejemplo: tu@correo.com</string>
     <string name="register_error_password">La contraseña debe tener al menos 6 caracteres.</string>
 </resources>
