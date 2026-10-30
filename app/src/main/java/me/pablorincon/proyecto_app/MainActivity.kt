@@ -43,7 +43,8 @@ class MainActivity : ComponentActivity() {
                         RegisterScreen(
                             onBack = { screen = TempScreen.Welcome },
                             onLogin = {},       // Paso 5
-                            onRegistered = {}   // Guardar la cuenta e ir al login: pasos 4 y 5
+                            // Debe ir a Iniciar sesión; mientras se construye (Paso 5), vuelve a la Bienvenida
+                            onRegistered = { screen = TempScreen.Welcome }
                         )
                     }
                 }

@@ -4,7 +4,11 @@ package me.pablorincon.proyecto_app.domain
 // se devuelve solo el primer error encontrado.
 object AuthValidator {
 
-    enum class RegisterError { NameTooShort, InvalidEmail, PasswordTooShort }
+    // Los tres primeros los detecta esta validación; los demás llegan de Firebase.
+    enum class RegisterError {
+        NameTooShort, InvalidEmail, PasswordTooShort,
+        EmailAlreadyInUse, NoConnection, Unknown
+    }
 
     private const val MIN_NAME_LENGTH = 2
     private const val MIN_PASSWORD_LENGTH = 6

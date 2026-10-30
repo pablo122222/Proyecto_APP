@@ -38,10 +38,14 @@
     <string name="field_password_label">Contraseña</string>
     <string name="register_password_placeholder">Mínimo 6 caracteres</string>
     <string name="register_submit">Crear cuenta</string>
-    <string name="register_fineprint">Prototipo académico: los datos se guardan únicamente en este dispositivo. No uses una contraseña real.</string>
+    <string name="register_fineprint">Prototipo académico: no uses una contraseña real.</string>
     <string name="register_has_account">¿Ya tienes cuenta?</string>
     <string name="register_login">Iniciar sesión</string>
     <string name="register_error_name">Escribe tu nombre para continuar.</string>
     <string name="register_error_email">Escribe un correo electrónico válido, por ejemplo: tu@correo.com</string>
     <string name="register_error_password">La contraseña debe tener al menos 6 caracteres.</string>
+    <string name="register_error_email_in_use">Ya existe una cuenta con ese correo.</string>
+    <string name="register_error_no_connection">No hay conexión a internet. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="register_error_unknown">No se pudo crear la cuenta. Inténtalo de nuevo.</string>
+    <string name="register_success">Cuenta creada. Ya puedes iniciar sesión.</string>
 </resources>

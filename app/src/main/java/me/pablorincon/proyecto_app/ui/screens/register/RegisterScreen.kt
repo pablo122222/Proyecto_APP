@@ -1,5 +1,6 @@
 package me.pablorincon.proyecto_app.ui.screens.register
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,9 +15,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -47,13 +50,24 @@ fun RegisterScreen(
     viewModel: RegisterViewModel = viewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val successMessage = stringResource(R.string.register_success)
+
+    // Cuando Firebase confirma la cuenta: Toast y salir de la pantalla (una sola vez).
+    LaunchedEffect(state.registered) {
+        if (state.registered) {
+            Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
+            viewModel.onRegisteredHandled()
+            onRegistered()
+        }
+    }
 
     RegisterContent(
         state = state,
         onNameChange = viewModel::onNameChange,
         onEmailChange = viewModel::onEmailChange,
         onPasswordChange = viewModel::onPasswordChange,
-        onSubmit = { if (viewModel.submit()) onRegistered() },
+        onSubmit = viewModel::submit,
         onBack = onBack,
         onLogin = onLogin,
         modifier = modifier
@@ -114,7 +128,12 @@ private fun RegisterContent(
             value = state.email,
             onValueChange = onEmailChange,
             placeholder = stringResource(R.string.field_email_placeholder),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next)
+            // Sin autocorrector: el teclado no debe "corregir" letras del correo
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Email,
+                autoCorrectEnabled = false,
+                imeAction = ImeAction.Next
+            )
         )
 
         Spacer(Modifier.height(AppDimens.FieldSpacing))
@@ -153,6 +172,9 @@ private fun RegisterError.messageRes(): Int = when (this) {
     RegisterError.NameTooShort -> R.string.register_error_name
     RegisterError.InvalidEmail -> R.string.register_error_email
     RegisterError.PasswordTooShort -> R.string.register_error_password
+    RegisterError.EmailAlreadyInUse -> R.string.register_error_email_in_use
+    RegisterError.NoConnection -> R.string.register_error_no_connection
+    RegisterError.Unknown -> R.string.register_error_unknown
 }
 
 @Preview(showSystemUi = true)
