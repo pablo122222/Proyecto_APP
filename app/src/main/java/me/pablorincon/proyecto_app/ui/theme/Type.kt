@@ -26,6 +26,9 @@ val InterFamily = FontFamily(
     interFont(600),
     interFont(650),
     interFont(700),
+    interFont(750),
+    interFont(800),
+    interFont(850),
     interFont(900)
 )
 
@@ -138,6 +141,10 @@ object AppTextStyles {
     // Textos pequeños
     val Perk = TextStyle(
         fontFamily = InterFamily, fontWeight = FontWeight.Normal,
+        fontSize = 10.sp
+    )
+    val CheckMini = TextStyle( // ✓ verde de los perks
+        fontFamily = InterFamily, fontWeight = FontWeight(900),
         fontSize = 10.sp
     )
     val SmallBody = TextStyle( // Datos de la cuenta demo

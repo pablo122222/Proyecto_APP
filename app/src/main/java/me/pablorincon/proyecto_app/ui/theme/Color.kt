@@ -34,3 +34,9 @@ val AiViolet = Color(0xFF7B6BE0)          // Inicio del degradado del cubo {;}
 val AiVioletSoft = Color(0xFFEEEAFD)      // Inicio del degradado del fondo
 val AccentYellow = Color(0xFFF4B13E)      // Punto amarillo decorativo
 val FloatCardText = Color(0xFF39445D)     // Texto de las tarjetitas flotantes
+val FloatCardBorder = Color(0xB8FFFFFF)   // Borde blanco semitransparente de las tarjetitas
+
+// ---- Sombras ----
+val ButtonShadow = Color(0x264B7BE5)      // Botón primario
+val OrbShadow = Color(0x404B7BE5)         // Cubo {;}
+val FloatCardShadow = Color(0x18283047)   // Tarjetitas flotantes

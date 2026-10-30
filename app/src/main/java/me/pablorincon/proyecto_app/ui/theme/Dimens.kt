@@ -11,11 +11,16 @@ object AppDimens {
     val ScreenTop = 10.dp          // Bajo la barra de estado (Registro y Login)
     val WelcomeTop = 20.dp         // Bajo la barra de estado (Bienvenida)
     val BottomFixed = 26.dp        // Distancia de los botones fijos al borde inferior
+    val BottomFixedTop = 18.dp     // Relleno superior de la zona fija inferior
+    val BottomFade = 20.dp         // Alto del degradado que oculta el contenido al hacer scroll
 
     // ---------- Botones ----------
     val ButtonHeight = 48.dp
     val SmallButtonHeight = 39.dp
     val ButtonPaddingH = 16.dp
+    val ButtonPaddingV = 13.dp
+    val ButtonIconGap = 8.dp       // Espacio antes de la flecha →
+    val LinkGap = 3.dp             // Espacio antes del enlace de pie
     val SmallButtonPaddingH = 12.dp
     val BackButtonSize = 36.dp
 
@@ -50,6 +55,14 @@ object AppDimens {
     val OrbSize = 124.dp
     val OrbRotation = -8f          // Grados
     val FloatDotSize = 11.dp
+    val FloatDotEnd = 42.dp
+    val FloatDotTop = 45.dp
+    val FloatCardPaddingH = 12.dp
+    val FloatCardPaddingV = 10.dp
+    val FloatCardInset = 24.dp     // Distancia vertical de las tarjetitas al borde
+    val FloatCardOneStart = 13.dp
+    val FloatCardTwoEnd = 11.dp
+    val FloatCardRotation = 5f     // Grados (la primera gira -5, la segunda +5)
     val CheckMiniSize = 16.dp
     val PerksTop = 18.dp
     val PerksGap = 14.dp

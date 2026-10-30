@@ -6,18 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import me.pablorincon.proyecto_app.ui.theme.AppBackground
-import me.pablorincon.proyecto_app.ui.theme.AppTextStyles
+import me.pablorincon.proyecto_app.ui.screens.welcome.WelcomeScreen
 import me.pablorincon.proyecto_app.ui.theme.CodeMentorTheme
-import me.pablorincon.proyecto_app.ui.theme.Primary
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,30 +20,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CodeMentorTheme {
-                ThemePreviewScreen()
+                // Los botones aún no navegan: Crear cuenta e Iniciar sesión
+                // se construyen en los pasos 3 y 5, y la navegación en el paso 6.
+                WelcomeScreen(onCreateAccount = {}, onLogin = {})
             }
         }
-    }
-}
-
-// Pantalla temporal del Paso 0: solo comprueba que el tema funciona.
-// Se reemplaza por la Bienvenida en el Paso 1.
-@Composable
-private fun ThemePreviewScreen() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(AppBackground),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = "CodeMentor", style = AppTextStyles.ScreenTitle, color = Primary)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ThemePreviewScreenPreview() {
-    CodeMentorTheme {
-        ThemePreviewScreen()
     }
 }

@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Proyecto_App</string>
+
+    <!-- Bienvenida -->
+    <string name="brand_name">CodeMentor</string>
+    <string name="brand_icon">&lt;/&gt;</string>
+    <string name="welcome_pill">Aprende haciendo</string>
+    <string name="welcome_orb_symbol">{;}</string>
+    <string name="welcome_code_card">"if (curiosidad) {\n  aprender();\n}"</string>
+    <string name="welcome_done_card">✓ reto completado</string>
+    <string name="welcome_eyebrow">Tu próxima habilidad empieza aquí</string>
+    <string name="welcome_title_start">Aprende a programar,</string>
+    <string name="welcome_title_highlight">paso a paso.</string>
+    <string name="welcome_subtitle">Practica con retos cortos, entiende la lógica y avanza a tu ritmo con ayuda cuando la necesites.</string>
+    <string name="welcome_perk_lessons">Lecciones breves</string>
+    <string name="welcome_perk_challenges">Retos prácticos</string>
+    <string name="welcome_create_account">Crear mi cuenta</string>
+    <string name="welcome_has_account">¿Ya tienes una cuenta?</string>
+    <string name="welcome_login">Inicia sesión</string>
+    <string name="check_mark">✓</string>
+    <string name="arrow_right">→</string>
 </resources>
