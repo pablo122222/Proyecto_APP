@@ -4,6 +4,8 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.CancellationException
@@ -38,6 +40,33 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()
         RegisterResult.NoConnection
     } catch (e: Exception) {
         RegisterResult.Failed
+    }
+
+    sealed interface LoginResult {
+        data class Success(val name: String?) : LoginResult // Nombre guardado al registrarse
+        data object WrongCredentials : LoginResult
+        data object NoConnection : LoginResult
+        data object Failed : LoginResult
+    }
+
+    // Firebase recuerda la sesión por sí solo: al volver a abrir la app sigue iniciada.
+    suspend fun login(email: String, password: String): LoginResult {
+        // Firebase no acepta campos vacíos; como en el mockup, cuenta como datos incorrectos.
+        if (email.isEmpty() || password.isEmpty()) return LoginResult.WrongCredentials
+        return try {
+            val user = auth.signInWithEmailAndPassword(email, password).awaitResult().user
+            LoginResult.Success(user?.displayName)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            LoginResult.WrongCredentials // Contraseña incorrecta o correo mal escrito
+        } catch (e: FirebaseAuthInvalidUserException) {
+            LoginResult.WrongCredentials // No existe una cuenta con ese correo
+        } catch (e: FirebaseNetworkException) {
+            LoginResult.NoConnection
+        } catch (e: Exception) {
+            LoginResult.Failed
+        }
     }
 }
 

@@ -48,4 +48,25 @@
     <string name="register_error_no_connection">No hay conexión a internet. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="register_error_unknown">No se pudo crear la cuenta. Inténtalo de nuevo.</string>
     <string name="register_success">Cuenta creada. Ya puedes iniciar sesión.</string>
+
+    <!-- Iniciar sesión -->
+    <string name="login_step_label">Qué bueno verte</string>
+    <string name="login_eyebrow">De vuelta al código</string>
+    <string name="login_title">¡Hola de nuevo!</string>
+    <string name="login_subtitle">Inicia sesión para retomar tu ruta de aprendizaje.</string>
+    <string name="login_password_placeholder">Tu contraseña</string>
+    <string name="login_forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="login_submit">Iniciar sesión</string>
+    <string name="login_example_title">Cuenta de ejemplo</string>
+    <string name="login_example_email_label">Correo:</string>
+    <string name="login_example_password_label">Contraseña:</string>
+    <string name="login_example_button">Usar cuenta de ejemplo</string>
+    <string name="login_example_loaded">Cuenta de ejemplo cargada</string>
+    <string name="login_new">¿Eres nuevo?</string>
+    <string name="login_create_account">Crear cuenta</string>
+    <string name="login_error_credentials">El correo o la contraseña no son correctos.</string>
+    <string name="login_error_no_connection">No hay conexión a internet. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="login_error_unknown">No se pudo iniciar sesión. Inténtalo de nuevo.</string>
+    <string name="login_welcome">¡Bienvenido de nuevo, %1$s!</string>
+    <string name="login_welcome_no_name">¡Bienvenido de nuevo!</string>
 </resources>

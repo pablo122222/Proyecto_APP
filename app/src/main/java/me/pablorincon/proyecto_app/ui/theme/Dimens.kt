@@ -51,6 +51,15 @@ object AppDimens {
     val PillPaddingV = 6.dp
     val PillGap = 5.dp
     val CardPadding = 16.dp
+    val CardTop = 20.dp            // Del botón a la tarjeta de ejemplo (.mt20)
+    val CardTextTop = 8.dp         // Del título de la tarjeta a sus datos (.mt8)
+    val CardButtonTop = 12.dp      // De los datos al botón (.mt12)
+    val CardShadowRadius = 15.dp   // box-shadow: 0 4px 15px
+    val CardShadowOffsetY = 4.dp
+
+    // ---------- Login ----------
+    // "¿Olvidaste tu contraseña?" no está en el mockup: separación propia
+    val ForgotLinkGap = 8.dp
 
     // ---------- Marca ----------
     val LogoIconSize = 30.dp

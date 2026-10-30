@@ -42,3 +42,4 @@ val FloatCardBorder = Color(0xB8FFFFFF)   // Borde blanco semitransparente de la
 val ButtonShadow = Color(0x264B7BE5)      // Botón primario
 val OrbShadow = Color(0x404B7BE5)         // Cubo {;}
 val FloatCardShadow = Color(0x18283047)   // Tarjetitas flotantes
+val CardShadow = Color(0x081B2540)        // Tarjetas (.card)
