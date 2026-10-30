@@ -9,6 +9,7 @@ object AppDimens {
     // ---------- Pantalla ----------
     val ScreenHorizontal = 22.dp   // Margen lateral (.app-view)
     val ScreenTop = 10.dp          // Bajo la barra de estado (Registro y Login)
+    val ScreenBottom = 98.dp       // Espacio libre al final del scroll (.app-view)
     val WelcomeTop = 20.dp         // Bajo la barra de estado (Bienvenida)
     val BottomFixed = 26.dp        // Distancia de los botones fijos al borde inferior
     val BottomFixedTop = 18.dp     // Relleno superior de la zona fija inferior
@@ -22,6 +23,7 @@ object AppDimens {
     val ButtonIconGap = 8.dp       // Espacio antes de la flecha →
     val LinkGap = 3.dp             // Espacio antes del enlace de pie
     val SmallButtonPaddingH = 12.dp
+    val SmallButtonPaddingV = 10.dp
     val BackButtonSize = 36.dp
 
     // ---------- Formularios ----------
@@ -31,10 +33,16 @@ object AppDimens {
     val InputPadding = 13.dp
     val BorderWidth = 1.dp
     val FocusHalo = 3.dp           // Halo azul alrededor del campo con foco
-    val ErrorTop = 6.dp
+    val ErrorToButton = 12.dp      // Del error al botón (.btn.mt12)
+    val FinePrintTop = 16.dp       // Del formulario a la letra pequeña (.mt16)
     val ErrorMinHeight = 16.dp     // Espacio reservado para el error
+    val PasswordEndPadding = 70.dp // Espacio del input reservado para "Mostrar"
+    val ToggleEnd = 6.dp
+    val TogglePadding = 8.dp
 
     // ---------- Encabezado ----------
+    val TopLineGap = 12.dp         // Entre botón atrás y etiqueta
+    val TopLineBottom = 22.dp
     val EyebrowBottom = 10.dp
     val TitleBottom = 10.dp
 

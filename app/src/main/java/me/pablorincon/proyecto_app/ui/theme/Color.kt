@@ -23,6 +23,8 @@ val PrimarySoftBorder = Color(0xFFC5D6F7) // Borde de la tarjeta demo
 // ---- Bordes ----
 val Line = Color(0xFFE4E9F3)              // Bordes generales
 val InputBorder = Color(0xFFDDE4F2)       // Borde de los campos de texto
+val FocusHaloColor = Color(0x144B7BE5)    // Halo azul del campo con foco
+val Placeholder = Color(0xFFA9A9A9)       // El mockup no lo define: gris por defecto de Chrome
 
 // ---- Estados ----
 val ErrorRed = Color(0xFFC24A4A)          // Mensajes de error

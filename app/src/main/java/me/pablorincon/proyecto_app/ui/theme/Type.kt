@@ -106,6 +106,11 @@ object AppTextStyles {
         fontSize = 11.sp
     )
 
+    val BackArrow = TextStyle( // "‹" del botón atrás
+        fontFamily = InterFamily, fontWeight = FontWeight.Normal,
+        fontSize = 21.sp
+    )
+
     // Formularios
     val FieldLabel = TextStyle(
         fontFamily = InterFamily, fontWeight = FontWeight(750),

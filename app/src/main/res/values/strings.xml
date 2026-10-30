@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Proyecto_App</string>
 
+    <!-- Componentes comunes -->
+    <string name="back">Volver</string>
+    <string name="back_symbol">‹</string>
+    <string name="password_show">Mostrar</string>
+    <string name="password_hide">Ocultar</string>
+
     <!-- Bienvenida -->
     <string name="brand_name">CodeMentor</string>
     <string name="brand_icon">&lt;/&gt;</string>
@@ -19,4 +25,23 @@
     <string name="welcome_login">Inicia sesión</string>
     <string name="check_mark">✓</string>
     <string name="arrow_right">→</string>
+
+    <!-- Crear cuenta -->
+    <string name="register_step_label">Únete gratis</string>
+    <string name="register_eyebrow">Comienza hoy</string>
+    <string name="register_title">Crea tu cuenta</string>
+    <string name="register_subtitle">Guarda tu progreso y continúa aprendiendo cuando quieras.</string>
+    <string name="register_name_label">Nombre</string>
+    <string name="register_name_placeholder">¿Cómo te llamas?</string>
+    <string name="field_email_label">Correo electrónico</string>
+    <string name="field_email_placeholder">tu@correo.com</string>
+    <string name="field_password_label">Contraseña</string>
+    <string name="register_password_placeholder">Mínimo 6 caracteres</string>
+    <string name="register_submit">Crear cuenta</string>
+    <string name="register_fineprint">Prototipo académico: los datos se guardan únicamente en este dispositivo. No uses una contraseña real.</string>
+    <string name="register_has_account">¿Ya tienes cuenta?</string>
+    <string name="register_login">Iniciar sesión</string>
+    <string name="register_error_name">Escribe tu nombre para continuar.</string>
+    <string name="register_error_email">Escribe un correo electrónico válido.</string>
+    <string name="register_error_password">La contraseña debe tener al menos 6 caracteres.</string>
 </resources>
