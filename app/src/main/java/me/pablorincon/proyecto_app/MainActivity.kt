@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import me.pablorincon.proyecto_app.ui.screens.forgotpassword.ForgotPasswordScreen
 import me.pablorincon.proyecto_app.ui.screens.login.LoginScreen
 import me.pablorincon.proyecto_app.ui.screens.register.RegisterScreen
 import me.pablorincon.proyecto_app.ui.screens.welcome.WelcomeScreen
@@ -18,7 +19,7 @@ import me.pablorincon.proyecto_app.ui.theme.CodeMentorTheme
 
 // Navegación temporal mientras se construyen las pantallas;
 // en el Paso 6 se reemplaza por Navigation Compose.
-private enum class TempScreen { Welcome, Register, Login }
+private enum class TempScreen { Welcome, Register, Login, ForgotPassword }
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,9 +53,16 @@ class MainActivity : ComponentActivity() {
                         LoginScreen(
                             onBack = { screen = TempScreen.Welcome },
                             onCreateAccount = { screen = TempScreen.Register },
-                            onForgotPassword = {}, // Pantalla de recuperación: siguiente paso
+                            onForgotPassword = { screen = TempScreen.ForgotPassword },
                             // Debe ir a Personalización o Inicio (Paso 6); por ahora vuelve a la Bienvenida
                             onLoggedIn = { screen = TempScreen.Welcome }
+                        )
+                    }
+                    TempScreen.ForgotPassword -> {
+                        BackHandler { screen = TempScreen.Login }
+                        ForgotPasswordScreen(
+                            onBack = { screen = TempScreen.Login },
+                            onSent = { screen = TempScreen.Login }
                         )
                     }
                 }

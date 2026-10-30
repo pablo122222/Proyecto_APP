@@ -69,4 +69,17 @@
     <string name="login_error_unknown">No se pudo iniciar sesión. Inténtalo de nuevo.</string>
     <string name="login_welcome">¡Bienvenido de nuevo, %1$s!</string>
     <string name="login_welcome_no_name">¡Bienvenido de nuevo!</string>
+
+    <!-- Recuperar contraseña (no está en el mockup) -->
+    <string name="forgot_step_label">Recupera tu acceso</string>
+    <string name="forgot_eyebrow">Sin problema</string>
+    <string name="forgot_title">Restablece tu contraseña</string>
+    <string name="forgot_subtitle">Escribe el correo de tu cuenta y te enviaremos un enlace para crear una nueva.</string>
+    <string name="forgot_submit">Enviar enlace</string>
+    <string name="forgot_remembered">¿La recordaste?</string>
+    <string name="forgot_login">Iniciar sesión</string>
+    <string name="forgot_error_email">Escribe un correo electrónico válido, por ejemplo: tu@correo.com</string>
+    <string name="forgot_error_no_connection">No hay conexión a internet. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="forgot_error_unknown">No se pudo enviar el correo. Inténtalo de nuevo.</string>
+    <string name="forgot_sent">Si hay una cuenta con ese correo, te enviamos un enlace. Revisa también la carpeta de spam.</string>
 </resources>

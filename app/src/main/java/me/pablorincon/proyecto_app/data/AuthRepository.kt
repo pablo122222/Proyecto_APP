@@ -68,6 +68,27 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()
             LoginResult.Failed
         }
     }
+
+    enum class ResetResult { Sent, InvalidEmail, NoConnection, Failed }
+
+    // Firebase envía un correo con un enlace para crear una contraseña nueva.
+    suspend fun sendPasswordReset(email: String): ResetResult = try {
+        auth.setLanguageCode("es") // El correo de Firebase llega en español
+        auth.sendPasswordResetEmail(email).awaitResult()
+        ResetResult.Sent
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: FirebaseAuthInvalidUserException) {
+        // No hay cuenta con ese correo. Se responde igual que si existiera,
+        // para no revelar qué correos están registrados.
+        ResetResult.Sent
+    } catch (e: FirebaseAuthInvalidCredentialsException) {
+        ResetResult.InvalidEmail // Firebase rechazó el formato del correo
+    } catch (e: FirebaseNetworkException) {
+        ResetResult.NoConnection
+    } catch (e: Exception) {
+        ResetResult.Failed
+    }
 }
 
 // Convierte una tarea de Firebase (callbacks) en una función suspend,

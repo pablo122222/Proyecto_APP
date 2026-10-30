@@ -24,6 +24,9 @@ object AuthValidator {
         else -> null
     }
 
+    // Usado también por Recuperar contraseña.
+    fun isValidEmail(email: String) = EmailRegex.matches(email)
+
     fun normalizeName(name: String) = name.trim()
 
     // El correo se guarda sin espacios y en minúsculas, como en el mockup.
