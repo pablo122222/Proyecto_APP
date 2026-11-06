@@ -35,9 +35,9 @@ class AppRoutesTest {
     }
 
     @Test
-    fun alAbrirLaAppSinPersonalizacionSeRetomaElNivel() {
+    fun alAbrirLaAppSinPersonalizacionSeRetomaPersonalizacion() {
         assertEquals(
-            AppRoutes.LEVEL,
+            AppRoutes.PERSONALIZATION,
             AppRoutes.startDestination(isLoggedIn = true, hasPersonalization = false)
         )
     }

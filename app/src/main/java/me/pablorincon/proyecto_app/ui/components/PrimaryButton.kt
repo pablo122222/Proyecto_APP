@@ -30,6 +30,7 @@ import me.pablorincon.proyecto_app.ui.theme.AppTextStyles
 import me.pablorincon.proyecto_app.ui.theme.ButtonShadow
 import me.pablorincon.proyecto_app.ui.theme.Primary
 import me.pablorincon.proyecto_app.ui.theme.PrimaryDark
+import me.pablorincon.proyecto_app.ui.theme.PrimaryDisabled
 
 // Botón azul principal (.btn del mockup): ancho completo, alto 48, sombra azul suave.
 // Al presionarlo se oscurece a PrimaryDark, como el :hover/:active del mockup.
@@ -38,7 +39,8 @@ fun PrimaryButton(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    trailingSymbol: String? = null // Ej. "→" en "Crear mi cuenta →"
+    trailingSymbol: String? = null, // Ej. "→" en "Crear mi cuenta →"
+    enabled: Boolean = true         // Deshabilitado no está en el mockup: se ve más claro y sin sombra
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
@@ -47,13 +49,26 @@ fun PrimaryButton(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = AppDimens.ButtonHeight)
-            .dropShadow(
-                shape = AppShapes.Button,
-                shadow = Shadow(radius = 16.dp, color = ButtonShadow, offset = DpOffset(0.dp, 7.dp))
+            .then(
+                if (enabled) {
+                    Modifier.dropShadow(
+                        shape = AppShapes.Button,
+                        shadow = Shadow(radius = 16.dp, color = ButtonShadow, offset = DpOffset(0.dp, 7.dp))
+                    )
+                } else {
+                    Modifier
+                }
             )
             .clip(AppShapes.Button)
-            .background(if (pressed) PrimaryDark else Primary)
+            .background(
+                when {
+                    !enabled -> PrimaryDisabled
+                    pressed -> PrimaryDark
+                    else -> Primary
+                }
+            )
             .clickable(
+                enabled = enabled,
                 interactionSource = interactionSource,
                 indication = null, // El mockup no tiene efecto ripple
                 role = Role.Button,

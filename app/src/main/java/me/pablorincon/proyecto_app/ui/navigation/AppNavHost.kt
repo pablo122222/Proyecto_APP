@@ -9,8 +9,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -24,6 +27,10 @@ import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.ui.components.AppBottomBar
 import me.pablorincon.proyecto_app.ui.screens.forgotpassword.ForgotPasswordScreen
 import me.pablorincon.proyecto_app.ui.screens.login.LoginScreen
+import me.pablorincon.proyecto_app.ui.screens.personalization.GoalScreen
+import me.pablorincon.proyecto_app.ui.screens.personalization.LevelScreen
+import me.pablorincon.proyecto_app.ui.screens.personalization.PathReadyScreen
+import me.pablorincon.proyecto_app.ui.screens.personalization.PersonalizationViewModel
 import me.pablorincon.proyecto_app.ui.screens.placeholder.PlaceholderScreen
 import me.pablorincon.proyecto_app.ui.screens.profile.ProfileScreen
 import me.pablorincon.proyecto_app.ui.screens.register.RegisterScreen
@@ -106,10 +113,39 @@ private fun NavGraphBuilder.accountDestinations(navController: NavHostController
 }
 
 // ---------- Personalización (Fase 8): Nivel → Objetivo → Ruta lista ----------
+// Los tres pasos viven en un grafo anidado para compartir un solo ViewModel.
 private fun NavGraphBuilder.personalizationDestinations(navController: NavHostController) {
-    placeholder(AppRoutes.LEVEL, R.string.title_level, navController)
-    placeholder(AppRoutes.GOAL, R.string.title_goal, navController)
-    placeholder(AppRoutes.PATH_READY, R.string.title_path_ready, navController)
+    navigation(startDestination = AppRoutes.LEVEL, route = AppRoutes.PERSONALIZATION) {
+        composable(AppRoutes.LEVEL) { entry ->
+            LevelScreen(
+                viewModel = navController.personalizationViewModel(entry),
+                onContinue = { navController.navigate(AppRoutes.GOAL) }
+            )
+        }
+        composable(AppRoutes.GOAL) { entry ->
+            GoalScreen(
+                viewModel = navController.personalizationViewModel(entry),
+                onBack = navController::goBack,
+                onSaved = { navController.navigate(AppRoutes.PATH_READY) }
+            )
+        }
+        composable(AppRoutes.PATH_READY) { entry ->
+            PathReadyScreen(
+                viewModel = navController.personalizationViewModel(entry),
+                onBack = navController::goBack,
+                // Personalización termina: se borra su historial y se entra a Inicio
+                onEnter = { navController.openClearingHistory(AppRoutes.HOME) },
+                onIncomplete = { navController.popBackStack(AppRoutes.LEVEL, inclusive = false) }
+            )
+        }
+    }
+}
+
+// ViewModel único del grafo de Personalización: vive mientras el grafo esté en el historial.
+@Composable
+private fun NavHostController.personalizationViewModel(entry: NavBackStackEntry): PersonalizationViewModel {
+    val graphEntry = remember(entry) { getBackStackEntry(AppRoutes.PERSONALIZATION) }
+    return viewModel(graphEntry)
 }
 
 // ---------- Pestañas: un grafo anidado por pestaña ----------

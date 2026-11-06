@@ -47,6 +47,16 @@ val RowIconBackground = Color(0xFFE5EDFD) // Fondo del icono de la fila
 val Chevron = Color(0xFF9AA5BD)           // Flecha "›" de las filas
 val LogoutIconBackground = Color(0xFFFDECEC) // Fondo del icono de "Cerrar sesión"
 
+// ---- Personalización: opciones, pasos e ilustración de "Ruta lista" ----
+val ChoiceSelectedBackground = Color(0xFFEEF3FE) // Fondo de la opción elegida (choice.selected)
+val ChoiceIconBackground = Color(0xFFEAF0FD)     // Cuadro del emoji de la opción
+val RadioBorder = Color(0xFFCBD3E6)              // Círculo del radio sin elegir
+val StepInactive = Color(0xFFE1E6F1)             // Barrita de paso sin completar
+val PathIllustrationStart = Color(0xFFCFE0FC)    // Degradado del cuadro 🚀 (inicio)
+val PathIllustrationEnd = Color(0xFFC9F2E1)      // Degradado del cuadro 🚀 (fin)
+// no está en el mockup: botón principal deshabilitado (Primary al 55 % sobre el fondo)
+val PrimaryDisabled = Color(0xFF98B3EF)
+
 // ---- Sombras ----
 val ButtonShadow = Color(0x264B7BE5)      // Botón primario
 val OrbShadow = Color(0x404B7BE5)         // Cubo {;}

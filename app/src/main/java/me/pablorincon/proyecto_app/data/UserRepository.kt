@@ -3,7 +3,11 @@ package me.pablorincon.proyecto_app.data
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.withTimeoutOrNull
+import me.pablorincon.proyecto_app.domain.LearningGoal
+import me.pablorincon.proyecto_app.domain.LearningLevel
 import me.pablorincon.proyecto_app.domain.UserProfile
 
 // Único lugar de la app que habla con Firestore para el perfil del usuario (users/{uid}).
@@ -50,11 +54,27 @@ class UserRepository(private val db: FirebaseFirestore = FirebaseFirestore.getIn
         if (e.isNetworkError()) ProfileResult.NoConnection else ProfileResult.Failed
     }
 
+    // Guarda nivel y objetivo juntos al terminar Personalización. Sin red Firestore deja la
+    // escritura en cola y la tarea no termina: pasado el límite se avisa como falta de
+    // conexión. Repetir el guardado es seguro (escribe los mismos campos).
+    suspend fun savePersonalization(uid: String, level: LearningLevel, goal: LearningGoal): SaveResult = try {
+        val fields = mapOf(UserProfileMapper.LEVEL to level.id, UserProfileMapper.GOAL to goal.id)
+        withTimeoutOrNull(SAVE_TIMEOUT_MILLIS) {
+            document(uid).set(fields, SetOptions.merge()).awaitResult()
+            SaveResult.Saved
+        } ?: SaveResult.NoConnection
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        if (e.isNetworkError()) SaveResult.NoConnection else SaveResult.Failed
+    }
+
     private fun Exception.isNetworkError(): Boolean =
         this is FirebaseNetworkException ||
             (this is FirebaseFirestoreException && code == FirebaseFirestoreException.Code.UNAVAILABLE)
 
     private companion object {
         const val USERS = "users"
+        const val SAVE_TIMEOUT_MILLIS = 8_000L
     }
 }

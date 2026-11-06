@@ -116,6 +116,56 @@
     <string name="profile_logout_subtitle">Volver a la pantalla inicial</string>
     <string name="chevron_symbol">›</string>
 
+    <!-- Personalización (guía de diseño §1) -->
+    <string name="step_of">%1$d de %2$d</string>
+    <string name="personalization_eyebrow">Personalicemos tu ruta</string>
+
+    <string name="level_subtitle">No hay respuestas buenas o malas. Empezaremos desde tu nivel.</string>
+    <string name="level_continue">Continuar</string>
+    <string name="level_beginner_icon">🌱</string>
+    <string name="level_beginner_title">Estoy empezando</string>
+    <string name="level_beginner_subtitle">Quiero aprender desde cero.</string>
+    <string name="level_beginner_value">Principiante</string>
+    <string name="level_basic_icon">🧩</string>
+    <string name="level_basic_title">Conozco lo básico</string>
+    <string name="level_basic_subtitle">He visto variables y condiciones.</string>
+    <string name="level_basic_value">Básico</string>
+    <string name="level_intermediate_icon">🚀</string>
+    <string name="level_intermediate_title">Ya he programado</string>
+    <string name="level_intermediate_subtitle">Quiero practicar y avanzar.</string>
+    <string name="level_intermediate_value">Intermedio</string>
+
+    <string name="goal_eyebrow">Un objetivo a la vez</string>
+    <string name="goal_subtitle">Escoge lo que más se parezca a tu meta.</string>
+    <string name="goal_create_route">Crear mi ruta</string>
+    <!-- no está en el mockup: falló el guardado de nivel y objetivo -->
+    <string name="goal_error_save">No pudimos guardar tu elección. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="goal_understand_icon">🧠</string>
+    <string name="goal_understand_title">Entender la programación</string>
+    <string name="goal_understand_subtitle">Comprender la lógica, no memorizar.</string>
+    <string name="goal_pass_icon">🎓</string>
+    <string name="goal_pass_title">Aprobar mi materia</string>
+    <string name="goal_pass_subtitle">Reforzar temas vistos en clase.</string>
+    <string name="goal_solve_icon">🧩</string>
+    <string name="goal_solve_title">Resolver problemas</string>
+    <string name="goal_solve_subtitle">Practicar cómo pensar como programador.</string>
+    <string name="goal_build_icon">🛠️</string>
+    <string name="goal_build_title">Crear mis proyectos</string>
+    <string name="goal_build_subtitle">Pasar de los ejercicios a algo real.</string>
+
+    <string name="path_pill">✓ Lista para empezar</string>
+    <string name="path_rocket">🚀</string>
+    <string name="path_eyebrow">Tu camino empieza aquí</string>
+    <string name="path_subtitle">Creamos una base para que avances a tu ritmo. Podrás cambiar tus preferencias más adelante.</string>
+    <string name="path_level_icon">🌱</string>
+    <string name="path_level_title">Tu nivel</string>
+    <string name="path_goal_icon">🎯</string>
+    <string name="path_goal_title">Tu objetivo</string>
+    <string name="path_pace_icon">⏱️</string>
+    <string name="path_pace_title">Ritmo recomendado</string>
+    <string name="path_pace_value">10 minutos al día</string>
+    <string name="path_enter">Entrar a CodeMentor AI</string>
+
     <!-- Arranque: carga del perfil con la sesión abierta (no está en el mockup) -->
     <string name="startup_loading">Cargando tu perfil…</string>
     <string name="startup_error">No pudimos cargar tu perfil. Revisa tu conexión e inténtalo de nuevo.</string>

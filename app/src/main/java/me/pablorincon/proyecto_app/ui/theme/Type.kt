@@ -193,6 +193,20 @@ object AppTextStyles {
         fontSize = 19.sp
     )
 
+    // Opciones de Personalización (.choice)
+    val ChoiceTitle = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight(750),
+        fontSize = 12.sp
+    )
+    val ChoiceSubtitle = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight(500),
+        fontSize = 10.sp
+    )
+    val PathEmoji = TextStyle( // 🚀 de "Ruta lista"
+        fontFamily = InterFamily, fontWeight = FontWeight.Normal,
+        fontSize = 42.sp
+    )
+
     // Código (ilustración de bienvenida)
     val CodeCard = TextStyle(
         fontFamily = FontFamily.Monospace, fontWeight = FontWeight(700),

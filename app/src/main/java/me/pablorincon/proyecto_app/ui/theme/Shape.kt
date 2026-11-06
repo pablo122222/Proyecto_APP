@@ -23,6 +23,11 @@ object AppShapes {
     val TabIcon = RoundedCornerShape(9.dp)        // Cuadro del icono de la pestaña
     val RowIcon = RoundedCornerShape(12.dp)       // .row-icon
 
+    // Personalización
+    val Choice = RoundedCornerShape(15.dp)           // .choice
+    val ChoiceIcon = RoundedCornerShape(11.dp)       // Cuadro del emoji de la opción
+    val PathIllustration = RoundedCornerShape(29.dp) // Cuadro 🚀 de "Ruta lista"
+
     // Marca
     val LogoIcon = RoundedCornerShape(10.dp)      // .logo-icon
 

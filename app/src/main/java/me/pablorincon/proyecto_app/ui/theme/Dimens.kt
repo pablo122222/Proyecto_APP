@@ -73,6 +73,27 @@ object AppDimens {
     val RowSubtitleTop = 4.dp      // margin-top: 4px del subtítulo
     val RowIconGap = 12.dp         // no está en el mockup: separación entre icono y texto
 
+    // ---------- Personalización ----------
+    val StepBarWidth = 19.dp       // Barrita del indicador de pasos: 19×4
+    val StepBarHeight = 4.dp
+    val StepBarGap = 4.dp          // no está en el mockup: separación entre barritas
+    val ChoiceListTop = 23.dp      // Del subtítulo a la primera opción
+    val ChoiceGap = 9.dp           // Separación entre opciones
+    val ChoicePadding = 14.dp
+    val ChoiceBorderWidth = 1.5.dp
+    val ChoiceIconSize = 34.dp     // Cuadro del emoji 34×34
+    val ChoiceIconGap = 12.dp      // no está en el mockup: separación entre emoji y texto
+    val ChoiceTextGap = 3.dp       // no está en el mockup: título a subtexto
+    val RadioSize = 17.dp
+    val RadioDotSize = 9.dp
+    val PathIllustrationSize = 90.dp
+    val PathIllustrationTop = 23.dp
+    val PathIllustrationBottom = 19.dp
+    val PathIllustrationShadowRadius = 20.dp // no está en el mockup: "sombra azul suave"
+    val PathIllustrationShadowOffsetY = 8.dp
+    val PathCardTop = 20.dp        // De los textos a la tarjeta de 3 filas
+    val ChoiceErrorBottom = 10.dp  // no está en el mockup: del error al botón fijo
+
     // ---------- Login ----------
     // "¿Olvidaste tu contraseña?" no está en el mockup: separación propia
     val ForgotLinkGap = 8.dp

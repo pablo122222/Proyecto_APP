@@ -10,6 +10,8 @@ object AppRoutes {
     const val FORGOT_PASSWORD = "recuperar_contrasena"
 
     // ---------- Personalización ----------
+    // Grafo que agrupa los 3 pasos: comparten el ViewModel con lo que se va eligiendo.
+    const val PERSONALIZATION = "personalizacion"
     const val LEVEL = "nivel"
     const val GOAL = "objetivo"
     const val PATH_READY = "ruta_lista"
@@ -53,7 +55,7 @@ object AppRoutes {
     fun startDestination(isLoggedIn: Boolean, hasPersonalization: Boolean = false): String = when {
         !isLoggedIn -> WELCOME
         hasPersonalization -> TAB_HOME
-        else -> LEVEL
+        else -> PERSONALIZATION // El grafo empieza en Nivel
     }
 
     // Destino después de cada inicio de sesión (decisión A).
