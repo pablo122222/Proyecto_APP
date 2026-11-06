@@ -17,6 +17,11 @@ import kotlin.coroutines.resumeWithException
 // Las pantallas solo ven resultados simples, nunca las excepciones de Firebase.
 class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()) {
 
+    // Firebase guarda la sesión en el teléfono: se consulta al instante, sin red.
+    fun isLoggedIn(): Boolean = auth.currentUser != null
+
+    fun signOut() = auth.signOut()
+
     enum class RegisterResult { Success, EmailAlreadyInUse, NoConnection, Failed }
 
     // Crea la cuenta y guarda el nombre en el perfil de Firebase.

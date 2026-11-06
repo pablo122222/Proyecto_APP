@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Proyecto_App</string>
+    <string name="app_name">CodeMentor AI</string>
 
     <!-- Componentes comunes -->
     <string name="back">Volver</string>
@@ -82,4 +82,36 @@
     <string name="forgot_error_no_connection">No hay conexión a internet. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="forgot_error_unknown">No se pudo enviar el correo. Inténtalo de nuevo.</string>
     <string name="forgot_sent">Si hay una cuenta con ese correo, te enviamos un enlace. Revisa también la carpeta de spam.</string>
+
+    <!-- Barra de pestañas -->
+    <string name="tab_home">Inicio</string>
+    <string name="tab_learn">Aprender</string>
+    <string name="tab_challenges">Retos</string>
+    <string name="tab_tutor">Tutor IA</string>
+    <string name="tab_profile">Perfil</string>
+
+    <!-- Títulos de pantallas (las provisionales muestran solo esto hasta su fase) -->
+    <string name="title_level">¿Qué tanto sabes de programación?</string>
+    <string name="title_goal">¿Qué quieres lograr?</string>
+    <string name="title_path_ready">Tu ruta está lista</string>
+    <string name="title_learning_path">Ruta de aprendizaje</string>
+    <string name="title_lesson">Lección</string>
+    <string name="title_glitch_city">Glitch City</string>
+    <string name="title_activity">Actividad</string>
+    <string name="title_achievements">Mis logros</string>
+    <string name="title_settings">Configuración</string>
+
+    <!-- Perfil -->
+    <string name="profile_title">Mi perfil</string>
+    <string name="profile_account_section">Cuenta</string>
+    <string name="profile_achievements_icon">🏆</string>
+    <string name="profile_achievements_title">Mis logros</string>
+    <string name="profile_achievements_subtitle">Insignias y metas alcanzadas</string>
+    <string name="profile_settings_icon">⚙️</string>
+    <string name="profile_settings_title">Configuración y accesibilidad</string>
+    <string name="profile_settings_subtitle">Visualización, audio y preferencias</string>
+    <string name="profile_logout_icon">↪</string>
+    <string name="profile_logout_title">Cerrar sesión</string>
+    <string name="profile_logout_subtitle">Volver a la pantalla inicial</string>
+    <string name="chevron_symbol">›</string>
 </resources>

@@ -69,6 +69,14 @@ object AppTextStyles {
         fontFamily = InterFamily, fontWeight = FontWeight(850),
         fontSize = 26.sp, lineHeight = 30.sp, letterSpacing = (-0.8).sp
     )
+    val ScreenTitleSmall = TextStyle( // .title.sm: 23 px, interlineado 1.16
+        fontFamily = InterFamily, fontWeight = FontWeight(850),
+        fontSize = 23.sp, lineHeight = 27.sp, letterSpacing = (-0.8).sp
+    )
+    val SectionTitle = TextStyle( // .section-heading h3
+        fontFamily = InterFamily, fontWeight = FontWeight.Bold,
+        fontSize = 14.sp
+    )
     val Subtitle = TextStyle(
         fontFamily = InterFamily, fontWeight = FontWeight.Normal,
         fontSize = 13.sp, lineHeight = 20.sp
@@ -159,6 +167,30 @@ object AppTextStyles {
     val CardTitleSmall = TextStyle( // "Cuenta de demostración"
         fontFamily = InterFamily, fontWeight = FontWeight.Bold,
         fontSize = 11.sp
+    )
+
+    // Barra de pestañas
+    val TabLabel = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight(650),
+        fontSize = 9.sp
+    )
+
+    // Filas (.rowline)
+    val RowTitle = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight.Bold,
+        fontSize = 12.sp
+    )
+    val RowSubtitle = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight.Normal,
+        fontSize = 10.sp
+    )
+    val RowIcon = TextStyle( // no está en el mockup: tamaño del emoji de la fila
+        fontFamily = InterFamily, fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    )
+    val RowChevron = TextStyle( // "›"
+        fontFamily = InterFamily, fontWeight = FontWeight.Normal,
+        fontSize = 19.sp
     )
 
     // Código (ilustración de bienvenida)

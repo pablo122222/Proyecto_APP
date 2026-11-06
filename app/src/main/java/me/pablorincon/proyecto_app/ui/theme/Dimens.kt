@@ -57,6 +57,22 @@ object AppDimens {
     val CardShadowRadius = 15.dp   // box-shadow: 0 4px 15px
     val CardShadowOffsetY = 4.dp
 
+    // ---------- Barra de pestañas (.tabbar) ----------
+    val TabBarHeight = 73.dp       // height: 73px
+    val TabIconBox = 26.dp         // Cuadro del icono: 26×26
+    val TabIcon = 19.dp            // Icono de trazo: 19×19
+    val TabLabelGap = 3.dp         // no está en el mockup: separación entre icono y texto
+
+    // ---------- Secciones (.section-heading) ----------
+    val SectionTop = 22.dp         // margin-top: 22px
+    val SectionBottom = 10.dp      // margin-bottom: 10px
+
+    // ---------- Filas (.rowline) ----------
+    val RowIconSize = 36.dp        // .row-icon 36×36
+    val RowPaddingV = 13.dp        // padding: 13px 0
+    val RowSubtitleTop = 4.dp      // margin-top: 4px del subtítulo
+    val RowIconGap = 12.dp         // no está en el mockup: separación entre icono y texto
+
     // ---------- Login ----------
     // "¿Olvidaste tu contraseña?" no está en el mockup: separación propia
     val ForgotLinkGap = 8.dp

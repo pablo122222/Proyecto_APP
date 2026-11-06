@@ -1,0 +1,58 @@
+package me.pablorincon.proyecto_app.ui.navigation
+
+// Todas las rutas de la app en un solo lugar (rutas de texto de Navigation Compose).
+object AppRoutes {
+
+    // ---------- Cuenta ----------
+    const val WELCOME = "bienvenida"
+    const val REGISTER = "registro"
+    const val LOGIN = "login"
+    const val FORGOT_PASSWORD = "recuperar_contrasena"
+
+    // ---------- Personalización ----------
+    const val LEVEL = "nivel"
+    const val GOAL = "objetivo"
+    const val PATH_READY = "ruta_lista"
+
+    // ---------- Grafos de cada pestaña ----------
+    // Cada pestaña es un grafo anidado para que conserve su historial al cambiar de pestaña.
+    const val TAB_HOME = "pestana_inicio"
+    const val TAB_LEARN = "pestana_aprender"
+    const val TAB_CHALLENGES = "pestana_retos"
+    const val TAB_TUTOR = "pestana_tutor"
+    const val TAB_PROFILE = "pestana_perfil"
+
+    // ---------- Pantallas principales ----------
+    const val HOME = "inicio"
+    const val LEARNING_PATH = "ruta"
+    const val LESSON_ARG = "leccionId"
+    const val LESSON = "leccion/{$LESSON_ARG}"
+    const val GLITCH_CITY = "glitch_city"
+    const val ACTIVITY_ARG = "actividadId"
+    const val ACTIVITY = "actividad/{$ACTIVITY_ARG}"
+    const val TUTOR = "tutor"
+    const val PROFILE = "perfil"
+    const val ACHIEVEMENTS = "logros"
+    const val SETTINGS = "configuracion"
+
+    // Los ids van dentro de la ruta: solo se aceptan caracteres seguros en una URL.
+    private val SafeId = Regex("[a-z0-9_-]+")
+
+    fun lesson(lessonId: String): String {
+        require(SafeId.matches(lessonId)) { "Id de lección no válido: $lessonId" }
+        return "leccion/$lessonId"
+    }
+
+    fun activity(activityId: String): String {
+        require(SafeId.matches(activityId)) { "Id de actividad no válido: $activityId" }
+        return "actividad/$activityId"
+    }
+
+    // Al abrir la app: con sesión iniciada se entra directo a Inicio.
+    fun startDestination(isLoggedIn: Boolean): String = if (isLoggedIn) TAB_HOME else WELCOME
+
+    // Destino después de cada inicio de sesión (decisión A). Mientras el perfil no
+    // exista en Firestore (Fases 7 y 8) siempre es Inicio; ahí se decidirá si
+    // primero va a Personalización.
+    fun afterLogin(): String = HOME
+}

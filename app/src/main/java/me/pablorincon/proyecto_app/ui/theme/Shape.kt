@@ -19,6 +19,10 @@ object AppShapes {
     val Card = RoundedCornerShape(18.dp)          // .card (tarjeta demo del login)
     val Pill = CircleShape                        // .pill (radio 99 px = cápsula)
 
+    // Barra de pestañas y filas
+    val TabIcon = RoundedCornerShape(9.dp)        // Cuadro del icono de la pestaña
+    val RowIcon = RoundedCornerShape(12.dp)       // .row-icon
+
     // Marca
     val LogoIcon = RoundedCornerShape(10.dp)      // .logo-icon
 

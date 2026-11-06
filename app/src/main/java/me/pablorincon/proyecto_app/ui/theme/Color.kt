@@ -38,6 +38,15 @@ val AccentYellow = Color(0xFFF4B13E)      // Punto amarillo decorativo
 val FloatCardText = Color(0xFF39445D)     // Texto de las tarjetitas flotantes
 val FloatCardBorder = Color(0xB8FFFFFF)   // Borde blanco semitransparente de las tarjetitas
 
+// ---- Barra de pestañas inferior ----
+val TabBarBackground = Color(0xEDFFFFFF)  // Blanco al 93 % (rgba(255,255,255,.93))
+val TabInactive = Color(0xFF8A96B3)       // Icono y texto de las pestañas inactivas
+
+// ---- Filas (.rowline) ----
+val RowIconBackground = Color(0xFFE5EDFD) // Fondo del icono de la fila
+val Chevron = Color(0xFF9AA5BD)           // Flecha "›" de las filas
+val LogoutIconBackground = Color(0xFFFDECEC) // Fondo del icono de "Cerrar sesión"
+
 // ---- Sombras ----
 val ButtonShadow = Color(0x264B7BE5)      // Botón primario
 val OrbShadow = Color(0x404B7BE5)         // Cubo {;}
