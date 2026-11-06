@@ -48,11 +48,14 @@ object AppRoutes {
         return "actividad/$activityId"
     }
 
-    // Al abrir la app: con sesión iniciada se entra directo a Inicio.
-    fun startDestination(isLoggedIn: Boolean): String = if (isLoggedIn) TAB_HOME else WELCOME
+    // Al abrir la app (decisión A): sin sesión, Bienvenida; con sesión, Inicio, salvo
+    // que falte nivel y objetivo: entonces se retoma Personalización.
+    fun startDestination(isLoggedIn: Boolean, hasPersonalization: Boolean = false): String = when {
+        !isLoggedIn -> WELCOME
+        hasPersonalization -> TAB_HOME
+        else -> LEVEL
+    }
 
-    // Destino después de cada inicio de sesión (decisión A). Mientras el perfil no
-    // exista en Firestore (Fases 7 y 8) siempre es Inicio; ahí se decidirá si
-    // primero va a Personalización.
-    fun afterLogin(): String = HOME
+    // Destino después de cada inicio de sesión (decisión A).
+    fun afterLogin(hasPersonalization: Boolean): String = if (hasPersonalization) HOME else LEVEL
 }

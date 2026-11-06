@@ -9,9 +9,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.pablorincon.proyecto_app.data.AuthRepository
 import me.pablorincon.proyecto_app.data.AuthRepository.LoginResult
+import me.pablorincon.proyecto_app.data.UserRepository
+import me.pablorincon.proyecto_app.data.UserRepository.ProfileResult
 import me.pablorincon.proyecto_app.domain.AuthValidator
 
-enum class LoginError { WrongCredentials, NoConnection, Unknown }
+enum class LoginError { WrongCredentials, NoConnection, Unknown, ProfileNotLoaded }
 
 // Todo lo que la pantalla de inicio de sesión necesita mostrar.
 data class LoginUiState(
@@ -20,7 +22,8 @@ data class LoginUiState(
     val error: LoginError? = null,
     val isLoading: Boolean = false,  // Esperando respuesta de Firebase
     val loggedIn: Boolean = false,   // La sesión se inició: la pantalla debe salir
-    val userName: String? = null     // Para el saludo "¡Bienvenido de nuevo, …!"
+    val userName: String? = null,    // Para el saludo "¡Bienvenido de nuevo, …!"
+    val hasPersonalization: Boolean = false // Decide si sigue Inicio o Personalización
 )
 
 // Datos de la tarjeta "Cuenta de ejemplo". La cuenta debe existir en Firebase.
@@ -28,7 +31,8 @@ const val EXAMPLE_EMAIL = "ejemplo@correo.com"
 const val EXAMPLE_PASSWORD = "ejemplo123"
 
 class LoginViewModel(
-    private val repository: AuthRepository = AuthRepository()
+    private val repository: AuthRepository = AuthRepository(),
+    private val userRepository: UserRepository = UserRepository()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -52,9 +56,7 @@ class LoginViewModel(
         _uiState.update { it.copy(error = null, isLoading = true) }
         viewModelScope.launch {
             when (val result = repository.login(email, state.password)) {
-                // Se limpia el formulario para que no quede la contraseña escrita
-                is LoginResult.Success ->
-                    _uiState.value = LoginUiState(loggedIn = true, userName = result.name)
+                is LoginResult.Success -> onSignedIn(result)
                 LoginResult.WrongCredentials -> showError(LoginError.WrongCredentials)
                 LoginResult.NoConnection -> showError(LoginError.NoConnection)
                 LoginResult.Failed -> showError(LoginError.Unknown)
@@ -62,8 +64,25 @@ class LoginViewModel(
         }
     }
 
+    // La sesión ya está abierta: se carga (o crea) el perfil para decidir a dónde ir.
+    // Si no se puede cargar, el formulario se conserva y "Iniciar sesión" reintenta;
+    // nunca se asume que el usuario es nuevo.
+    private suspend fun onSignedIn(result: LoginResult.Success) {
+        val fallbackName = result.name.orEmpty()
+        when (val profile = userRepository.ensureProfile(result.uid, fallbackName)) {
+            // Se limpia el formulario para que no quede la contraseña escrita
+            is ProfileResult.Success -> _uiState.value = LoginUiState(
+                loggedIn = true,
+                userName = result.name,
+                hasPersonalization = profile.profile.hasPersonalization
+            )
+            else -> showError(LoginError.ProfileNotLoaded)
+        }
+    }
+
     // La pantalla avisa que ya navegó, para no repetirlo al girar el teléfono.
-    fun onLoggedInHandled() = _uiState.update { it.copy(loggedIn = false, userName = null) }
+    fun onLoggedInHandled() =
+        _uiState.update { it.copy(loggedIn = false, userName = null, hasPersonalization = false) }
 
     private fun showError(error: LoginError) =
         _uiState.update { it.copy(error = error, isLoading = false) }

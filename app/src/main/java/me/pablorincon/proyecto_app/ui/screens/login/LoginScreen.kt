@@ -64,7 +64,7 @@ fun LoginScreen(
     onBack: () -> Unit,
     onCreateAccount: () -> Unit,
     onForgotPassword: () -> Unit,
-    onLoggedIn: () -> Unit,
+    onLoggedIn: (hasPersonalization: Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = viewModel()
 ) {
@@ -80,8 +80,9 @@ fun LoginScreen(
     LaunchedEffect(state.loggedIn) {
         if (state.loggedIn) {
             Toast.makeText(context, welcome, Toast.LENGTH_SHORT).show()
+            val hasPersonalization = state.hasPersonalization
             viewModel.onLoggedInHandled()
-            onLoggedIn()
+            onLoggedIn(hasPersonalization)
         }
     }
 
@@ -232,6 +233,7 @@ private fun LoginError.messageRes(): Int = when (this) {
     LoginError.WrongCredentials -> R.string.login_error_credentials
     LoginError.NoConnection -> R.string.login_error_no_connection
     LoginError.Unknown -> R.string.login_error_unknown
+    LoginError.ProfileNotLoaded -> R.string.login_error_profile
 }
 
 @Preview(showSystemUi = true)

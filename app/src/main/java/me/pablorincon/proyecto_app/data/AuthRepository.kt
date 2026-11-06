@@ -1,6 +1,5 @@
 package me.pablorincon.proyecto_app.data
 
-import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
@@ -9,16 +8,21 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.withTimeoutOrNull
 
 // Único lugar de la app que habla con Firebase Authentication.
 // Las pantallas solo ven resultados simples, nunca las excepciones de Firebase.
-class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()) {
+class AuthRepository(
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val userRepository: UserRepository = UserRepository()
+) {
 
     // Firebase guarda la sesión en el teléfono: se consulta al instante, sin red.
     fun isLoggedIn(): Boolean = auth.currentUser != null
+
+    // Datos de la sesión abierta (null si no hay sesión).
+    fun currentUid(): String? = auth.currentUser?.uid
+    fun currentName(): String? = auth.currentUser?.displayName
 
     fun signOut() = auth.signOut()
 
@@ -35,6 +39,12 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()
         } catch (e: FirebaseException) {
             // La cuenta ya existe; si el nombre no se guardó no vale la pena fallar por eso.
         }
+        // El perfil se crea con la sesión aún abierta (las reglas de Firestore exigen
+        // ser el dueño). Si falla o tarda, el registro sigue siendo válido: el primer
+        // login lo crea. El límite de tiempo evita quedar esperando sin red.
+        user?.let {
+            withTimeoutOrNull(PROFILE_TIMEOUT_MILLIS) { userRepository.createInitialProfile(it.uid, name) }
+        }
         auth.signOut()
         RegisterResult.Success
     } catch (e: CancellationException) {
@@ -48,7 +58,8 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     }
 
     sealed interface LoginResult {
-        data class Success(val name: String?) : LoginResult // Nombre guardado al registrarse
+        // Nombre guardado al registrarse e id de la cuenta
+        data class Success(val uid: String, val name: String?) : LoginResult
         data object WrongCredentials : LoginResult
         data object NoConnection : LoginResult
         data object Failed : LoginResult
@@ -60,7 +71,8 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()
         if (email.isEmpty() || password.isEmpty()) return LoginResult.WrongCredentials
         return try {
             val user = auth.signInWithEmailAndPassword(email, password).awaitResult().user
-            LoginResult.Success(user?.displayName)
+                ?: return LoginResult.Failed
+            LoginResult.Success(user.uid, user.displayName)
         } catch (e: CancellationException) {
             throw e
         } catch (e: FirebaseAuthInvalidCredentialsException) {
@@ -94,17 +106,8 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     } catch (e: Exception) {
         ResetResult.Failed
     }
-}
 
-// Convierte una tarea de Firebase (callbacks) en una función suspend,
-// así no hace falta agregar la librería kotlinx-coroutines-play-services.
-private suspend fun <T> Task<T>.awaitResult(): T = suspendCancellableCoroutine { continuation ->
-    addOnCompleteListener { task ->
-        val error = task.exception
-        when {
-            error != null -> continuation.resumeWithException(error)
-            task.isCanceled -> continuation.cancel()
-            else -> continuation.resume(task.result)
-        }
+    private companion object {
+        const val PROFILE_TIMEOUT_MILLIS = 5_000L
     }
 }

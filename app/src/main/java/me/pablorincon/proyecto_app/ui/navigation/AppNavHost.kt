@@ -92,7 +92,9 @@ private fun NavGraphBuilder.accountDestinations(navController: NavHostController
             onCreateAccount = { navController.openFromWelcome(AppRoutes.REGISTER) },
             onForgotPassword = { navController.navigate(AppRoutes.FORGOT_PASSWORD) },
             // Se borra el historial de cuenta: atrás no debe volver al login
-            onLoggedIn = { navController.openClearingHistory(AppRoutes.afterLogin()) }
+            onLoggedIn = { hasPersonalization ->
+                navController.openClearingHistory(AppRoutes.afterLogin(hasPersonalization))
+            }
         )
     }
     composable(AppRoutes.FORGOT_PASSWORD) {

@@ -23,12 +23,28 @@ class AppRoutesTest {
 
     @Test
     fun alAbrirLaAppSeEligeElDestinoSegunLaSesion() {
-        assertEquals(AppRoutes.TAB_HOME, AppRoutes.startDestination(isLoggedIn = true))
         assertEquals(AppRoutes.WELCOME, AppRoutes.startDestination(isLoggedIn = false))
+        assertEquals(
+            AppRoutes.WELCOME,
+            AppRoutes.startDestination(isLoggedIn = false, hasPersonalization = true)
+        )
+        assertEquals(
+            AppRoutes.TAB_HOME,
+            AppRoutes.startDestination(isLoggedIn = true, hasPersonalization = true)
+        )
     }
 
     @Test
-    fun trasIniciarSesionSeVaAInicio() {
-        assertEquals(AppRoutes.HOME, AppRoutes.afterLogin())
+    fun alAbrirLaAppSinPersonalizacionSeRetomaElNivel() {
+        assertEquals(
+            AppRoutes.LEVEL,
+            AppRoutes.startDestination(isLoggedIn = true, hasPersonalization = false)
+        )
+    }
+
+    @Test
+    fun trasIniciarSesionSeVaAInicioSoloSiHayPersonalizacion() {
+        assertEquals(AppRoutes.HOME, AppRoutes.afterLogin(hasPersonalization = true))
+        assertEquals(AppRoutes.LEVEL, AppRoutes.afterLogin(hasPersonalization = false))
     }
 }

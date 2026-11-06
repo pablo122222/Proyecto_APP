@@ -67,6 +67,7 @@
     <string name="login_error_credentials">El correo o la contraseña no son correctos.</string>
     <string name="login_error_no_connection">No hay conexión a internet. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="login_error_unknown">No se pudo iniciar sesión. Inténtalo de nuevo.</string>
+    <string name="login_error_profile">No pudimos cargar tu perfil. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="login_welcome">¡Bienvenido de nuevo, %1$s!</string>
     <string name="login_welcome_no_name">¡Bienvenido de nuevo!</string>
 
@@ -114,4 +115,9 @@
     <string name="profile_logout_title">Cerrar sesión</string>
     <string name="profile_logout_subtitle">Volver a la pantalla inicial</string>
     <string name="chevron_symbol">›</string>
+
+    <!-- Arranque: carga del perfil con la sesión abierta (no está en el mockup) -->
+    <string name="startup_loading">Cargando tu perfil…</string>
+    <string name="startup_error">No pudimos cargar tu perfil. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="startup_retry">Reintentar</string>
 </resources>
