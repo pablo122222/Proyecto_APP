@@ -1,8 +1,6 @@
 package me.pablorincon.proyecto_app.data
 
-import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
@@ -68,10 +66,6 @@ class UserRepository(private val db: FirebaseFirestore = FirebaseFirestore.getIn
     } catch (e: Exception) {
         if (e.isNetworkError()) SaveResult.NoConnection else SaveResult.Failed
     }
-
-    private fun Exception.isNetworkError(): Boolean =
-        this is FirebaseNetworkException ||
-            (this is FirebaseFirestoreException && code == FirebaseFirestoreException.Code.UNAVAILABLE)
 
     private companion object {
         const val USERS = "users"
