@@ -27,6 +27,7 @@ import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.ui.components.AppBottomBar
 import me.pablorincon.proyecto_app.ui.screens.forgotpassword.ForgotPasswordScreen
 import me.pablorincon.proyecto_app.ui.screens.learningpath.LearningPathScreen
+import me.pablorincon.proyecto_app.ui.screens.lesson.LessonScreen
 import me.pablorincon.proyecto_app.ui.screens.login.LoginScreen
 import me.pablorincon.proyecto_app.ui.screens.personalization.GoalScreen
 import me.pablorincon.proyecto_app.ui.screens.personalization.LevelScreen
@@ -161,8 +162,20 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
         composable(
             route = AppRoutes.LESSON,
             arguments = listOf(navArgument(AppRoutes.LESSON_ARG) { type = NavType.StringType })
-        ) {
-            PlaceholderScreen(title = R.string.title_lesson, onBack = navController::goBack)
+        ) { entry ->
+            val lessonId = entry.arguments?.getString(AppRoutes.LESSON_ARG).orEmpty()
+            LessonScreen(
+                lessonId = lessonId,
+                onBack = navController::goBack,
+                // La lección terminada sale del historial: atrás vuelve a la Ruta
+                onNextLesson = { next ->
+                    navController.navigate(AppRoutes.lesson(next)) {
+                        popUpTo(AppRoutes.LESSON) { inclusive = true }
+                    }
+                },
+                onPractice = { navController.openTab(BottomTab.Challenges, BottomTab.Learn) },
+                onAskTutor = { navController.openTab(BottomTab.Tutor, BottomTab.Learn) }
+            )
         }
     }
     navigation(startDestination = AppRoutes.GLITCH_CITY, route = AppRoutes.TAB_CHALLENGES) {

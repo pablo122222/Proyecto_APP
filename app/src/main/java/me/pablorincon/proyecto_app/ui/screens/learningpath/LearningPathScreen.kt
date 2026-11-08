@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -81,6 +82,11 @@ fun LearningPathScreen(
     viewModel: LearningPathViewModel = viewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    // Al volver a la Ruta (de una lección o de otra pestaña) se actualiza el progreso
+    LifecycleResumeEffect(viewModel) {
+        viewModel.load(silent = true)
+        onPauseOrDispose { }
+    }
     LearningPathContent(
         state = state,
         onOpenLesson = onOpenLesson,

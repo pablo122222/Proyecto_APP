@@ -76,3 +76,26 @@ val ButtonShadow = Color(0x264B7BE5)      // Botón primario
 val OrbShadow = Color(0x404B7BE5)         // Cubo {;}
 val FloatCardShadow = Color(0x18283047)   // Tarjetitas flotantes
 val CardShadow = Color(0x081B2540)        // Tarjetas (.card)
+
+// ---- Lección (guía §0 y §4) ----
+val CodeBg = Color(0xFF1C2540)
+val CodeText = Color(0xFFE9EDFA)
+val CodeLineNumber = Color(0xFF7F8AA6)
+val SyntaxKeyword = Color(0xFFB3A8FF)
+val SyntaxNumber = Color(0xFFFFC46B)
+val SyntaxString = Color(0xFF8CE0B7)
+val SyntaxFunction = Color(0xFF80C9FF)
+val SyntaxComment = Color(0xFF7F8AA6)     // no está en la guía: igual que los números de línea
+val OutputBg = Color(0xFFEDFAF4)
+val OutputBorder = Color(0xFFCDEEDD)
+val OutputText = Color(0xFF1B7A5C)
+val AnswerCorrectBorder = Color(0xFF2FB38A)
+val AnswerCorrectBg = Color(0xFFEAF9F2)
+val AnswerWrongBorder = Color(0xFFF3A9A6)
+val AnswerWrongBg = Color(0xFFFEF1F0)
+val FeedbackGoodBg = Color(0xFFE4F7EE)
+val FeedbackGoodText = Color(0xFF1B7A5C)
+val FeedbackBadBg = Color(0xFFFDECEC)
+val FeedbackBadText = Color(0xFFA83E3E)
+val SoftBlueCardBg = Color(0xFFE5EDFD)
+val SoftBlueCardBorder = Color(0xFFD3E2FC)

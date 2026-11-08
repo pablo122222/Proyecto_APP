@@ -14,6 +14,16 @@ class Curriculum(val modules: List<Module>) {
     val lessons: List<Lesson> = modules.flatMap { it.lessons }
     val totalLessons: Int get() = lessons.size
 
+    fun lesson(lessonId: String): Lesson? = lessons.firstOrNull { it.id == lessonId }
+
+    fun moduleOf(lessonId: String): Module? = modules.firstOrNull { m -> m.lessons.any { it.id == lessonId } }
+
+    // La que sigue en la ruta, aunque cambie de módulo. Null si es la última (o no existe).
+    fun lessonAfter(lessonId: String): Lesson? {
+        val index = lessons.indexOfFirst { it.id == lessonId }
+        return if (index < 0) null else lessons.getOrNull(index + 1)
+    }
+
     init {
         require(lessons.map { it.id }.toSet().size == lessons.size) { "Hay ids de lección repetidos" }
         require(modules.map { it.id }.toSet().size == modules.size) { "Hay ids de módulo repetidos" }

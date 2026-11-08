@@ -32,18 +32,19 @@ class LearningPathViewModel(
         load()
     }
 
-    fun load() {
+    // silent: refresca sin mostrar el indicador de carga (al volver de una lección).
+    fun load(silent: Boolean = false) {
         val uid = auth.currentUid()
         if (uid == null) { // Sin sesión no hay progreso que mostrar
             _uiState.value = LearningPathUiState.Error
             return
         }
-        _uiState.value = LearningPathUiState.Loading
+        if (!silent || _uiState.value !is LearningPathUiState.Ready) _uiState.value = LearningPathUiState.Loading
         viewModelScope.launch {
             _uiState.value = when (val result = progress.loadCompletedLessons(uid)) {
                 is ProgressResult.Success ->
                     LearningPathUiState.Ready(CurriculumProgress(curriculum, result.completedLessonIds))
-                else -> LearningPathUiState.Error
+                else -> if (silent && _uiState.value is LearningPathUiState.Ready) _uiState.value else LearningPathUiState.Error
             }
         }
     }

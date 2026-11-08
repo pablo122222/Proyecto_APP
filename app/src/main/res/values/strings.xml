@@ -202,4 +202,32 @@
     <!-- no está en la guía: falló la carga del progreso -->
     <string name="path_screen_error">No pudimos cargar tu progreso. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="path_screen_loading">Cargando tu progreso…</string>
+
+    <!-- Lección (guía de diseño §4) -->
+    <string name="lesson_x_of_n">Lección %1$d de %2$d</string>
+    <string name="lesson_xp">+%1$d XP</string>
+    <string name="lesson_eyebrow">Concepto clave · Python</string>
+    <string name="lesson_code_description">Código de ejemplo</string>
+    <string name="lesson_expected_output">Salida esperada</string>
+    <string name="lesson_check_title">Comprueba lo aprendido</string>
+    <string name="lesson_quick_question">Pregunta rápida</string>
+    <string name="lesson_correct_counter">%1$d de %2$d acertadas</string>
+    <string name="lesson_continue">Continuar</string>
+    <string name="lesson_tutor_title">¿Necesitas una explicación diferente?</string>
+    <string name="lesson_tutor_text">Pregunta al tutor para ver el concepto con otro ejemplo.</string>
+    <string name="lesson_tutor_button">Preguntar al tutor IA</string>
+    <string name="lesson_practice">Ir a practicar →</string>
+    <string name="lesson_next">Siguiente lección →</string>
+    <!-- no están en la guía: regla de preguntas falladas, cierre y errores -->
+    <string name="lesson_retry_later">No pasa nada: esta pregunta volverá al final de la lección.</string>
+    <string name="lesson_done_title">¡Lección completada! 🎉</string>
+    <string name="lesson_done_xp">Ganaste +%1$d XP.</string>
+    <string name="lesson_done_review">Ya habías completado esta lección: repasar no suma XP, pero siempre ayuda.</string>
+    <string name="lesson_saving">Guardando tu avance…</string>
+    <string name="lesson_save_no_connection">No hay conexión a internet. Necesitamos conexión para guardar tu avance y tu XP.</string>
+    <string name="lesson_save_failed">No pudimos guardar tu avance. Inténtalo de nuevo.</string>
+    <string name="lesson_loading">Cargando la lección…</string>
+    <string name="lesson_error">No pudimos cargar la lección. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="lesson_locked">Esta lección aún está bloqueada. Completa las anteriores para abrirla.</string>
+    <string name="lesson_coming_soon">Esta lección llegará pronto. ¡Glitch todavía la está escribiendo!</string>
 </resources>

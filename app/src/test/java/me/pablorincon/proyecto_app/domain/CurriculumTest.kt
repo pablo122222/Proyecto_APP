@@ -49,4 +49,18 @@ class CurriculumTest {
         val lesson = Lesson("a_1", 20)
         Curriculum(listOf(Module("a", listOf(lesson)), Module("b", listOf(lesson))))
     }
+
+    @Test
+    fun moduleOfEncuentraElModuloDeUnaLeccion() {
+        assertEquals("variables", base.moduleOf("variables_3")?.id)
+        assertEquals(null, base.moduleOf("no_existe"))
+    }
+
+    @Test
+    fun lessonAfterSigueLaRutaYCambiaDeModulo() {
+        assertEquals("fundamentos_2", base.lessonAfter("fundamentos_1")?.id)
+        assertEquals("variables_1", base.lessonAfter("fundamentos_4")?.id)
+        assertEquals(null, base.lessonAfter("proyecto_1")) // Última de la ruta
+        assertEquals(null, base.lessonAfter("no_existe"))
+    }
 }
