@@ -182,6 +182,9 @@
     <string name="module_status_locked">Bloqueado</string>
     <string name="module_status_soon">Próximamente</string>
     <string name="module_continue">Continuar →</string>
+    <!-- no está en la guía: módulos anteriores al nivel de inicio del usuario (repaso con XP) -->
+    <string name="module_status_optional">Repaso opcional</string>
+    <string name="module_review">Repasar →</string>
     <string name="module_final_project">Proyecto final</string>
     <plurals name="module_lessons">
         <item quantity="one">%1$d lección</item>

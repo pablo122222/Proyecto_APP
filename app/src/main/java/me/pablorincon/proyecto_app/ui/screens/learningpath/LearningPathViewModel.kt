@@ -7,9 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.pablorincon.proyecto_app.data.AuthRepository
-import me.pablorincon.proyecto_app.data.ProgressRepository
-import me.pablorincon.proyecto_app.data.ProgressRepository.ProgressResult
-import me.pablorincon.proyecto_app.domain.Curriculum
+import me.pablorincon.proyecto_app.data.CurriculumProgressLoader
+import me.pablorincon.proyecto_app.data.CurriculumProgressLoader.LoadResult
 import me.pablorincon.proyecto_app.domain.CurriculumProgress
 
 sealed interface LearningPathUiState {
@@ -21,8 +20,7 @@ sealed interface LearningPathUiState {
 // Carga el progreso del usuario y lo entrega ya calculado (estados, % y siguiente lección).
 class LearningPathViewModel(
     private val auth: AuthRepository = AuthRepository(),
-    private val progress: ProgressRepository = ProgressRepository(),
-    private val curriculum: Curriculum = Curriculum.Base
+    private val loader: CurriculumProgressLoader = CurriculumProgressLoader()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<LearningPathUiState>(LearningPathUiState.Loading)
@@ -41,9 +39,8 @@ class LearningPathViewModel(
         }
         if (!silent || _uiState.value !is LearningPathUiState.Ready) _uiState.value = LearningPathUiState.Loading
         viewModelScope.launch {
-            _uiState.value = when (val result = progress.loadCompletedLessons(uid)) {
-                is ProgressResult.Success ->
-                    LearningPathUiState.Ready(CurriculumProgress(curriculum, result.completedLessonIds))
+            _uiState.value = when (val result = loader.load(uid, auth.currentName().orEmpty())) {
+                is LoadResult.Loaded -> LearningPathUiState.Ready(result.progress)
                 else -> if (silent && _uiState.value is LearningPathUiState.Ready) _uiState.value else LearningPathUiState.Error
             }
         }

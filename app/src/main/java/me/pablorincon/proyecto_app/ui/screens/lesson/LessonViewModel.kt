@@ -10,9 +10,9 @@ import kotlinx.coroutines.launch
 import me.pablorincon.proyecto_app.data.AuthRepository
 import me.pablorincon.proyecto_app.data.ProgressRepository
 import me.pablorincon.proyecto_app.data.ProgressRepository.CompleteResult
-import me.pablorincon.proyecto_app.data.ProgressRepository.ProgressResult
+import me.pablorincon.proyecto_app.data.CurriculumProgressLoader
+import me.pablorincon.proyecto_app.data.CurriculumProgressLoader.LoadResult
 import me.pablorincon.proyecto_app.domain.Curriculum
-import me.pablorincon.proyecto_app.domain.CurriculumProgress
 import me.pablorincon.proyecto_app.domain.Lesson
 import me.pablorincon.proyecto_app.domain.LessonContent
 import me.pablorincon.proyecto_app.domain.LessonQuiz
@@ -49,6 +49,7 @@ class LessonViewModel(
     private val lessonId: String,
     private val auth: AuthRepository = AuthRepository(),
     private val progressRepository: ProgressRepository = ProgressRepository(),
+    private val loader: CurriculumProgressLoader = CurriculumProgressLoader(),
     private val curriculum: Curriculum = Curriculum.Base
 ) : ViewModel() {
 
@@ -70,15 +71,15 @@ class LessonViewModel(
         }
         _uiState.value = LessonUiState.Loading
         viewModelScope.launch {
-            val result = progressRepository.loadCompletedLessons(uid)
-            if (result !is ProgressResult.Success) {
+            val loaded = loader.load(uid, auth.currentName().orEmpty())
+            if (loaded !is LoadResult.Loaded) {
                 _uiState.value = LessonUiState.Error
                 return@launch
             }
-            val progress = CurriculumProgress(curriculum, result.completedLessonIds)
+            val progress = loaded.progress
             val content = LessonCatalog.contentFor(lessonId)
             _uiState.value = when {
-                !progress.isLessonUnlocked(lessonId) -> LessonUiState.Locked
+                !progress.isStepUnlocked(lessonId) -> LessonUiState.Locked
                 content == null -> LessonUiState.ComingSoon
                 else -> {
                     alreadyCompleted = progress.isCompleted(lessonId)

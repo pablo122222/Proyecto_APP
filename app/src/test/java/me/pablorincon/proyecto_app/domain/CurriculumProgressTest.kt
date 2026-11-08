@@ -35,7 +35,7 @@ class CurriculumProgressTest {
         val p = progress("fundamentos_1")
         assertEquals("fundamentos_2", p.nextLesson?.id)
         assertEquals(ModuleStatus.InProgress, p.modules.first().status)
-        assertEquals(1, p.modules.first().completedLessons)
+        assertEquals(1, p.modules.first().completedSteps)
         assertEquals(4, p.percent) // 1 de 25 = 4 %
     }
 
@@ -73,7 +73,7 @@ class CurriculumProgressTest {
     @Test
     fun losIdsDesconocidosSeIgnoran() {
         val p = progress("leccion_borrada", "fundamentos_1")
-        assertEquals(1, p.modules.first().completedLessons)
+        assertEquals(1, p.modules.first().completedSteps)
         assertEquals(4, p.percent)
         assertFalse(p.isCompleted("leccion_borrada"))
     }
@@ -81,20 +81,20 @@ class CurriculumProgressTest {
     @Test
     fun unaLeccionSoloSeAbreSiTodasLasAnterioresEstanCompletadas() {
         val p = progress("fundamentos_1")
-        assertTrue(p.isLessonUnlocked("fundamentos_1")) // ya completada: se puede repasar
-        assertTrue(p.isLessonUnlocked("fundamentos_2")) // la siguiente
-        assertFalse(p.isLessonUnlocked("fundamentos_3")) // falta la 2
-        assertFalse(p.isLessonUnlocked("variables_1")) // falta terminar Fundamentos
+        assertTrue(p.isStepUnlocked("fundamentos_1")) // ya completada: se puede repasar
+        assertTrue(p.isStepUnlocked("fundamentos_2")) // la siguiente
+        assertFalse(p.isStepUnlocked("fundamentos_3")) // falta la 2
+        assertFalse(p.isStepUnlocked("variables_1")) // falta terminar Fundamentos
     }
 
     @Test
     fun laPrimeraLeccionSiempreEstaAbierta() {
-        assertTrue(progress().isLessonUnlocked("fundamentos_1"))
+        assertTrue(progress().isStepUnlocked("fundamentos_1"))
     }
 
     @Test
     fun unIdDesconocidoNuncaSeAbre() {
-        assertFalse(progress(*lessonsOfFirstModules(6)).isLessonUnlocked("no_existe"))
+        assertFalse(progress(*lessonsOfFirstModules(6)).isStepUnlocked("no_existe"))
     }
 
     @Test
@@ -102,7 +102,7 @@ class CurriculumProgressTest {
         val p = progress("fundamentos_1", "fundamentos_3")
         assertEquals("fundamentos_2", p.nextLesson?.id)
         assertEquals(ModuleStatus.InProgress, p.modules.first().status)
-        assertFalse(p.isLessonUnlocked("fundamentos_4"))
+        assertFalse(p.isStepUnlocked("fundamentos_4"))
     }
 
     @Test

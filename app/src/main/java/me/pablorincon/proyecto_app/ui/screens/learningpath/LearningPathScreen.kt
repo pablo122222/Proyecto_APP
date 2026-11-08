@@ -48,6 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.domain.Curriculum
 import me.pablorincon.proyecto_app.domain.CurriculumProgress
+import me.pablorincon.proyecto_app.domain.Lesson
 import me.pablorincon.proyecto_app.domain.ModuleProgress
 import me.pablorincon.proyecto_app.domain.ModuleStatus
 import me.pablorincon.proyecto_app.ui.components.Pill
@@ -227,7 +228,7 @@ private fun PathBody(progress: CurriculumProgress, onOpenLesson: (String) -> Uni
         progress.modules.forEach { module ->
             ModuleCard(
                 module = module,
-                onOpen = { progress.nextLesson?.let { onOpenLesson(it.id) } }
+                onOpen = { (module.nextStep as? Lesson)?.let { onOpenLesson(it.id) } }
             )
         }
     }
@@ -238,6 +239,7 @@ private fun ModuleCard(module: ModuleProgress, onOpen: () -> Unit) {
     val status = module.status
     val shape = RoundedCornerShape(15.dp)
     val isCurrent = status == ModuleStatus.InProgress
+    val isOptional = status == ModuleStatus.Optional
     val isSoon = status == ModuleStatus.Locked && module.module.id == Curriculum.PROJECT_ID
 
     Box(Modifier.fillMaxWidth()) {
@@ -251,7 +253,7 @@ private fun ModuleCard(module: ModuleProgress, onOpen: () -> Unit) {
                     if (isCurrent) CurrentCardBorder else Line,
                     shape
                 )
-                .then(if (isCurrent) Modifier.clickable(onClick = onOpen) else Modifier)
+                .then(if (isCurrent || isOptional) Modifier.clickable(onClick = onOpen) else Modifier)
                 .padding(
                     start = AppDimens.ModuleCardPaddingH,
                     end = AppDimens.ModuleCardPaddingH,
@@ -280,6 +282,14 @@ private fun ModuleCard(module: ModuleProgress, onOpen: () -> Unit) {
                         Pill(stringResource(R.string.module_status_in_progress))
                         Text(
                             text = stringResource(R.string.module_continue),
+                            style = AppTextStyles.FooterLink,
+                            color = Primary
+                        )
+                    }
+                    isOptional -> {
+                        Pill(stringResource(R.string.module_status_optional))
+                        Text(
+                            text = stringResource(R.string.module_review),
                             style = AppTextStyles.FooterLink,
                             color = Primary
                         )
@@ -320,6 +330,7 @@ private fun Node(status: ModuleStatus, modifier: Modifier = Modifier) {
         ModuleStatus.Completed -> NodeDone to NodeDoneRing
         ModuleStatus.InProgress -> Primary to NodeCurrentRing
         ModuleStatus.Locked -> Paper to NodeLockedRing
+        ModuleStatus.Optional -> Paper to NodeCurrentRing
     }
     Box(
         modifier = modifier
