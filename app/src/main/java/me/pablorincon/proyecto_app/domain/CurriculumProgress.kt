@@ -23,7 +23,8 @@ data class ModuleProgress(
 class CurriculumProgress(
     private val curriculum: Curriculum,
     completedStepIds: Set<String>,
-    private val startModuleIndex: Int = 0
+    private val startModuleIndex: Int = 0,
+    private val unlockAll: Boolean = false // Cuenta de administrador: todo abierto para revisar el contenido
 ) {
     // Un id que ya no existe en el currículo (paso quitado) se ignora.
     private val completed: Set<String> =
@@ -46,6 +47,7 @@ class CurriculumProgress(
             done == module.steps.size -> ModuleStatus.Completed
             index < startModuleIndex -> ModuleStatus.Optional
             module.id == currentModule?.id -> ModuleStatus.InProgress
+            unlockAll -> ModuleStatus.Optional
             else -> ModuleStatus.Locked
         }
         ModuleProgress(module, status, done, module.steps.firstOrNull { it.id !in completed })
@@ -70,6 +72,7 @@ class CurriculumProgress(
     // Un id desconocido nunca se abre.
     fun isStepUnlocked(stepId: String): Boolean {
         val module = curriculum.moduleOf(stepId) ?: return false
+        if (unlockAll) return true
         val moduleIndex = curriculum.modules.indexOf(module)
         val before = if (moduleIndex < startModuleIndex) {
             module.steps.takeWhile { it.id != stepId }

@@ -18,13 +18,13 @@ class CurriculumProgressLoader(
         data object Failed : LoadResult
     }
 
-    suspend fun load(uid: String, fallbackName: String = ""): LoadResult {
+    suspend fun load(uid: String, fallbackName: String = "", unlockAll: Boolean = false): LoadResult {
         val profile = (users.ensureProfile(uid, fallbackName) as? ProfileResult.Success)?.profile
             ?: return LoadResult.Failed
         val completed = (progress.loadCompletedLessons(uid) as? ProgressResult.Success)?.completedLessonIds
             ?: return LoadResult.Failed
         return LoadResult.Loaded(
-            CurriculumProgress(curriculum, completed, curriculum.startModuleIndex(profile.level))
+            CurriculumProgress(curriculum, completed, curriculum.startModuleIndex(profile.level), unlockAll)
         )
     }
 }

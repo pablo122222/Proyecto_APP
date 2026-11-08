@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import me.pablorincon.proyecto_app.data.AdminAccess
 import me.pablorincon.proyecto_app.data.AuthRepository
 import me.pablorincon.proyecto_app.data.CurriculumProgressLoader
 import me.pablorincon.proyecto_app.data.CurriculumProgressLoader.LoadResult
@@ -39,7 +40,7 @@ class LearningPathViewModel(
         }
         if (!silent || _uiState.value !is LearningPathUiState.Ready) _uiState.value = LearningPathUiState.Loading
         viewModelScope.launch {
-            _uiState.value = when (val result = loader.load(uid, auth.currentName().orEmpty())) {
+            _uiState.value = when (val result = loader.load(uid, auth.currentName().orEmpty(), AdminAccess.isAdmin(auth.currentEmail()))) {
                 is LoadResult.Loaded -> LearningPathUiState.Ready(result.progress)
                 else -> if (silent && _uiState.value is LearningPathUiState.Ready) _uiState.value else LearningPathUiState.Error
             }

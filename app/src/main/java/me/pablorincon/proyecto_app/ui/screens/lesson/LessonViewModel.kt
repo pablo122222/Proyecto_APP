@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import me.pablorincon.proyecto_app.data.AdminAccess
 import me.pablorincon.proyecto_app.data.AuthRepository
 import me.pablorincon.proyecto_app.data.ProgressRepository
 import me.pablorincon.proyecto_app.data.ProgressRepository.CompleteResult
@@ -72,7 +73,7 @@ class LessonViewModel(
         }
         _uiState.value = LessonUiState.Loading
         viewModelScope.launch {
-            val loaded = loader.load(uid, auth.currentName().orEmpty())
+            val loaded = loader.load(uid, auth.currentName().orEmpty(), AdminAccess.isAdmin(auth.currentEmail()))
             if (loaded !is LoadResult.Loaded) {
                 _uiState.value = LessonUiState.Error
                 return@launch

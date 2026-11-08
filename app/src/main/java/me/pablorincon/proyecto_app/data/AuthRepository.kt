@@ -23,6 +23,7 @@ class AuthRepository(
     // Datos de la sesión abierta (null si no hay sesión).
     fun currentUid(): String? = auth.currentUser?.uid
     fun currentName(): String? = auth.currentUser?.displayName
+    fun currentEmail(): String? = auth.currentUser?.email
 
     fun signOut() = auth.signOut()
 
