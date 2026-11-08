@@ -94,6 +94,20 @@ object AppDimens {
     val PathCardTop = 20.dp        // De los textos a la tarjeta de 3 filas
     val ChoiceErrorBottom = 10.dp  // no está en el mockup: del error al botón fijo
 
+    // ---------- Ruta de aprendizaje ----------
+    val ProgressBarHeight = 7.dp
+    val TimelineStart = 5.dp       // Margen izquierdo de la lista
+    val TimelinePadding = 25.dp    // Relleno izquierdo de la lista
+    val TimelineLineX = 10.dp      // Posición de la línea respecto al borde
+    val NodeSize = 21.dp
+    val NodeBorder = 3.dp
+    val ModuleGap = 10.dp          // no está en la guía: separación entre tarjetas
+    val ModuleCardPaddingH = 13.dp
+    val ModuleCardPaddingTop = 13.dp
+    val ModuleCardPaddingBottom = 12.dp
+    val CurrentCardBorderWidth = 1.5.dp
+    val ProgressTop = 14.dp        // no está en la guía: del subtítulo al progreso general
+
     // ---------- Login ----------
     // "¿Olvidaste tu contraseña?" no está en el mockup: separación propia
     val ForgotLinkGap = 8.dp

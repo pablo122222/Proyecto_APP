@@ -1,5 +1,6 @@
 package me.pablorincon.proyecto_app.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 // Paleta de CodeMentor AI tomada del mockup (prototipo v5).
@@ -56,6 +57,19 @@ val PathIllustrationStart = Color(0xFFCFE0FC)    // Degradado del cuadro 🚀 (i
 val PathIllustrationEnd = Color(0xFFC9F2E1)      // Degradado del cuadro 🚀 (fin)
 // no está en el mockup: botón principal deshabilitado (Primary al 55 % sobre el fondo)
 val PrimaryDisabled = Color(0xFF98B3EF)
+
+// ---- Ruta de aprendizaje y barra de progreso (guía §0 y §3) ----
+val ProgressTrack = Color(0xFFE4E9F3)         // Pista de la barra de progreso
+val ProgressFill = Brush.horizontalGradient(listOf(Color(0xFF5B8DEF), Color(0xFF35C79A)))
+val TimelineLine = Color(0xFFD5DDF0)          // Línea punteada vertical
+val NodeDone = Color(0xFF2FB38A)
+val NodeDoneRing = Color(0xFFCDF2E3)
+val NodeCurrentRing = Color(0xFFD3E2FC)
+val NodeLockedRing = Color(0xFFD8DFEF)
+val CurrentCardBorder = Color(0xFF8FB0F5)
+val CurrentCardBackground = Color(0xFFF4F8FF)
+val LockedPillBackground = Color(0xFFEEF1F8)
+val LockedPillText = Color(0xFF7A86A3)
 
 // ---- Sombras ----
 val ButtonShadow = Color(0x264B7BE5)      // Botón primario

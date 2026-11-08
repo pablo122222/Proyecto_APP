@@ -170,4 +170,36 @@
     <string name="startup_loading">Cargando tu perfil…</string>
     <string name="startup_error">No pudimos cargar tu perfil. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="startup_retry">Reintentar</string>
+
+    <!-- Ruta de aprendizaje (guía de diseño §3) -->
+    <string name="path_screen_eyebrow">Tu progreso</string>
+    <string name="path_screen_pill">%1$d%% completado</string>
+    <string name="path_screen_subtitle">Cada concepto te prepara para el siguiente. Avanza sin saltarte las bases.</string>
+    <string name="path_screen_overall">Progreso general</string>
+    <string name="path_screen_percent">%1$d%%</string>
+    <string name="module_status_completed">Completado</string>
+    <string name="module_status_in_progress">En curso</string>
+    <string name="module_status_locked">Bloqueado</string>
+    <string name="module_status_soon">Próximamente</string>
+    <string name="module_continue">Continuar →</string>
+    <string name="module_final_project">Proyecto final</string>
+    <plurals name="module_lessons">
+        <item quantity="one">%1$d lección</item>
+        <item quantity="other">%1$d lecciones</item>
+    </plurals>
+    <string name="module_fundamentos_title">Fundamentos</string>
+    <string name="module_fundamentos_desc">Qué es programar y cómo resolver un problema.</string>
+    <string name="module_variables_title">Variables y tipos de datos</string>
+    <string name="module_variables_desc">Guarda y utiliza información.</string>
+    <string name="module_condicionales_title">Condicionales</string>
+    <string name="module_condicionales_desc">Haz que tu programa tome decisiones.</string>
+    <string name="module_bucles_title">Bucles</string>
+    <string name="module_bucles_desc">Repite instrucciones sin escribirlas de nuevo.</string>
+    <string name="module_funciones_title">Funciones</string>
+    <string name="module_funciones_desc">Organiza tu código en bloques reutilizables.</string>
+    <string name="module_proyecto_title">Mini proyecto</string>
+    <string name="module_proyecto_desc">Combina lo aprendido para resolver un caso real.</string>
+    <!-- no está en la guía: falló la carga del progreso -->
+    <string name="path_screen_error">No pudimos cargar tu progreso. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="path_screen_loading">Cargando tu progreso…</string>
 </resources>

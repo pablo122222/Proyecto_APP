@@ -26,6 +26,7 @@ import androidx.navigation.navArgument
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.ui.components.AppBottomBar
 import me.pablorincon.proyecto_app.ui.screens.forgotpassword.ForgotPasswordScreen
+import me.pablorincon.proyecto_app.ui.screens.learningpath.LearningPathScreen
 import me.pablorincon.proyecto_app.ui.screens.login.LoginScreen
 import me.pablorincon.proyecto_app.ui.screens.personalization.GoalScreen
 import me.pablorincon.proyecto_app.ui.screens.personalization.LevelScreen
@@ -154,7 +155,9 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
         placeholder(AppRoutes.HOME, R.string.tab_home)
     }
     navigation(startDestination = AppRoutes.LEARNING_PATH, route = AppRoutes.TAB_LEARN) {
-        placeholder(AppRoutes.LEARNING_PATH, R.string.title_learning_path)
+        composable(AppRoutes.LEARNING_PATH) {
+            LearningPathScreen(onOpenLesson = { navController.navigate(AppRoutes.lesson(it)) })
+        }
         composable(
             route = AppRoutes.LESSON,
             arguments = listOf(navArgument(AppRoutes.LESSON_ARG) { type = NavType.StringType })

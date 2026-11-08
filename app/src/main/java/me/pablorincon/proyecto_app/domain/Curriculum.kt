@@ -20,6 +20,7 @@ class Curriculum(val modules: List<Module>) {
     }
 
     companion object {
+        const val PROJECT_ID = "proyecto"   // módulo final: se muestra como "Próximamente" mientras esté bloqueado
         private const val LESSON_XP = 20    // XP de una lección (guía de diseño §4 y §10)
         private const val PROJECT_XP = 50   // propuesta aprobada: el proyecto final vale más
 
@@ -32,7 +33,7 @@ class Curriculum(val modules: List<Module>) {
                 module("condicionales", lessonCount = 5, xp = LESSON_XP),
                 module("bucles", lessonCount = 5, xp = LESSON_XP),
                 module("funciones", lessonCount = 5, xp = LESSON_XP),
-                module("proyecto", lessonCount = 1, xp = PROJECT_XP)
+                module(PROJECT_ID, lessonCount = 1, xp = PROJECT_XP)
             )
         )
 
