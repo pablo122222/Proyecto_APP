@@ -19,10 +19,10 @@ class LessonCatalogTest {
     }
 
     @Test
-    fun cadaLeccionTieneTresPreguntasConCuatroOpciones() {
+    fun cadaLeccionTieneTresEjercicios() {
         (FundamentosLessons.all + VariablesLessons.all).forEach { lesson ->
-            assertEquals(lesson.lessonId, 3, lesson.questions.size)
-            lesson.questions.forEach { assertEquals(lesson.lessonId, 4, it.options.size) }
+            assertEquals(lesson.lessonId, 3, lesson.exercises.size)
+            lesson.exercises.filterIsInstance<MultipleChoice>().forEach { assertEquals(lesson.lessonId, 4, it.options.size) }
         }
     }
 
@@ -34,7 +34,7 @@ class LessonCatalogTest {
 
     @Test
     fun lasPreguntasNoRepitenOpcionesDentroDeLaMismaPregunta() {
-        (FundamentosLessons.all + VariablesLessons.all).flatMap { it.questions }.forEach {
+        (FundamentosLessons.all + VariablesLessons.all).flatMap { it.exercises }.filterIsInstance<MultipleChoice>().forEach {
             assertTrue(it.prompt, it.options.toSet().size == it.options.size)
         }
     }
@@ -52,10 +52,37 @@ class LessonCatalogTest {
     }
 
     @Test
-    fun todasLasLeccionesDelCatalogoTienenTresPreguntasConCuatroOpciones() {
+    fun todasLasLeccionesDelCatalogoTienenTresEjercicios() {
         Curriculum.Base.lessons.mapNotNull { LessonCatalog.contentFor(it.id) }.forEach { lesson ->
-            assertEquals(lesson.lessonId, 3, lesson.questions.size)
-            lesson.questions.forEach { assertEquals(lesson.lessonId, 4, it.options.size) }
+            assertEquals(lesson.lessonId, 3, lesson.exercises.size)
+            lesson.exercises.filterIsInstance<MultipleChoice>().forEach { assertEquals(lesson.lessonId, 4, it.options.size) }
         }
+    }
+
+    @Test
+    fun todoEjercicioDelCatalogoSePuedeResolverConSusPropiasRespuestas() {
+        Curriculum.Base.lessons.mapNotNull { LessonCatalog.contentFor(it.id) }.forEach { lesson ->
+            lesson.exercises.forEach { ex ->
+                val ok = when (ex) {
+                    is MultipleChoice -> ex.isCorrect(ex.correctIndex)
+                    is OrderLines -> ex.isCorrect(ex.lines)
+                    is FillBlanks -> ex.isCorrect(ex.answers)
+                    is FindBug -> ex.isCorrect(ex.bugLineIndex)
+                    is PredictOutput -> ex.acceptedAnswers.all { ex.isCorrect(it) }
+                    is TypeCode -> ex.acceptedAnswers.all { ex.isCorrect(it) }
+                }
+                assertTrue("${lesson.lessonId}: ${ex.prompt}", ok)
+            }
+        }
+    }
+
+    @Test
+    fun cadaLeccionUsaPocaOpcionMultiple() {
+        Curriculum.Base.lessons.mapNotNull { LessonCatalog.contentFor(it.id) }
+            .filter { it.lessonId.startsWith("fundamentos") } // Módulos ya rediseñados
+            .forEach { lesson ->
+                val choices = lesson.exercises.count { it is MultipleChoice }
+                assertTrue("${lesson.lessonId} tiene $choices de opción múltiple", choices <= 1)
+            }
     }
 }

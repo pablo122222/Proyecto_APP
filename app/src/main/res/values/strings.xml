@@ -230,4 +230,19 @@
     <string name="lesson_error">No pudimos cargar la lección. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="lesson_locked">Esta lección aún está bloqueada. Completa las anteriores para abrirla.</string>
     <string name="lesson_coming_soon">Esta lección llegará pronto. ¡Glitch todavía la está escribiendo!</string>
+
+    <!-- Ejercicios de la lección (rediseño: ejercicios dinámicos, no solo opción múltiple) -->
+    <string name="exercise_kind_quick">Pregunta rápida</string>
+    <string name="exercise_kind_order">Ordena el código</string>
+    <string name="exercise_kind_fill">Completa el hueco</string>
+    <string name="exercise_kind_bug">Caza el bug</string>
+    <string name="exercise_kind_predict">Predice la salida</string>
+    <string name="exercise_kind_type">Escribe el código</string>
+    <string name="exercise_check">Comprobar</string>
+    <string name="exercise_hint_order">Toca dos líneas para intercambiarlas de lugar.</string>
+    <string name="exercise_hint_fill">Toca una ficha para ponerla en el hueco. Tócala otra vez para quitarla.</string>
+    <string name="exercise_hint_bug">Toca la línea que tiene el error.</string>
+    <string name="exercise_hint_predict">Escribe lo que mostraría el programa.</string>
+    <string name="exercise_predict_placeholder">Escribe aquí la salida…</string>
+    <string name="exercise_hint_type">Escribe tu código en una línea.</string>
 </resources>

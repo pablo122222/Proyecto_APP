@@ -89,7 +89,7 @@ class LessonViewModel(
                             content = content,
                             numberInModule = module.lessons.indexOfFirst { it.id == lessonId } + 1,
                             moduleLessonCount = module.lessons.size,
-                            quiz = LessonQuiz(content.questions),
+                            quiz = LessonQuiz(content.exercises),
                             nextLessonId = curriculum.lessonAfter(lessonId)?.id
                         )
                     )
@@ -98,7 +98,7 @@ class LessonViewModel(
         }
     }
 
-    fun onSelectOption(index: Int) = updateReady { it.copy(quiz = it.quiz.select(index)) }
+    fun onSubmit(correct: Boolean) = updateReady { it.copy(quiz = it.quiz.submit(correct)) }
 
     // "Continuar" tras ver la retroalimentación. Si era la última pregunta acertada, se guarda.
     fun onNext() {

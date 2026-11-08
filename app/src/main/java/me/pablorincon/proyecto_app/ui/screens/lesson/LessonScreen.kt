@@ -43,7 +43,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.domain.Lesson
 import me.pablorincon.proyecto_app.domain.LessonQuiz
-import me.pablorincon.proyecto_app.domain.QuizQuestion
+
 import me.pablorincon.proyecto_app.domain.content.LessonCatalog
 import me.pablorincon.proyecto_app.ui.components.BackButton
 import me.pablorincon.proyecto_app.ui.components.Pill
@@ -99,7 +99,7 @@ fun LessonScreen(
         state = state,
         onBack = onBack,
         onRetryLoad = viewModel::load,
-        onSelectOption = viewModel::onSelectOption,
+        onSubmit = viewModel::onSubmit,
         onNext = viewModel::onNext,
         onRetrySave = viewModel::onRetrySave,
         onNextLesson = onNextLesson,
@@ -114,7 +114,7 @@ private fun LessonContentView(
     state: LessonUiState,
     onBack: () -> Unit,
     onRetryLoad: () -> Unit,
-    onSelectOption: (Int) -> Unit,
+    onSubmit: (Boolean) -> Unit,
     onNext: () -> Unit,
     onRetrySave: () -> Unit,
     onNextLesson: (String) -> Unit,
@@ -141,7 +141,7 @@ private fun LessonContentView(
             is LessonUiState.Ready -> ReadyBody(
                 data = state.data,
                 onBack = onBack,
-                onSelectOption = onSelectOption,
+                onSubmit = onSubmit,
                 onNext = onNext,
                 onRetrySave = onRetrySave,
                 onNextLesson = onNextLesson,
@@ -184,7 +184,7 @@ private fun Message(text: Int, onBack: () -> Unit, retry: (() -> Unit)? = null) 
 private fun ReadyBody(
     data: LessonReady,
     onBack: () -> Unit,
-    onSelectOption: (Int) -> Unit,
+    onSubmit: (Boolean) -> Unit,
     onNext: () -> Unit,
     onRetrySave: () -> Unit,
     onNextLesson: (String) -> Unit,
@@ -231,7 +231,7 @@ private fun ReadyBody(
     if (quiz.isComplete) {
         CompletedCard(data = data, onRetrySave = onRetrySave)
     } else {
-        QuizCard(quiz = quiz, onSelectOption = onSelectOption, onNext = onNext)
+        ExerciseCard(quiz = quiz, onSubmit = onSubmit, onNext = onNext)
     }
 
     Spacer(Modifier.height(AppDimens.SectionTop))
@@ -252,50 +252,6 @@ private fun ReadyBody(
         }
     }
 }
-
-// Bloque de código (CodeBg, monoespaciado 11 sp, interlineado 1.85, números de línea, scroll horizontal).
-@Composable
-private fun CodeBlock(code: String) {
-    val codeStyle = TextStyle(
-        fontFamily = FontFamily.Monospace,
-        fontSize = 11.sp,
-        lineHeight = 20.sp,
-        color = CodeText
-    )
-    val description = stringResource(R.string.lesson_code_description)
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(15.dp))
-            .background(CodeBg)
-            .horizontalScroll(rememberScrollState())
-            .padding(horizontal = 14.dp, vertical = 15.dp)
-            .semantics { contentDescription = description + ". " + code }
-    ) {
-        val lines = code.lines()
-        Column(modifier = Modifier.width(20.dp)) {
-            lines.indices.forEach { index ->
-                Text(
-                    text = (index + 1).toString(),
-                    style = codeStyle.copy(color = CodeLineNumber),
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        }
-        Spacer(Modifier.width(12.dp))
-        Column {
-            lines.forEach { line ->
-                Text(
-                    text = PythonHighlighter.highlight(line.ifEmpty { " " }),
-                    style = codeStyle,
-                    softWrap = false
-                )
-            }
-        }
-    }
-}
-
 @Composable
 private fun ExpectedOutput(output: String) {
     Column(
@@ -318,101 +274,6 @@ private fun ExpectedOutput(output: String) {
             color = OutputText
         )
     }
-}
-
-// Pregunta actual con sus opciones, retroalimentación y botón para continuar.
-@Composable
-private fun QuizCard(quiz: LessonQuiz, onSelectOption: (Int) -> Unit, onNext: () -> Unit) {
-    val question = quiz.current ?: return
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Pill(text = stringResource(R.string.lesson_quick_question))
-        Spacer(Modifier.width(8.dp))
-        Text(
-            text = stringResource(R.string.lesson_correct_counter, quiz.correctCount, quiz.total),
-            style = AppTextStyles.RowSubtitle,
-            color = Muted
-        )
-    }
-    Spacer(Modifier.height(10.dp))
-    Text(
-        text = question.prompt,
-        style = AppTextStyles.Subtitle.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
-        color = Ink
-    )
-    Spacer(Modifier.height(12.dp))
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        question.options.forEachIndexed { index, option ->
-            AnswerChoice(
-                text = option,
-                state = answerState(quiz, question, index),
-                enabled = !quiz.isAnswered,
-                onClick = { onSelectOption(index) }
-            )
-        }
-    }
-    if (quiz.isAnswered) {
-        Spacer(Modifier.height(12.dp))
-        Feedback(
-            good = quiz.isSelectionCorrect,
-            text = if (quiz.isSelectionCorrect) question.correctFeedback else question.wrongFeedback
-        )
-        if (!quiz.isSelectionCorrect) {
-            Spacer(Modifier.height(6.dp))
-            Text(
-                text = stringResource(R.string.lesson_retry_later),
-                style = AppTextStyles.RowSubtitle,
-                color = Muted
-            )
-        }
-        Spacer(Modifier.height(12.dp))
-        PrimaryButton(text = stringResource(R.string.lesson_continue), onClick = onNext)
-    }
-}
-
-private enum class AnswerState { Idle, Correct, Wrong }
-
-// Tras responder: la elegida se pinta de verde/rojo; si falló, no se revela la correcta
-// (volverá al final de la lección y el usuario debe pensarla de nuevo).
-private fun answerState(quiz: LessonQuiz, question: QuizQuestion, index: Int): AnswerState = when {
-    !quiz.isAnswered || quiz.selectedIndex != index -> AnswerState.Idle
-    index == question.correctIndex -> AnswerState.Correct
-    else -> AnswerState.Wrong
-}
-
-@Composable
-private fun AnswerChoice(text: String, state: AnswerState, enabled: Boolean, onClick: () -> Unit) {
-    val (border, fill) = when (state) {
-        AnswerState.Idle -> Line to Paper
-        AnswerState.Correct -> AnswerCorrectBorder to AnswerCorrectBg
-        AnswerState.Wrong -> AnswerWrongBorder to AnswerWrongBg
-    }
-    val shape = RoundedCornerShape(12.dp)
-    Text(
-        text = text,
-        style = AppTextStyles.ChoiceTitle.copy(fontWeight = FontWeight(600)),
-        color = Ink,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(shape)
-            .background(fill)
-            .border(AppDimens.BorderWidth, border, shape)
-            .clickable(enabled = enabled, onClick = onClick)
-            .padding(12.dp)
-    )
-}
-
-@Composable
-private fun Feedback(good: Boolean, text: String) {
-    Text(
-        text = text,
-        style = AppTextStyles.SmallBody,
-        color = if (good) FeedbackGoodText else FeedbackBadText,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(if (good) FeedbackGoodBg else FeedbackBadBg)
-            .padding(12.dp)
-    )
 }
 
 // Mensaje final: XP ganado, o el estado del guardado si falló.
@@ -482,11 +343,11 @@ private fun LessonPreview() {
                     content = content,
                     numberInModule = 1,
                     moduleLessonCount = 4,
-                    quiz = LessonQuiz(content.questions).select(1),
+                    quiz = LessonQuiz(content.exercises).submit(true),
                     nextLessonId = "fundamentos_2"
                 )
             ),
-            onBack = {}, onRetryLoad = {}, onSelectOption = {}, onNext = {}, onRetrySave = {},
+            onBack = {}, onRetryLoad = {}, onSubmit = {}, onNext = {}, onRetrySave = {},
             onNextLesson = {}, onPractice = {}, onAskTutor = {}
         )
     }

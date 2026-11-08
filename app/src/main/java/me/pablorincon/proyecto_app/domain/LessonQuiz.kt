@@ -1,39 +1,40 @@
 package me.pablorincon.proyecto_app.domain
 
-// Cola de preguntas de una lección. Regla acordada: una pregunta fallada no se pierde ni
-// penaliza; pasa al final de la cola y vuelve a aparecer cuando se terminan las demás.
-// La lección se completa cuando la cola queda vacía (todas acertadas).
+// Cola de ejercicios de una lección. Regla acordada: un ejercicio fallado no se pierde ni
+// penaliza; pasa al final de la cola y vuelve a aparecer cuando se terminan los demás.
+// La lección se completa cuando la cola queda vacía (todos resueltos).
 // Inmutable: cada acción devuelve un estado nuevo, así se prueba sin pantalla.
 data class LessonQuiz(
-    private val pending: List<QuizQuestion>,
+    private val pending: List<Exercise>,
     val total: Int,
-    val selectedIndex: Int? = null
+    val lastResult: Boolean? = null,   // Resultado del ejercicio actual, tras comprobarlo
+    val step: Int = 0                  // Sube con cada "Continuar": la pantalla lo usa para reiniciar el ejercicio
 ) {
-    constructor(questions: List<QuizQuestion>) : this(questions, questions.size)
+    constructor(exercises: List<Exercise>) : this(exercises, exercises.size)
 
-    val current: QuizQuestion? get() = pending.firstOrNull()
+    val current: Exercise? get() = pending.firstOrNull()
     val isComplete: Boolean get() = pending.isEmpty()
-    val isAnswered: Boolean get() = selectedIndex != null
-    val isSelectionCorrect: Boolean get() = current != null && selectedIndex == current?.correctIndex
+    val isAnswered: Boolean get() = lastResult != null
+    val isLastCorrect: Boolean get() = lastResult == true
 
-    // Preguntas ya acertadas (la que se acaba de acertar cuenta de inmediato).
-    val correctCount: Int get() = total - pending.size + if (isAnswered && isSelectionCorrect) 1 else 0
+    // Ejercicios ya resueltos (el que se acaba de acertar cuenta de inmediato).
+    val correctCount: Int get() = total - pending.size + if (isLastCorrect) 1 else 0
 
-    // Responder: solo la primera elección de cada vuelta cuenta.
-    fun select(index: Int): LessonQuiz {
-        val question = current ?: return this
-        if (isAnswered || index !in question.options.indices) return this
-        return copy(selectedIndex = index)
+    // Comprobar: solo el primer resultado de cada vuelta cuenta.
+    fun submit(correct: Boolean): LessonQuiz {
+        if (current == null || isAnswered) return this
+        return copy(lastResult = correct)
     }
 
-    // Pasar a la siguiente: la acertada sale de la cola, la fallada va al final.
+    // Pasar al siguiente: el acertado sale de la cola, el fallado va al final.
     fun next(): LessonQuiz {
-        val question = current ?: return this
+        val exercise = current ?: return this
         if (!isAnswered) return this
         val rest = pending.drop(1)
         return copy(
-            pending = if (isSelectionCorrect) rest else rest + question,
-            selectedIndex = null
+            pending = if (isLastCorrect) rest else rest + exercise,
+            lastResult = null,
+            step = step + 1
         )
     }
 }

@@ -8,7 +8,7 @@ import org.junit.Test
 
 class LessonQuizTest {
 
-    private fun question(name: String) = QuizQuestion(
+    private fun exercise(name: String) = MultipleChoice(
         prompt = name,
         options = listOf("a", "b", "c"),
         correctIndex = 1,
@@ -16,14 +16,14 @@ class LessonQuizTest {
         wrongFeedback = "mal"
     )
 
-    private val q1 = question("q1")
-    private val q2 = question("q2")
-    private val q3 = question("q3")
+    private val e1 = exercise("e1")
+    private val e2 = exercise("e2")
+    private val e3 = exercise("e3")
 
     @Test
-    fun empiezaEnLaPrimeraPreguntaSinAciertos() {
-        val quiz = LessonQuiz(listOf(q1, q2, q3))
-        assertEquals(q1, quiz.current)
+    fun empiezaEnElPrimerEjercicioSinAciertos() {
+        val quiz = LessonQuiz(listOf(e1, e2, e3))
+        assertEquals(e1, quiz.current)
         assertEquals(0, quiz.correctCount)
         assertEquals(3, quiz.total)
         assertFalse(quiz.isComplete)
@@ -31,58 +31,65 @@ class LessonQuizTest {
     }
 
     @Test
-    fun unaRespuestaCorrectaAvanzaYCuentaDeInmediato() {
-        val answered = LessonQuiz(listOf(q1, q2)).select(1)
-        assertTrue(answered.isSelectionCorrect)
+    fun unResultadoCorrectoAvanzaYCuentaDeInmediato() {
+        val answered = LessonQuiz(listOf(e1, e2)).submit(true)
+        assertTrue(answered.isLastCorrect)
         assertEquals(1, answered.correctCount)
-        assertEquals(q2, answered.next().current)
+        assertEquals(e2, answered.next().current)
         assertEquals(1, answered.next().correctCount)
     }
 
     @Test
-    fun unaPreguntaFalladaPasaAlFinalDeLaCola() {
-        val quiz = LessonQuiz(listOf(q1, q2, q3)).select(0).next()
-        assertEquals(q2, quiz.current)
-        val afterQ2 = quiz.select(1).next()
-        assertEquals(q3, afterQ2.current)
-        val afterQ3 = afterQ2.select(1).next()
-        assertEquals(q1, afterQ3.current) // La fallada vuelve cuando se acaban las demás
-        assertEquals(2, afterQ3.correctCount)
+    fun unEjercicioFalladoPasaAlFinalDeLaCola() {
+        val quiz = LessonQuiz(listOf(e1, e2, e3)).submit(false).next()
+        assertEquals(e2, quiz.current)
+        val afterE2 = quiz.submit(true).next()
+        assertEquals(e3, afterE2.current)
+        val afterE3 = afterE2.submit(true).next()
+        assertEquals(e1, afterE3.current) // El fallado vuelve cuando se acaban los demás
+        assertEquals(2, afterE3.correctCount)
     }
 
     @Test
     fun fallarNoPenalizaYSePuedeReintentarHastaAcertar() {
-        var quiz = LessonQuiz(listOf(q1))
-        repeat(3) { quiz = quiz.select(2).next() } // Falla tres veces
+        var quiz = LessonQuiz(listOf(e1))
+        repeat(3) { quiz = quiz.submit(false).next() }
         assertFalse(quiz.isComplete)
         assertEquals(0, quiz.correctCount)
-        quiz = quiz.select(1).next()
+        quiz = quiz.submit(true).next()
         assertTrue(quiz.isComplete)
         assertNull(quiz.current)
     }
 
     @Test
-    fun laLeccionTerminaSoloCuandoTodasEstanAcertadas() {
-        var quiz = LessonQuiz(listOf(q1, q2))
-        quiz = quiz.select(0).next() // q1 fallada
-        quiz = quiz.select(1).next() // q2 acertada
+    fun laLeccionTerminaSoloCuandoTodosEstanResueltos() {
+        var quiz = LessonQuiz(listOf(e1, e2))
+        quiz = quiz.submit(false).next() // e1 fallado
+        quiz = quiz.submit(true).next()  // e2 resuelto
         assertFalse(quiz.isComplete)
-        quiz = quiz.select(1).next() // q1 acertada
+        quiz = quiz.submit(true).next()  // e1 resuelto
         assertTrue(quiz.isComplete)
         assertEquals(2, quiz.correctCount)
     }
 
     @Test
-    fun noSePuedeCambiarLaRespuestaYaDada() {
-        val quiz = LessonQuiz(listOf(q1)).select(0).select(1)
-        assertEquals(0, quiz.selectedIndex)
-        assertFalse(quiz.isSelectionCorrect)
+    fun noSePuedeCambiarElResultadoYaDado() {
+        val quiz = LessonQuiz(listOf(e1)).submit(false).submit(true)
+        assertFalse(quiz.isLastCorrect)
+        assertTrue(quiz.isAnswered)
     }
 
     @Test
-    fun noSePuedePasarSinResponderNiElegirUnaOpcionInexistente() {
-        val quiz = LessonQuiz(listOf(q1))
-        assertEquals(q1, quiz.next().current)
-        assertFalse(quiz.select(9).isAnswered)
+    fun noSePuedePasarSinComprobar() {
+        val quiz = LessonQuiz(listOf(e1))
+        assertEquals(e1, quiz.next().current)
+        assertEquals(0, quiz.next().step)
+    }
+
+    @Test
+    fun cadaContinuarSubeElPasoParaReiniciarElEjercicio() {
+        val quiz = LessonQuiz(listOf(e1, e2)).submit(true).next()
+        assertEquals(1, quiz.step)
+        assertFalse(quiz.isAnswered)
     }
 }
