@@ -37,4 +37,10 @@ class LessonCatalogTest {
             assertTrue(it.prompt, it.options.toSet().size == it.options.size)
         }
     }
+
+    @Test
+    fun elModuloFundamentosTieneContenidoParaTodasSusLecciones() {
+        val ids = Curriculum.Base.modules.first { it.id == "fundamentos" }.lessons.map { it.id }
+        assertEquals(ids, FundamentosLessons.all.map { it.lessonId })
+    }
 }
