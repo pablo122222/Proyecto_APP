@@ -16,6 +16,7 @@ import me.pablorincon.proyecto_app.domain.Curriculum
 import me.pablorincon.proyecto_app.domain.Lesson
 import me.pablorincon.proyecto_app.domain.LessonContent
 import me.pablorincon.proyecto_app.domain.LessonQuiz
+import me.pablorincon.proyecto_app.domain.PathStep
 import me.pablorincon.proyecto_app.domain.content.LessonCatalog
 
 // Qué pasó al guardar la lección completada.
@@ -34,7 +35,7 @@ data class LessonReady(
     val moduleLessonCount: Int,
     val quiz: LessonQuiz,
     val save: SaveState = SaveState.Idle,
-    val nextLessonId: String?      // Null si es la última de la ruta
+    val nextStep: PathStep?        // Siguiente lección o jefe; null si es el último paso de la ruta
 )
 
 sealed interface LessonUiState {
@@ -88,10 +89,10 @@ class LessonViewModel(
                         LessonReady(
                             lesson = lesson,
                             content = content,
-                            numberInModule = module.lessons.indexOfFirst { it.id == lessonId } + 1,
-                            moduleLessonCount = module.lessons.size,
+                            numberInModule = module.steps.indexOfFirst { it.id == lessonId } + 1,
+                            moduleLessonCount = module.steps.size, // 11 lecciones + el jefe = 12 pasos
                             quiz = LessonQuiz(content.exercises),
-                            nextLessonId = curriculum.lessonAfter(lessonId)?.id
+                            nextStep = curriculum.stepAfter(lessonId)
                         )
                     )
                 }

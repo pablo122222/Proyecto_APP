@@ -99,3 +99,12 @@ val FeedbackBadBg = Color(0xFFFDECEC)
 val FeedbackBadText = Color(0xFFA83E3E)
 val SoftBlueCardBg = Color(0xFFE5EDFD)
 val SoftBlueCardBorder = Color(0xFFD3E2FC)
+
+
+// ---- Camino de la ruta (nodos de lecciones y jefes, guía §0 y §3) ----
+val NodeDoneShadow = Color(0xFF229A77)
+val NodeLockedFill = Color(0xFFDDE4F2)
+val NodeLockedShadow = Color(0xFFC2CCE0)
+val NodeLockedText = Color(0xFF8A96B3)
+val HeroStart = Color(0xFF3F5FD8)         // Degradado del nivel en curso
+val HeroEnd = Color(0xFF6A5CE6)

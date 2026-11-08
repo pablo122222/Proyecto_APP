@@ -1,5 +1,8 @@
 package me.pablorincon.proyecto_app.ui.navigation
 
+import me.pablorincon.proyecto_app.domain.Boss
+import me.pablorincon.proyecto_app.domain.PathStep
+
 // Todas las rutas de la app en un solo lugar (rutas de texto de Navigation Compose).
 object AppRoutes {
 
@@ -29,6 +32,8 @@ object AppRoutes {
     const val LEARNING_PATH = "ruta"
     const val LESSON_ARG = "leccionId"
     const val LESSON = "leccion/{$LESSON_ARG}"
+    const val BOSS_ARG = "jefeId"
+    const val BOSS = "jefe/{$BOSS_ARG}"
     const val GLITCH_CITY = "glitch_city"
     const val ACTIVITY_ARG = "actividadId"
     const val ACTIVITY = "actividad/{$ACTIVITY_ARG}"
@@ -44,6 +49,14 @@ object AppRoutes {
         require(SafeId.matches(lessonId)) { "Id de lección no válido: $lessonId" }
         return "leccion/$lessonId"
     }
+
+    fun boss(bossId: String): String {
+        require(SafeId.matches(bossId)) { "Id de jefe no válido: $bossId" }
+        return "jefe/$bossId"
+    }
+
+    // Pantalla de un paso de la ruta: lección o jefe.
+    fun step(step: PathStep): String = if (step is Boss) boss(step.id) else lesson(step.id)
 
     fun activity(activityId: String): String {
         require(SafeId.matches(activityId)) { "Id de actividad no válido: $activityId" }

@@ -13,12 +13,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.ui.components.AppCard
+import me.pablorincon.proyecto_app.ui.components.ConfirmSheet
 import me.pablorincon.proyecto_app.ui.components.RowLine
 import me.pablorincon.proyecto_app.ui.components.SectionHeading
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
@@ -38,6 +42,8 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = viewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    // Cerrar sesión pide confirmación: un toque sin querer no debe sacar al usuario
+    var confirmingSignOut by rememberSaveable { mutableStateOf(false) }
 
     // Tras cerrar sesión: volver a Bienvenida (una sola vez).
     LaunchedEffect(state.signedOut) {
@@ -50,9 +56,23 @@ fun ProfileScreen(
     ProfileContent(
         onAchievements = onAchievements,
         onSettings = onSettings,
-        onSignOut = viewModel::signOut,
+        onSignOut = { confirmingSignOut = true },
         modifier = modifier
     )
+
+    if (confirmingSignOut) {
+        ConfirmSheet(
+            title = stringResource(R.string.logout_confirm_title),
+            message = stringResource(R.string.logout_confirm_message),
+            confirmLabel = stringResource(R.string.logout_confirm_yes),
+            cancelLabel = stringResource(R.string.logout_confirm_cancel),
+            onConfirm = {
+                confirmingSignOut = false
+                viewModel.signOut()
+            },
+            onDismiss = { confirmingSignOut = false }
+        )
+    }
 }
 
 // Solo dibuja: avisa de lo que hace el usuario.

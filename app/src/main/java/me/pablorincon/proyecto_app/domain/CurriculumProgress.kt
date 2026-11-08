@@ -4,6 +4,10 @@ package me.pablorincon.proyecto_app.domain
 // inicio del usuario; está abierto para repasar y cada paso suma su XP al completarlo.
 enum class ModuleStatus { Completed, InProgress, Locked, Optional }
 
+// Estado de un paso en el camino: Done ya completado (se puede repasar), Current el que toca,
+// Available abierto sin ser el siguiente (repaso opcional) y Locked bloqueado.
+enum class StepStatus { Done, Current, Available, Locked }
+
 // Estado calculado de un módulo para un usuario.
 data class ModuleProgress(
     val module: Module,
@@ -53,6 +57,13 @@ class CurriculumProgress(
         if (curriculum.totalSteps == 0) 0 else completed.size * 100 / curriculum.totalSteps
 
     fun isCompleted(stepId: String): Boolean = stepId in completed
+
+    fun stepStatus(stepId: String): StepStatus = when {
+        stepId in completed -> StepStatus.Done
+        stepId == nextStep?.id -> StepStatus.Current
+        isStepUnlocked(stepId) -> StepStatus.Available
+        else -> StepStatus.Locked
+    }
 
     // Desbloqueo secuencial: un paso se abre solo si todos los anteriores están completados.
     // En un módulo de repaso (anterior al inicio) solo cuentan los anteriores de su propio módulo.

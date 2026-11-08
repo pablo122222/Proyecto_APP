@@ -43,9 +43,11 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.domain.Lesson
 import me.pablorincon.proyecto_app.domain.LessonQuiz
+import me.pablorincon.proyecto_app.domain.PathStep
 
 import me.pablorincon.proyecto_app.domain.content.LessonCatalog
 import me.pablorincon.proyecto_app.ui.components.BackButton
+import me.pablorincon.proyecto_app.ui.components.MoreSoonCard
 import me.pablorincon.proyecto_app.ui.components.Pill
 import me.pablorincon.proyecto_app.ui.components.PrimaryButton
 import me.pablorincon.proyecto_app.ui.components.ProgressBar
@@ -85,7 +87,7 @@ import me.pablorincon.proyecto_app.ui.theme.MintInk
 fun LessonScreen(
     lessonId: String,
     onBack: () -> Unit,
-    onNextLesson: (lessonId: String) -> Unit,
+    onNextLesson: (PathStep) -> Unit,
     onPractice: () -> Unit,
     onAskTutor: () -> Unit,
     modifier: Modifier = Modifier
@@ -117,7 +119,7 @@ private fun LessonContentView(
     onSubmit: (Boolean) -> Unit,
     onNext: () -> Unit,
     onRetrySave: () -> Unit,
-    onNextLesson: (String) -> Unit,
+    onNextLesson: (PathStep) -> Unit,
     onPractice: () -> Unit,
     onAskTutor: () -> Unit,
     modifier: Modifier = Modifier
@@ -187,7 +189,7 @@ private fun ReadyBody(
     onSubmit: (Boolean) -> Unit,
     onNext: () -> Unit,
     onRetrySave: () -> Unit,
-    onNextLesson: (String) -> Unit,
+    onNextLesson: (PathStep) -> Unit,
     onPractice: () -> Unit,
     onAskTutor: () -> Unit
 ) {
@@ -240,18 +242,22 @@ private fun ReadyBody(
     // Al terminar: seguir con la siguiente lección o practicar
     if (quiz.isComplete && data.save is SaveState.Saved) {
         Spacer(Modifier.height(20.dp))
-        if (data.nextLessonId != null) {
+        if (data.nextStep != null) {
             PrimaryButton(
                 text = stringResource(R.string.lesson_next),
-                onClick = { onNextLesson(data.nextLessonId) }
+                onClick = { onNextLesson(data.nextStep) }
             )
             Spacer(Modifier.height(10.dp))
             SecondaryButton(text = stringResource(R.string.lesson_practice), onClick = onPractice)
         } else {
             PrimaryButton(text = stringResource(R.string.lesson_practice), onClick = onPractice)
+            // Última lección de la ruta: avisar que vendrán más
+            Spacer(Modifier.height(AppDimens.ModuleGap))
+            MoreSoonCard()
         }
     }
 }
+
 @Composable
 private fun ExpectedOutput(output: String) {
     Column(
@@ -278,7 +284,7 @@ private fun ExpectedOutput(output: String) {
 
 // Mensaje final: XP ganado, o el estado del guardado si falló.
 @Composable
-private fun CompletedCard(data: LessonReady, onRetrySave: () -> Unit) {
+internal fun CompletedCard(data: LessonReady, onRetrySave: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -334,17 +340,17 @@ private fun TutorCard(onAskTutor: () -> Unit) {
 @Preview(showSystemUi = true)
 @Composable
 private fun LessonPreview() {
-    val content = LessonCatalog.contentFor("fundamentos_1")!!
+    val content = LessonCatalog.contentFor("n01_l01")!!
     CodeMentorTheme {
         LessonContentView(
             state = LessonUiState.Ready(
                 LessonReady(
-                    lesson = Lesson("fundamentos_1", 20),
+                    lesson = Lesson("n01_l01", 20),
                     content = content,
                     numberInModule = 1,
                     moduleLessonCount = 4,
                     quiz = LessonQuiz(content.exercises).submit(true),
-                    nextLessonId = "fundamentos_2"
+                    nextStep = Lesson("n01_l02", 20)
                 )
             ),
             onBack = {}, onRetryLoad = {}, onSubmit = {}, onNext = {}, onRetrySave = {},

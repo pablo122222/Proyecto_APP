@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.ui.components.AppBottomBar
+import me.pablorincon.proyecto_app.ui.screens.boss.BossScreen
 import me.pablorincon.proyecto_app.ui.screens.forgotpassword.ForgotPasswordScreen
 import me.pablorincon.proyecto_app.ui.screens.learningpath.LearningPathScreen
 import me.pablorincon.proyecto_app.ui.screens.lesson.LessonScreen
@@ -157,7 +158,7 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
     }
     navigation(startDestination = AppRoutes.LEARNING_PATH, route = AppRoutes.TAB_LEARN) {
         composable(AppRoutes.LEARNING_PATH) {
-            LearningPathScreen(onOpenLesson = { navController.navigate(AppRoutes.lesson(it)) })
+            LearningPathScreen(onOpenStep = { navController.navigate(AppRoutes.step(it)) })
         }
         composable(
             route = AppRoutes.LESSON,
@@ -169,12 +170,27 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
                 onBack = navController::goBack,
                 // La lección terminada sale del historial: atrás vuelve a la Ruta
                 onNextLesson = { next ->
-                    navController.navigate(AppRoutes.lesson(next)) {
+                    navController.navigate(AppRoutes.step(next)) {
                         popUpTo(AppRoutes.LESSON) { inclusive = true }
                     }
                 },
                 onPractice = { navController.openTab(BottomTab.Challenges, BottomTab.Learn) },
                 onAskTutor = { navController.openTab(BottomTab.Tutor, BottomTab.Learn) }
+            )
+        }
+        composable(
+            route = AppRoutes.BOSS,
+            arguments = listOf(navArgument(AppRoutes.BOSS_ARG) { type = NavType.StringType })
+        ) { entry ->
+            BossScreen(
+                bossId = entry.arguments?.getString(AppRoutes.BOSS_ARG).orEmpty(),
+                onBack = navController::goBack,
+                // El jefe vencido sale del historial: atrás vuelve a la Ruta
+                onNextStep = { next ->
+                    navController.navigate(AppRoutes.step(next)) {
+                        popUpTo(AppRoutes.BOSS) { inclusive = true }
+                    }
+                }
             )
         }
     }

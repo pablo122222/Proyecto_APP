@@ -1,12 +1,15 @@
 package me.pablorincon.proyecto_app.ui.screens.learningpath
 
-import androidx.annotation.StringRes
+import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +20,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,61 +30,74 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.compose.LifecycleResumeEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.pablorincon.proyecto_app.R
+import me.pablorincon.proyecto_app.domain.Boss
 import me.pablorincon.proyecto_app.domain.Curriculum
 import me.pablorincon.proyecto_app.domain.CurriculumProgress
-import me.pablorincon.proyecto_app.domain.Lesson
 import me.pablorincon.proyecto_app.domain.ModuleProgress
 import me.pablorincon.proyecto_app.domain.ModuleStatus
+import me.pablorincon.proyecto_app.domain.PathStep
+import me.pablorincon.proyecto_app.domain.StepStatus
+import me.pablorincon.proyecto_app.ui.components.MoreSoonCard
 import me.pablorincon.proyecto_app.ui.components.Pill
 import me.pablorincon.proyecto_app.ui.components.PrimaryButton
 import me.pablorincon.proyecto_app.ui.components.ProgressBar
+import me.pablorincon.proyecto_app.ui.theme.AccentYellow
+import me.pablorincon.proyecto_app.ui.theme.AiViolet
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
 import me.pablorincon.proyecto_app.ui.theme.AppDimens
 import me.pablorincon.proyecto_app.ui.theme.AppTextStyles
 import me.pablorincon.proyecto_app.ui.theme.CodeMentorTheme
-import me.pablorincon.proyecto_app.ui.theme.CurrentCardBackground
-import me.pablorincon.proyecto_app.ui.theme.CurrentCardBorder
+import me.pablorincon.proyecto_app.ui.theme.HeroEnd
+import me.pablorincon.proyecto_app.ui.theme.HeroStart
 import me.pablorincon.proyecto_app.ui.theme.Ink
-import me.pablorincon.proyecto_app.ui.theme.Line
-import me.pablorincon.proyecto_app.ui.theme.LockedPillBackground
-import me.pablorincon.proyecto_app.ui.theme.LockedPillText
 import me.pablorincon.proyecto_app.ui.theme.Mint
 import me.pablorincon.proyecto_app.ui.theme.MintInk
 import me.pablorincon.proyecto_app.ui.theme.Muted
 import me.pablorincon.proyecto_app.ui.theme.NodeCurrentRing
 import me.pablorincon.proyecto_app.ui.theme.NodeDone
-import me.pablorincon.proyecto_app.ui.theme.NodeDoneRing
-import me.pablorincon.proyecto_app.ui.theme.NodeLockedRing
+import me.pablorincon.proyecto_app.ui.theme.NodeDoneShadow
+import me.pablorincon.proyecto_app.ui.theme.NodeLockedFill
+import me.pablorincon.proyecto_app.ui.theme.NodeLockedShadow
+import me.pablorincon.proyecto_app.ui.theme.NodeLockedText
 import me.pablorincon.proyecto_app.ui.theme.Paper
 import me.pablorincon.proyecto_app.ui.theme.Primary
-import me.pablorincon.proyecto_app.ui.theme.TimelineLine
+import me.pablorincon.proyecto_app.ui.theme.PrimaryDark
+import me.pablorincon.proyecto_app.ui.theme.PrimarySoft
 
-// Pantalla "Ruta de aprendizaje" (pestaña Aprender, guía §3), con datos reales.
+// Pantalla "Ruta de aprendizaje" (pestaña Aprender): el camino de nodos en zigzag, nivel por
+// nivel. Cada nivel tiene 11 lecciones y su jefe final; el jefe hay que vencerlo para pasar.
 @Composable
 fun LearningPathScreen(
-    onOpenLesson: (lessonId: String) -> Unit,
+    onOpenStep: (PathStep) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: LearningPathViewModel = viewModel()
 ) {
@@ -90,7 +109,7 @@ fun LearningPathScreen(
     }
     LearningPathContent(
         state = state,
-        onOpenLesson = onOpenLesson,
+        onOpenStep = onOpenStep,
         onRetry = viewModel::load,
         modifier = modifier
     )
@@ -100,28 +119,28 @@ fun LearningPathScreen(
 @Composable
 private fun LearningPathContent(
     state: LearningPathUiState,
-    onOpenLesson: (String) -> Unit,
+    onOpenStep: (PathStep) -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(AppBackground)
-            .verticalScroll(rememberScrollState())
-            .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(
-                start = AppDimens.ScreenHorizontal,
-                end = AppDimens.ScreenHorizontal,
-                top = AppDimens.ScreenTop,
-                bottom = AppDimens.ScreenBottom // Libre para la barra de pestañas
-            )
-    ) {
-        when (state) {
-            is LearningPathUiState.Ready -> PathBody(state.progress, onOpenLesson)
-            LearningPathUiState.Loading -> {
-                Header(percent = null)
+    when (state) {
+        is LearningPathUiState.Ready -> PathList(state.progress, onOpenStep, modifier)
+        LearningPathUiState.Loading, LearningPathUiState.Error -> Column(
+            modifier = modifier
+                .fillMaxSize()
+                .background(AppBackground)
+                .verticalScroll(rememberScrollState())
+                .statusBarsPadding()
+                .navigationBarsPadding()
+                .padding(
+                    start = AppDimens.ScreenHorizontal,
+                    end = AppDimens.ScreenHorizontal,
+                    top = AppDimens.ScreenTop,
+                    bottom = AppDimens.ScreenBottom // Libre para la barra de pestañas
+                )
+        ) {
+            Header(percent = null)
+            if (state == LearningPathUiState.Loading) {
                 val loading = stringResource(R.string.path_screen_loading)
                 Box(Modifier.fillMaxWidth().padding(top = 48.dp), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(
@@ -129,9 +148,7 @@ private fun LearningPathContent(
                         modifier = Modifier.semantics { contentDescription = loading }
                     )
                 }
-            }
-            LearningPathUiState.Error -> {
-                Header(percent = null)
+            } else {
                 Spacer(Modifier.height(AppDimens.TopLineBottom))
                 Text(
                     text = stringResource(R.string.path_screen_error),
@@ -179,191 +196,288 @@ private fun Header(percent: Int?) {
     }
 }
 
+// Zigzag de los nodos: desplazamiento horizontal (dp) de cada paso, que se repite cada 8.
+private val ZigzagOffsets = listOf(0, 34, 52, 34, 0, -34, -52, -34)
+private val LessonNodeSize = 64.dp
+private val BossNodeSize = 80.dp
+private val NodeDepth = 5.dp   // grosor del "borde de abajo" del nodo
+private val NodeHalo = 12.dp   // espacio extra para el anillo del paso actual
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun PathBody(progress: CurriculumProgress, onOpenLesson: (String) -> Unit) {
-    Header(percent = progress.percent)
-    Spacer(Modifier.height(AppDimens.TitleBottom))
-    Text(
-        text = stringResource(R.string.path_screen_subtitle),
-        style = AppTextStyles.Subtitle,
-        color = Muted
-    )
+private fun PathList(
+    progress: CurriculumProgress,
+    onOpenStep: (PathStep) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val titles = stringArrayResource(R.array.level_titles)
+    val descriptions = stringArrayResource(R.array.level_descriptions)
+    val listState = rememberLazyListState()
+    val context = LocalContext.current
+    val lockedMessage = stringResource(R.string.path_locked_toast)
 
-    Spacer(Modifier.height(AppDimens.ProgressTop))
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(
-            text = stringResource(R.string.path_screen_overall),
-            style = AppTextStyles.RowTitle,
-            color = Ink
-        )
-        Text(
-            text = stringResource(R.string.path_screen_percent, progress.percent),
-            style = AppTextStyles.RowTitle,
-            color = Ink
-        )
-    }
-    Spacer(Modifier.height(AppDimens.EyebrowBottom))
-    ProgressBar(percent = progress.percent)
+    // Al abrir la Ruta se baja al paso actual (una sola vez, al primer dibujo con datos)
+    val target = remember { currentItemIndex(progress) }
+    LaunchedEffect(Unit) { listState.scrollToItem(target) }
 
-    Spacer(Modifier.height(AppDimens.SectionTop))
-    // Línea punteada vertical de la línea de tiempo, detrás de las tarjetas
-    val lineX = AppDimens.TimelineStart + AppDimens.TimelineLineX
-    Column(
-        verticalArrangement = Arrangement.spacedBy(AppDimens.ModuleGap),
-        modifier = Modifier
-            .fillMaxWidth()
-            .drawBehind {
-                val x = lineX.toPx()
-                drawLine(
-                    color = TimelineLine,
-                    start = Offset(x, 0f),
-                    end = Offset(x, size.height),
-                    strokeWidth = 2.dp.toPx(),
-                    cap = StrokeCap.Butt,
-                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(4.dp.toPx(), 4.dp.toPx()))
+    LazyColumn(
+        state = listState,
+        modifier = modifier
+            .fillMaxSize()
+            .background(AppBackground)
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+        contentPadding = PaddingValues(
+            start = AppDimens.ScreenHorizontal,
+            end = AppDimens.ScreenHorizontal,
+            top = AppDimens.ScreenTop,
+            bottom = AppDimens.ScreenBottom // Libre para la barra de pestañas
+        )
+    ) {
+        item(key = "header") {
+            Header(percent = progress.percent)
+            Spacer(Modifier.height(AppDimens.TitleBottom))
+            Text(
+                text = stringResource(R.string.path_screen_subtitle),
+                style = AppTextStyles.Subtitle,
+                color = Muted
+            )
+            Spacer(Modifier.height(AppDimens.ProgressTop))
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(stringResource(R.string.path_screen_overall), style = AppTextStyles.RowTitle, color = Ink)
+                Text(
+                    stringResource(R.string.path_screen_percent, progress.percent),
+                    style = AppTextStyles.RowTitle,
+                    color = Ink
                 )
             }
-            .padding(start = AppDimens.TimelineStart + AppDimens.TimelinePadding)
-    ) {
-        progress.modules.forEach { module ->
-            ModuleCard(
-                module = module,
-                onOpen = { (module.nextStep as? Lesson)?.let { onOpenLesson(it.id) } }
+            Spacer(Modifier.height(AppDimens.EyebrowBottom))
+            ProgressBar(percent = progress.percent)
+            Spacer(Modifier.height(AppDimens.EyebrowBottom))
+        }
+
+        progress.modules.forEachIndexed { levelIndex, module ->
+            // La barra del nivel se queda fija arriba mientras se recorren sus nodos
+            stickyHeader(key = "level_${module.module.id}") {
+                LevelBanner(
+                    module = module,
+                    level = levelIndex + 1,
+                    title = titles.getOrElse(levelIndex) { "" },
+                    description = descriptions.getOrElse(levelIndex) { "" }
+                )
+            }
+            stepNodes(module, progress, onOpenStep) {
+                Toast.makeText(context, lockedMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        item(key = "soon") {
+            Spacer(Modifier.height(AppDimens.SectionTop))
+            MoreSoonCard()
+        }
+    }
+}
+
+// Índice (dentro de la lista) del paso actual, para desplazarse a él al abrir.
+// Orden de la lista: cabecera, y por cada nivel su barra + sus 12 nodos.
+private fun currentItemIndex(progress: CurriculumProgress): Int {
+    val next = progress.nextStep ?: return 0
+    var index = 1 // cabecera
+    for (module in progress.modules) {
+        index += 1 // barra del nivel
+        val position = module.module.steps.indexOfFirst { it.id == next.id }
+        if (position >= 0) return (index + position - 2).coerceAtLeast(0) // un poco antes, para ver contexto
+        index += module.module.steps.size
+    }
+    return 0
+}
+
+private fun LazyListScope.stepNodes(
+    module: ModuleProgress,
+    progress: CurriculumProgress,
+    onOpenStep: (PathStep) -> Unit,
+    onLocked: () -> Unit
+) {
+    module.module.steps.forEachIndexed { stepIndex, step ->
+        item(key = step.id) {
+            val status = progress.stepStatus(step.id)
+            PathNode(
+                step = step,
+                number = stepIndex + 1,
+                status = status,
+                horizontalOffset = ZigzagOffsets[stepIndex % ZigzagOffsets.size].dp,
+                onClick = { if (status == StepStatus.Locked) onLocked() else onOpenStep(step) }
             )
         }
     }
 }
 
-@Composable
-private fun ModuleCard(module: ModuleProgress, onOpen: () -> Unit) {
-    val status = module.status
-    val shape = RoundedCornerShape(15.dp)
-    val isCurrent = status == ModuleStatus.InProgress
-    val isOptional = status == ModuleStatus.Optional
-    val isSoon = status == ModuleStatus.Locked && module.module.id == Curriculum.PROJECT_ID
+// Dificultad máxima que se dibuja con estrellas (la dificultad sube con el nivel).
+private const val MAX_STARS = 5
 
-    Box(Modifier.fillMaxWidth()) {
-        Column(
+// Barra del nivel: "NIVEL 3 ★★★☆☆", su nombre, su descripción y cuántos pasos lleva.
+@Composable
+private fun LevelBanner(module: ModuleProgress, level: Int, title: String, description: String) {
+    val shape = RoundedCornerShape(15.dp)
+    val brush: Brush
+    val content: Color
+    val soft: Color
+    when (module.status) {
+        ModuleStatus.InProgress -> {
+            brush = Brush.horizontalGradient(listOf(HeroStart, HeroEnd)); content = Color.White; soft = Color.White.copy(alpha = 0.85f)
+        }
+        ModuleStatus.Completed -> {
+            brush = Brush.horizontalGradient(listOf(NodeDone, NodeDone)); content = Color.White; soft = Color.White.copy(alpha = 0.9f)
+        }
+        ModuleStatus.Optional -> {
+            brush = Brush.horizontalGradient(listOf(PrimarySoft, PrimarySoft)); content = PrimaryDark; soft = Muted
+        }
+        ModuleStatus.Locked -> {
+            brush = Brush.horizontalGradient(listOf(NodeLockedFill, NodeLockedFill)); content = NodeLockedText; soft = NodeLockedText
+        }
+    }
+    val stars = level.coerceAtMost(MAX_STARS)
+    val starsDescription = stringResource(R.string.module_level_description, level, stars, MAX_STARS)
+    val levelLabel = stringResource(R.string.module_level, level).uppercase()
+    // El fondo opaco evita que los nodos se vean pasar por detrás de la barra fija
+    Box(Modifier.fillMaxWidth().background(AppBackground).padding(vertical = 6.dp)) {
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(shape)
-                .background(if (isCurrent) CurrentCardBackground else Paper)
-                .border(
-                    if (isCurrent) AppDimens.CurrentCardBorderWidth else AppDimens.BorderWidth,
-                    if (isCurrent) CurrentCardBorder else Line,
-                    shape
-                )
-                .then(if (isCurrent || isOptional) Modifier.clickable(onClick = onOpen) else Modifier)
-                .padding(
-                    start = AppDimens.ModuleCardPaddingH,
-                    end = AppDimens.ModuleCardPaddingH,
-                    top = AppDimens.ModuleCardPaddingTop,
-                    bottom = AppDimens.ModuleCardPaddingBottom
-                )
+                .background(brush)
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = stringResource(titleOf(module.module.id)), style = AppTextStyles.RowTitle.copy(fontSize = 13.sp), color = Ink)
-            Spacer(Modifier.height(AppDimens.RowSubtitleTop))
-            Text(text = stringResource(descriptionOf(module.module.id)), style = AppTextStyles.RowSubtitle, color = Muted)
-            Spacer(Modifier.height(AppDimens.CardTextTop))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val lessons = pluralStringResource(
-                    R.plurals.module_lessons, module.module.lessons.size, module.module.lessons.size
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = buildAnnotatedString {
+                        append(levelLabel)
+                        append("  ")
+                        withStyle(SpanStyle(color = AccentYellow)) { append("★".repeat(stars)) }
+                        withStyle(SpanStyle(color = content.copy(alpha = 0.3f))) { append("★".repeat(MAX_STARS - stars)) }
+                    },
+                    style = AppTextStyles.Eyebrow,
+                    color = content,
+                    modifier = Modifier.semantics { contentDescription = starsDescription }
                 )
+                Spacer(Modifier.height(3.dp))
+                Text(text = title, style = AppTextStyles.SectionTitle.copy(fontSize = 15.sp), color = content)
+                Spacer(Modifier.height(2.dp))
+                Text(text = description, style = AppTextStyles.RowSubtitle, color = soft)
+            }
+            Spacer(Modifier.size(10.dp))
+            Text(
+                text = stringResource(R.string.level_progress, module.completedSteps, module.module.steps.size),
+                style = AppTextStyles.Pill,
+                color = content,
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .background(content.copy(alpha = 0.15f))
+                    .padding(horizontal = 10.dp, vertical = 6.dp)
+            )
+        }
+    }
+}
+
+// Un nodo del camino. Lección: círculo con su número. Jefe: círculo grande con 👾.
+// Hecho: verde con ✓ · Siguiente: azul con "Empezar" · Disponible (repaso): borde azul · Bloqueado: gris.
+@Composable
+private fun PathNode(
+    step: PathStep,
+    number: Int,
+    status: StepStatus,
+    horizontalOffset: Dp,
+    onClick: () -> Unit
+) {
+    val isBoss = step is Boss
+    val size = if (isBoss) BossNodeSize else LessonNodeSize
+    val accent = if (isBoss) AiViolet else Primary
+    val accentShadow = if (isBoss) HeroEnd else PrimaryDark
+
+    val fill: Color
+    val shadow: Color
+    val ring: Color?
+    when (status) {
+        StepStatus.Done -> { fill = NodeDone; shadow = NodeDoneShadow; ring = null }
+        StepStatus.Current -> { fill = accent; shadow = accentShadow; ring = if (isBoss) AiViolet.copy(alpha = 0.25f) else NodeCurrentRing }
+        StepStatus.Available -> { fill = Paper; shadow = accent.copy(alpha = 0.35f); ring = null }
+        StepStatus.Locked -> { fill = NodeLockedFill; shadow = NodeLockedShadow; ring = null }
+    }
+    val symbolColor = when (status) {
+        StepStatus.Done, StepStatus.Current -> Color.White
+        StepStatus.Available -> accent
+        StepStatus.Locked -> NodeLockedText
+    }
+
+    val stateText = stringResource(
+        when (status) {
+            StepStatus.Done -> R.string.node_state_done
+            StepStatus.Current -> R.string.node_state_current
+            StepStatus.Available -> R.string.node_state_available
+            StepStatus.Locked -> R.string.node_state_locked
+        }
+    )
+    val name = if (isBoss) stringResource(R.string.node_boss_description)
+    else stringResource(R.string.node_lesson_description, number)
+    val description = "$name, $stateText"
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (status == StepStatus.Current) {
+            Pill(
+                text = stringResource(R.string.node_start).uppercase(),
+                containerColor = Paper,
+                contentColor = accent,
+                modifier = Modifier
+                    .offset(x = horizontalOffset)
+                    .border(AppDimens.BorderWidth, accent, CircleShape)
+            )
+            Spacer(Modifier.height(6.dp))
+        }
+        Box(
+            modifier = Modifier
+                .offset(x = horizontalOffset)
+                .size(size + NodeHalo)
+                .semantics(mergeDescendants = true) {
+                    contentDescription = description
+                    role = Role.Button
+                }
+                .clickable(
+                    onClick = onClick,
+                    indication = null, // El nodo ya cambia de color: sin ripple
+                    interactionSource = remember { MutableInteractionSource() }
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            if (ring != null) {
+                Box(Modifier.size(size + NodeHalo).clip(CircleShape).background(ring))
+            }
+            // Borde de abajo (da la sensación de botón con relieve)
+            Box(Modifier.offset(y = NodeDepth / 2).size(size).clip(CircleShape).background(shadow))
+            Box(
+                modifier = Modifier
+                    .offset(y = -NodeDepth / 2)
+                    .size(size)
+                    .clip(CircleShape)
+                    .background(fill)
+                    .then(
+                        if (status == StepStatus.Available) Modifier.border(3.dp, accent, CircleShape) else Modifier
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
                 when {
-                    status == ModuleStatus.Completed -> {
-                        Pill(stringResource(R.string.module_status_completed), containerColor = Mint, contentColor = MintInk)
-                        MetaText(lessons)
-                    }
-                    isCurrent -> {
-                        Pill(stringResource(R.string.module_status_in_progress))
-                        Text(
-                            text = stringResource(R.string.module_continue),
-                            style = AppTextStyles.FooterLink,
-                            color = Primary
-                        )
-                    }
-                    isOptional -> {
-                        Pill(stringResource(R.string.module_status_optional))
-                        Text(
-                            text = stringResource(R.string.module_review),
-                            style = AppTextStyles.FooterLink,
-                            color = Primary
-                        )
-                    }
-                    isSoon -> {
-                        Pill(stringResource(R.string.module_status_soon), containerColor = LockedPillBackground, contentColor = LockedPillText)
-                        MetaText(stringResource(R.string.module_final_project))
-                    }
-                    else -> {
-                        Pill(stringResource(R.string.module_status_locked), containerColor = LockedPillBackground, contentColor = LockedPillText)
-                        MetaText(lessons)
-                    }
+                    status == StepStatus.Done -> Text("✓", color = symbolColor, fontSize = 28.sp, fontWeight = FontWeight.Black)
+                    isBoss -> Text("👾", fontSize = 32.sp, modifier = Modifier.alpha(if (status == StepStatus.Locked) 0.5f else 1f))
+                    else -> Text(number.toString(), color = symbolColor, fontSize = 22.sp, fontWeight = FontWeight.ExtraBold)
                 }
             }
         }
-        Node(
-            status = status,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                // Centrado sobre la línea: a la izquierda de la tarjeta, que empieza en TimelinePadding
-                .offset(
-                    x = -(AppDimens.TimelinePadding - AppDimens.TimelineLineX) - AppDimens.NodeSize / 2,
-                    y = AppDimens.ModuleCardPaddingTop
-                )
-        )
     }
-}
-
-@Composable
-private fun MetaText(text: String) {
-    Text(text = text, style = AppTextStyles.RowSubtitle, color = Muted)
-}
-
-// Nodo circular de la línea de tiempo (21 dp, borde 3).
-@Composable
-private fun Node(status: ModuleStatus, modifier: Modifier = Modifier) {
-    val (fill, ring) = when (status) {
-        ModuleStatus.Completed -> NodeDone to NodeDoneRing
-        ModuleStatus.InProgress -> Primary to NodeCurrentRing
-        ModuleStatus.Locked -> Paper to NodeLockedRing
-        ModuleStatus.Optional -> Paper to NodeCurrentRing
-    }
-    Box(
-        modifier = modifier
-            .size(AppDimens.NodeSize)
-            .clip(CircleShape)
-            .background(fill)
-            .border(AppDimens.NodeBorder, ring, CircleShape),
-        contentAlignment = Alignment.Center
-    ) {
-        if (status == ModuleStatus.Completed) {
-            Text(text = "✓", color = Color.White, style = AppTextStyles.CheckMini.copy(fontWeight = FontWeight.Black))
-        }
-    }
-}
-
-@StringRes
-private fun titleOf(moduleId: String): Int = when (moduleId) {
-    "fundamentos" -> R.string.module_fundamentos_title
-    "variables" -> R.string.module_variables_title
-    "condicionales" -> R.string.module_condicionales_title
-    "bucles" -> R.string.module_bucles_title
-    "funciones" -> R.string.module_funciones_title
-    else -> R.string.module_proyecto_title
-}
-
-@StringRes
-private fun descriptionOf(moduleId: String): Int = when (moduleId) {
-    "fundamentos" -> R.string.module_fundamentos_desc
-    "variables" -> R.string.module_variables_desc
-    "condicionales" -> R.string.module_condicionales_desc
-    "bucles" -> R.string.module_bucles_desc
-    "funciones" -> R.string.module_funciones_desc
-    else -> R.string.module_proyecto_desc
 }
 
 @Preview(showSystemUi = true)
@@ -372,9 +486,12 @@ private fun LearningPathPreview() {
     CodeMentorTheme {
         LearningPathContent(
             state = LearningPathUiState.Ready(
-                CurriculumProgress(Curriculum.Base, setOf("fundamentos_1", "fundamentos_2", "fundamentos_3", "fundamentos_4", "variables_1"))
+                CurriculumProgress(
+                    Curriculum.Base,
+                    (1..5).map { Curriculum.lessonId(1, it) }.toSet()
+                )
             ),
-            onOpenLesson = {},
+            onOpenStep = {},
             onRetry = {}
         )
     }

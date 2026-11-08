@@ -69,10 +69,10 @@ class CurriculumBossAndStartTest {
         val base = Curriculum.Base
         assertEquals(0, base.startModuleIndex(LearningLevel.Beginner))
         assertEquals(0, base.startModuleIndex(null)) // Sin nivel guardado: desde el principio
-        assertEquals(3, base.startModuleIndex(LearningLevel.Basic))
-        assertEquals("bucles", base.modules[3].id)
-        assertEquals(4, base.startModuleIndex(LearningLevel.Intermediate))
-        assertEquals("funciones", base.modules[4].id)
+        assertEquals(6, base.startModuleIndex(LearningLevel.Basic))
+        assertEquals("n07", base.modules[6].id)
+        assertEquals(9, base.startModuleIndex(LearningLevel.Intermediate))
+        assertEquals("n10", base.modules[9].id)
     }
 
     @Test

@@ -1,88 +1,110 @@
 package me.pablorincon.proyecto_app.domain
 
-import me.pablorincon.proyecto_app.domain.content.FundamentosLessons
+import me.pablorincon.proyecto_app.domain.content.BossCatalog
 import me.pablorincon.proyecto_app.domain.content.LessonCatalog
-import me.pablorincon.proyecto_app.domain.content.VariablesLessons
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
+// Integridad del contenido escrito: cada nivel con contenido debe estar completo y ser resoluble.
 class LessonCatalogTest {
 
+    private val curriculum = Curriculum.Base
+
+    // Niveles con contenido escrito (se amplía a medida que se escriben más)
+    private val writtenLevels = listOf(1, 2, 3, 4, 5, 6)
+
+    private fun lessonsOf(level: Int) = curriculum.modules[level - 1].lessons.map { it.id }
+
+    private val allWritten: List<LessonContent> =
+        curriculum.lessons.mapNotNull { LessonCatalog.contentFor(it.id) }
+
     @Test
-    fun cadaLeccionConContenidoExisteEnElCurriculo() {
-        (FundamentosLessons.all + VariablesLessons.all).forEach {
-            assertNotNull("Sin lección en el currículo: ${it.lessonId}", Curriculum.Base.lesson(it.lessonId))
+    fun cadaNivelEscritoTieneContenidoParaLasOnceLeccionesEnOrdenYSuJefe() {
+        writtenLevels.forEach { level ->
+            val ids = lessonsOf(level)
+            assertEquals("Nivel $level", 11, ids.size)
+            ids.forEach { assertNotNull("Falta la lección $it", LessonCatalog.contentFor(it)) }
+            assertNotNull("Falta el jefe del nivel $level", BossCatalog.contentFor(Curriculum.bossId(level)))
         }
     }
 
     @Test
-    fun cadaLeccionTieneTresEjercicios() {
-        (FundamentosLessons.all + VariablesLessons.all).forEach { lesson ->
-            assertEquals(lesson.lessonId, 3, lesson.exercises.size)
-            lesson.exercises.filterIsInstance<MultipleChoice>().forEach { assertEquals(lesson.lessonId, 4, it.options.size) }
-        }
-    }
-
-    @Test
-    fun elCatalogoDevuelveElContenidoPorId() {
-        assertEquals("fundamentos_1", LessonCatalog.contentFor("fundamentos_1")?.lessonId)
+    fun elContenidoCoincideConSuIdYNoHayLeccionesFueraDelCurriculo() {
+        allWritten.forEach { assertEquals(it.lessonId, LessonCatalog.contentFor(it.lessonId)?.lessonId) }
+        assertEquals(writtenLevels.size * 11, allWritten.size)
         assertNull(LessonCatalog.contentFor("no_existe"))
     }
 
     @Test
-    fun lasPreguntasNoRepitenOpcionesDentroDeLaMismaPregunta() {
-        (FundamentosLessons.all + VariablesLessons.all).flatMap { it.exercises }.filterIsInstance<MultipleChoice>().forEach {
-            assertTrue(it.prompt, it.options.toSet().size == it.options.size)
-        }
-    }
-
-    @Test
-    fun elModuloFundamentosTieneContenidoParaTodasSusLecciones() {
-        val ids = Curriculum.Base.modules.first { it.id == "fundamentos" }.lessons.map { it.id }
-        assertEquals(ids, FundamentosLessons.all.map { it.lessonId })
-    }
-
-    @Test
-    fun elModuloVariablesTieneContenidoParaTodasSusLecciones() {
-        val ids = Curriculum.Base.modules.first { it.id == "variables" }.lessons.map { it.id }
-        assertEquals(ids, VariablesLessons.all.map { it.lessonId })
-    }
-
-    @Test
-    fun todasLasLeccionesDelCatalogoTienenTresEjercicios() {
-        Curriculum.Base.lessons.mapNotNull { LessonCatalog.contentFor(it.id) }.forEach { lesson ->
+    fun cadaLeccionTieneTresEjerciciosYUsaPocaOpcionMultiple() {
+        allWritten.forEach { lesson ->
             assertEquals(lesson.lessonId, 3, lesson.exercises.size)
-            lesson.exercises.filterIsInstance<MultipleChoice>().forEach { assertEquals(lesson.lessonId, 4, it.options.size) }
-        }
-    }
-
-    @Test
-    fun todoEjercicioDelCatalogoSePuedeResolverConSusPropiasRespuestas() {
-        Curriculum.Base.lessons.mapNotNull { LessonCatalog.contentFor(it.id) }.forEach { lesson ->
-            lesson.exercises.forEach { ex ->
-                val ok = when (ex) {
-                    is MultipleChoice -> ex.isCorrect(ex.correctIndex)
-                    is OrderLines -> ex.isCorrect(ex.lines)
-                    is FillBlanks -> ex.isCorrect(ex.answers)
-                    is FindBug -> ex.isCorrect(ex.bugLineIndex)
-                    is PredictOutput -> ex.acceptedAnswers.all { ex.isCorrect(it) }
-                    is TypeCode -> ex.acceptedAnswers.all { ex.isCorrect(it) }
-                }
-                assertTrue("${lesson.lessonId}: ${ex.prompt}", ok)
+            val choices = lesson.exercises.count { it is MultipleChoice }
+            assertTrue("${lesson.lessonId} tiene $choices de opción múltiple", choices <= 1)
+            lesson.exercises.filterIsInstance<MultipleChoice>().forEach {
+                assertEquals(lesson.lessonId, 4, it.options.size)
             }
         }
     }
 
     @Test
-    fun cadaLeccionUsaPocaOpcionMultiple() {
-        Curriculum.Base.lessons.mapNotNull { LessonCatalog.contentFor(it.id) }
-            .filter { it.lessonId.startsWith("fundamentos") } // Módulos ya rediseñados
-            .forEach { lesson ->
-                val choices = lesson.exercises.count { it is MultipleChoice }
-                assertTrue("${lesson.lessonId} tiene $choices de opción múltiple", choices <= 1)
+    fun cadaJefeTieneCincoEjerciciosYUsaPocaOpcionMultiple() {
+        writtenLevels.forEach { level ->
+            val boss = BossCatalog.contentFor(Curriculum.bossId(level))!!
+            assertEquals(Curriculum.bossId(level), boss.bossId)
+            assertEquals(boss.bossId, 5, boss.exercises.size)
+            assertTrue(boss.exercises.count { it is MultipleChoice } <= 1)
+        }
+    }
+
+    @Test
+    fun todoEjercicioSePuedeResolverConSusPropiasRespuestas() {
+        val exercises = allWritten.flatMap { l -> l.exercises.map { l.lessonId to it } } +
+            writtenLevels.flatMap { level ->
+                BossCatalog.contentFor(Curriculum.bossId(level))!!.exercises.map { Curriculum.bossId(level) to it }
             }
+        exercises.forEach { (owner, ex) ->
+            val ok = when (ex) {
+                is MultipleChoice -> ex.isCorrect(ex.correctIndex)
+                is OrderLines -> ex.isCorrect(ex.lines)
+                is FillBlanks -> ex.isCorrect(ex.answers)
+                is FindBug -> ex.isCorrect(ex.bugLineIndex)
+                is PredictOutput -> ex.acceptedAnswers.all { ex.isCorrect(it) }
+                is TypeCode -> ex.acceptedAnswers.all { ex.isCorrect(it) }
+            }
+            assertTrue("$owner: ${ex.prompt}", ok)
+        }
+    }
+
+    @Test
+    fun losEjerciciosDeOrdenNuncaEmpiezanResueltos() {
+        val exercises = allWritten.flatMap { it.exercises } +
+            writtenLevels.flatMap { BossCatalog.contentFor(Curriculum.bossId(it))!!.exercises }
+        exercises.filterIsInstance<OrderLines>().forEach { ex ->
+            (0..10).forEach { step ->
+                assertTrue(ex.prompt, !ex.isCorrect(ex.initialOrder(step).map { ex.lines[it] }))
+            }
+        }
+    }
+
+    @Test
+    fun noHayTextosVaciosNiOpcionesRepetidasEnLasOpcionesMultiples() {
+        val exercises = allWritten.flatMap { it.exercises }.filterIsInstance<MultipleChoice>()
+        exercises.forEach {
+            assertTrue(it.prompt, it.options.toSet().size == it.options.size)
+            assertTrue(it.prompt, it.options.all { option -> option.isNotBlank() })
+        }
+    }
+
+    @Test
+    fun todasLasLeccionesYJefesTienenMensajesDeAciertoYFallo() {
+        val exercises = allWritten.flatMap { it.exercises } +
+            writtenLevels.flatMap { BossCatalog.contentFor(Curriculum.bossId(it))!!.exercises }
+        exercises.forEach {
+            assertTrue(it.prompt, it.correctFeedback.isNotBlank() && it.wrongFeedback.isNotBlank())
+        }
     }
 }

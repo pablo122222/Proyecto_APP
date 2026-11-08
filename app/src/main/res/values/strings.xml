@@ -114,6 +114,10 @@
     <string name="profile_logout_icon">↪</string>
     <string name="profile_logout_title">Cerrar sesión</string>
     <string name="profile_logout_subtitle">Volver a la pantalla inicial</string>
+    <string name="logout_confirm_title">¿Seguro que quieres cerrar sesión?</string>
+    <string name="logout_confirm_message">Tu progreso queda guardado. Podrás volver a entrar cuando quieras.</string>
+    <string name="logout_confirm_yes">Sí, cerrar sesión</string>
+    <string name="logout_confirm_cancel">Cancelar</string>
     <string name="chevron_symbol">›</string>
 
     <!-- Personalización (guía de diseño §1) -->
@@ -177,31 +181,10 @@
     <string name="path_screen_subtitle">Cada concepto te prepara para el siguiente. Avanza sin saltarte las bases.</string>
     <string name="path_screen_overall">Progreso general</string>
     <string name="path_screen_percent">%1$d%%</string>
-    <string name="module_status_completed">Completado</string>
-    <string name="module_status_in_progress">En curso</string>
-    <string name="module_status_locked">Bloqueado</string>
-    <string name="module_status_soon">Próximamente</string>
-    <string name="module_continue">Continuar →</string>
-    <!-- no está en la guía: módulos anteriores al nivel de inicio del usuario (repaso con XP) -->
-    <string name="module_status_optional">Repaso opcional</string>
-    <string name="module_review">Repasar →</string>
-    <string name="module_final_project">Proyecto final</string>
-    <plurals name="module_lessons">
-        <item quantity="one">%1$d lección</item>
-        <item quantity="other">%1$d lecciones</item>
-    </plurals>
-    <string name="module_fundamentos_title">Fundamentos</string>
-    <string name="module_fundamentos_desc">Qué es programar y cómo resolver un problema.</string>
-    <string name="module_variables_title">Variables y tipos de datos</string>
-    <string name="module_variables_desc">Guarda y utiliza información.</string>
-    <string name="module_condicionales_title">Condicionales</string>
-    <string name="module_condicionales_desc">Haz que tu programa tome decisiones.</string>
-    <string name="module_bucles_title">Bucles</string>
-    <string name="module_bucles_desc">Repite instrucciones sin escribirlas de nuevo.</string>
-    <string name="module_funciones_title">Funciones</string>
-    <string name="module_funciones_desc">Organiza tu código en bloques reutilizables.</string>
-    <string name="module_proyecto_title">Mini proyecto</string>
-    <string name="module_proyecto_desc">Combina lo aprendido para resolver un caso real.</string>
+    <string name="module_level">Nivel %1$d</string>
+    <string name="module_level_description">Nivel %1$d, dificultad %2$d de %3$d</string>
+    <string name="path_more_soon_title">🚧 Pronto: más módulos y retos</string>
+    <string name="path_more_soon_text">Estamos preparando más lecciones. ¡Sigue practicando mientras tanto!</string>
     <!-- no está en la guía: falló la carga del progreso -->
     <string name="path_screen_error">No pudimos cargar tu progreso. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="path_screen_loading">Cargando tu progreso…</string>
@@ -248,4 +231,58 @@
     <string name="exercise_hint_predict">Escribe lo que mostraría el programa.</string>
     <string name="exercise_predict_placeholder">Escribe aquí la salida…</string>
     <string name="exercise_hint_type">Escribe tu código en una línea.</string>
+
+    <!-- Camino de la ruta: 15 niveles de 12 pasos (11 lecciones y un jefe) -->
+    <string-array name="level_titles">
+        <item>Primeros pasos</item>
+        <item>Variables</item>
+        <item>Tipos de datos</item>
+        <item>Entrada y salida</item>
+        <item>Condicionales I</item>
+        <item>Condicionales II</item>
+        <item>Bucles while</item>
+        <item>Bucles for</item>
+        <item>Bucles avanzados</item>
+        <item>Listas</item>
+        <item>Textos</item>
+        <item>Funciones I</item>
+        <item>Funciones II</item>
+        <item>Diccionarios</item>
+        <item>Proyecto final</item>
+    </string-array>
+    <string-array name="level_descriptions">
+        <item>Habla con la computadora y aprende a darle órdenes.</item>
+        <item>Guarda información en cajas con nombre.</item>
+        <item>Textos, números y cómo combinarlos.</item>
+        <item>Pregunta al usuario y muestra resultados.</item>
+        <item>Haz que tu programa tome decisiones.</item>
+        <item>Más caminos: elif, and, or y not.</item>
+        <item>Repite mientras se cumpla una condición.</item>
+        <item>Recorre y cuenta con for y range.</item>
+        <item>Bucles dentro de bucles, break y continue.</item>
+        <item>Guarda muchos datos en un solo lugar.</item>
+        <item>Trabaja con las letras y palabras de un texto.</item>
+        <item>Organiza tu código en bloques reutilizables.</item>
+        <item>Parámetros y valores que devuelve una función.</item>
+        <item>Guarda datos con nombre: clave y valor.</item>
+        <item>Combina todo lo aprendido en un proyecto.</item>
+    </string-array>
+    <string name="level_progress">%1$d/%2$d</string>
+    <string name="node_start">Empezar</string>
+    <string name="node_lesson_description">Lección %1$d</string>
+    <string name="node_boss_description">Jefe del nivel</string>
+    <string name="node_state_done">completada</string>
+    <string name="node_state_current">siguiente</string>
+    <string name="node_state_available">disponible</string>
+    <string name="node_state_locked">bloqueada</string>
+    <string name="path_locked_toast">Completa los pasos anteriores para abrir este.</string>
+
+    <!-- Jefe del nivel -->
+    <string name="boss_label">Jefe del nivel %1$d</string>
+    <string name="boss_hp">Vida del jefe</string>
+    <string name="boss_next_level">Siguiente nivel →</string>
+    <string name="boss_done_title">¡Jefe vencido! 🏆</string>
+    <string name="boss_done_review">Ya habías vencido a este jefe: repetirlo no suma XP, pero siempre ayuda.</string>
+    <string name="boss_locked">Termina las lecciones del nivel para enfrentar al jefe.</string>
+    <string name="boss_coming_soon">Este jefe llegará pronto. ¡Se está preparando para la batalla!</string>
 </resources>
