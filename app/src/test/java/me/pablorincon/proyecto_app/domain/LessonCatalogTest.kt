@@ -2,6 +2,7 @@ package me.pablorincon.proyecto_app.domain
 
 import me.pablorincon.proyecto_app.domain.content.FundamentosLessons
 import me.pablorincon.proyecto_app.domain.content.LessonCatalog
+import me.pablorincon.proyecto_app.domain.content.VariablesLessons
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
@@ -12,14 +13,14 @@ class LessonCatalogTest {
 
     @Test
     fun cadaLeccionConContenidoExisteEnElCurriculo() {
-        FundamentosLessons.all.forEach {
+        (FundamentosLessons.all + VariablesLessons.all).forEach {
             assertNotNull("Sin lección en el currículo: ${it.lessonId}", Curriculum.Base.lesson(it.lessonId))
         }
     }
 
     @Test
     fun cadaLeccionTieneTresPreguntasConCuatroOpciones() {
-        FundamentosLessons.all.forEach { lesson ->
+        (FundamentosLessons.all + VariablesLessons.all).forEach { lesson ->
             assertEquals(lesson.lessonId, 3, lesson.questions.size)
             lesson.questions.forEach { assertEquals(lesson.lessonId, 4, it.options.size) }
         }
@@ -33,7 +34,7 @@ class LessonCatalogTest {
 
     @Test
     fun lasPreguntasNoRepitenOpcionesDentroDeLaMismaPregunta() {
-        FundamentosLessons.all.flatMap { it.questions }.forEach {
+        (FundamentosLessons.all + VariablesLessons.all).flatMap { it.questions }.forEach {
             assertTrue(it.prompt, it.options.toSet().size == it.options.size)
         }
     }
@@ -42,5 +43,19 @@ class LessonCatalogTest {
     fun elModuloFundamentosTieneContenidoParaTodasSusLecciones() {
         val ids = Curriculum.Base.modules.first { it.id == "fundamentos" }.lessons.map { it.id }
         assertEquals(ids, FundamentosLessons.all.map { it.lessonId })
+    }
+
+    @Test
+    fun elModuloVariablesTieneContenidoParaTodasSusLecciones() {
+        val ids = Curriculum.Base.modules.first { it.id == "variables" }.lessons.map { it.id }
+        assertEquals(ids, VariablesLessons.all.map { it.lessonId })
+    }
+
+    @Test
+    fun todasLasLeccionesDelCatalogoTienenTresPreguntasConCuatroOpciones() {
+        Curriculum.Base.lessons.mapNotNull { LessonCatalog.contentFor(it.id) }.forEach { lesson ->
+            assertEquals(lesson.lessonId, 3, lesson.questions.size)
+            lesson.questions.forEach { assertEquals(lesson.lessonId, 4, it.options.size) }
+        }
     }
 }

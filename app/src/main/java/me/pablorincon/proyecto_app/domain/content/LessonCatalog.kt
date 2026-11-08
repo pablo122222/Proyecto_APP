@@ -7,7 +7,7 @@ import me.pablorincon.proyecto_app.domain.LessonContent
 object LessonCatalog {
 
     private val byId: Map<String, LessonContent> =
-        (FundamentosLessons.all).associateBy { it.lessonId }
+        (FundamentosLessons.all + VariablesLessons.all).associateBy { it.lessonId }
 
     fun contentFor(lessonId: String): LessonContent? = byId[lessonId]
 }
