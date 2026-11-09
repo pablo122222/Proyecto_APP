@@ -232,6 +232,34 @@
     <string name="exercise_predict_placeholder">Escribe aquí la salida…</string>
     <string name="exercise_hint_type">Escribe tu código en una línea.</string>
 
+    <!-- Simulador de Glitch -->
+    <string name="exercise_kind_glitch">Simulador de Glitch</string>
+    <string name="glitch_hint_build">Toca los bloques para armar el programa. Toca una línea para elegirla: lo nuevo va debajo.</string>
+    <string name="glitch_hint_complete">Toca un hueco y luego el bloque que va ahí. Toca el número de un for para cambiarlo.</string>
+    <string name="glitch_hint_fix">Este programa tiene un bug. Cámbialo hasta que Glitch llegue a la meta.</string>
+    <string name="glitch_board_description">Tablero del simulador de Glitch</string>
+    <string name="glitch_empty_program">Toca un bloque para empezar…</string>
+    <string name="glitch_lines_counter">Líneas: %1$d / %2$d</string>
+    <string name="glitch_run">▶ Ejecutar</string>
+    <string name="glitch_running">Ejecutando…</string>
+    <string name="glitch_reset">↺ Reiniciar</string>
+    <string name="glitch_skip">Saltar por ahora</string>
+    <string name="glitch_indent">⇥ Adentro</string>
+    <string name="glitch_outdent">⇤ Afuera</string>
+    <string name="glitch_delete">⌫ Borrar</string>
+    <string name="glitch_number_description">Cambiar el número de repeticiones</string>
+    <string name="glitch_outcome_success">¡Glitch llegó a la meta! 🏁</string>
+    <string name="glitch_outcome_crash">¡Bonk! 💥 Glitch chocó en la línea %1$d. Mira hacia dónde estaba mirando.</string>
+    <string name="glitch_outcome_not_at_goal">El programa terminó y Glitch se quedó lejos de la meta.</string>
+    <string name="glitch_outcome_missing_batteries">Glitch llegó a la meta, pero dejó baterías sin recoger 🔋.</string>
+    <string name="glitch_outcome_too_many_steps">😵 Glitch se mareó: dio demasiados pasos. ¿Hay un bucle que nunca termina?</string>
+    <string name="glitch_too_long">Tu programa tiene %1$d líneas y el máximo es %2$d. Prueba con un bucle.</string>
+    <string name="glitch_error_empty">El programa está vacío: agrega al menos un bloque.</string>
+    <string name="glitch_error_hole">La línea %1$d tiene un hueco sin rellenar.</string>
+    <string name="glitch_error_indent">La línea %1$d tiene más sangría de la que toca.</string>
+    <string name="glitch_error_empty_body">La línea %1$d termina en «:» y necesita líneas con sangría debajo.</string>
+    <string name="glitch_error_else">El else: de la línea %1$d tiene que ir justo después del cuerpo de un if.</string>
+
     <!-- Camino de la ruta: 15 niveles de 12 pasos (11 lecciones y un jefe) -->
     <string-array name="level_titles">
         <item>Primeros pasos</item>

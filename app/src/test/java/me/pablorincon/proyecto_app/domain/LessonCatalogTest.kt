@@ -74,6 +74,7 @@ class LessonCatalogTest {
                 is FindBug -> ex.isCorrect(ex.bugLineIndex)
                 is PredictOutput -> ex.acceptedAnswers.all { ex.isCorrect(it) }
                 is TypeCode -> ex.acceptedAnswers.all { ex.isCorrect(it) }
+                is GlitchPuzzle -> ex.isCorrect(ex.solutionLines)
             }
             assertTrue("$owner: ${ex.prompt}", ok)
         }
@@ -105,6 +106,30 @@ class LessonCatalogTest {
             writtenLevels.flatMap { BossCatalog.contentFor(Curriculum.bossId(it))!!.exercises }
         exercises.forEach {
             assertTrue(it.prompt, it.correctFeedback.isNotBlank() && it.wrongFeedback.isNotBlank())
+        }
+    }
+
+    @Test
+    fun losTablerosDeGlitchEstanBienArmados() {
+        val puzzles = (allWritten.flatMap { it.exercises } +
+            writtenLevels.flatMap { BossCatalog.contentFor(Curriculum.bossId(it))!!.exercises })
+            .filterIsInstance<GlitchPuzzle>()
+        puzzles.forEach { ex ->
+            // La solución solo usa bloques de la paleta (el número del for puede cambiar)
+            val kinds = ex.palette.map { it::class }
+            ex.solutionLines.forEach { line -> assertTrue("${ex.prompt}: ${line.code}", line.block!!::class in kinds || ex.mode == GlitchMode.COMPLETE) }
+            if (ex.maxLines != null) assertTrue(ex.prompt, ex.solutionLines.size <= ex.maxLines)
+            // Arregla y Completa no empiezan resueltos
+            if (ex.mode != GlitchMode.BUILD) assertTrue(ex.prompt, !ex.isCorrect(ex.starterLines))
+            // En Completa la solución respeta las líneas fijas y la sangría del programa inicial
+            if (ex.mode == GlitchMode.COMPLETE) {
+                assertEquals(ex.prompt, ex.starterLines.size, ex.solutionLines.size)
+                ex.starterLines.zip(ex.solutionLines).forEach { (start, sol) ->
+                    assertEquals(ex.prompt, start.indent, sol.indent)
+                    if (start.locked) assertEquals(ex.prompt, start.block, sol.block)
+                    if (start.slot) assertTrue("${ex.prompt}: ${sol.code}", sol.block!!::class in kinds)
+                }
+            }
         }
     }
 }

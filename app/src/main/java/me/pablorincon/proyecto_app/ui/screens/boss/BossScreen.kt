@@ -189,7 +189,7 @@ private fun ReadyBody(
             }
         }
     } else {
-        ExerciseCard(quiz = quiz, onSubmit = onSubmit, onNext = onNext)
+        ExerciseCard(quiz = quiz, onSubmit = onSubmit, onNext = onNext, glitchFreeRetries = false)
     }
 }
 

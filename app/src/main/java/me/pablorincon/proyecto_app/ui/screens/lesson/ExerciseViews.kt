@@ -45,6 +45,7 @@ import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.domain.Exercise
 import me.pablorincon.proyecto_app.domain.FillBlanks
 import me.pablorincon.proyecto_app.domain.FindBug
+import me.pablorincon.proyecto_app.domain.GlitchPuzzle
 import me.pablorincon.proyecto_app.domain.LessonQuiz
 import me.pablorincon.proyecto_app.domain.MultipleChoice
 import me.pablorincon.proyecto_app.domain.OrderLines
@@ -78,7 +79,12 @@ private val ItemShape = RoundedCornerShape(12.dp)
 // Ejercicio actual de la lección: etiqueta del tipo, enunciado, el ejercicio en sí,
 // retroalimentación y botón para continuar. Cada vuelta (step) reinicia su estado.
 @Composable
-internal fun ExerciseCard(quiz: LessonQuiz, onSubmit: (Boolean) -> Unit, onNext: () -> Unit) {
+internal fun ExerciseCard(
+    quiz: LessonQuiz,
+    onSubmit: (Boolean) -> Unit,
+    onNext: () -> Unit,
+    glitchFreeRetries: Boolean = true   // false en los jefes: cada ejecución fallida cuenta
+) {
     val exercise = quiz.current ?: return
     val haptic = LocalHapticFeedback.current
     val submit: (Boolean) -> Unit = { correct ->
@@ -108,6 +114,7 @@ internal fun ExerciseCard(quiz: LessonQuiz, onSubmit: (Boolean) -> Unit, onNext:
             is FindBug -> FindBugView(exercise, enabled, quiz.lastResult, submit)
             is PredictOutput -> PredictOutputView(exercise, enabled, submit)
             is TypeCode -> TypeCodeView(exercise, enabled, submit)
+            is GlitchPuzzle -> GlitchPuzzleView(exercise, enabled, glitchFreeRetries, submit)
         }
     }
 
@@ -133,6 +140,7 @@ private fun kindLabel(exercise: Exercise): Int = when (exercise) {
     is FindBug -> R.string.exercise_kind_bug
     is PredictOutput -> R.string.exercise_kind_predict
     is TypeCode -> R.string.exercise_kind_type
+    is GlitchPuzzle -> R.string.exercise_kind_glitch
 }
 
 // ---------- Opción múltiple (se usa muy poco) ----------
@@ -424,7 +432,7 @@ private fun CodeField(
 }
 
 @Composable
-private fun Hint(text: Int) {
+internal fun Hint(text: Int) {
     Text(text = stringResource(text), style = AppTextStyles.RowSubtitle, color = Muted)
     Spacer(Modifier.height(8.dp))
 }
