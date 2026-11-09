@@ -37,6 +37,7 @@ import me.pablorincon.proyecto_app.ui.screens.personalization.PersonalizationVie
 import me.pablorincon.proyecto_app.ui.screens.placeholder.PlaceholderScreen
 import me.pablorincon.proyecto_app.ui.screens.profile.ProfileScreen
 import me.pablorincon.proyecto_app.ui.screens.register.RegisterScreen
+import me.pablorincon.proyecto_app.ui.screens.tutor.TutorScreen
 import me.pablorincon.proyecto_app.ui.screens.welcome.WelcomeScreen
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
 
@@ -204,7 +205,7 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
         }
     }
     navigation(startDestination = AppRoutes.TUTOR, route = AppRoutes.TAB_TUTOR) {
-        placeholder(AppRoutes.TUTOR, R.string.tab_tutor)
+        composable(AppRoutes.TUTOR) { TutorScreen() }
     }
     navigation(startDestination = AppRoutes.PROFILE, route = AppRoutes.TAB_PROFILE) {
         composable(AppRoutes.PROFILE) {

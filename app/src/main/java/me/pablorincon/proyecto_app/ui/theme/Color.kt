@@ -108,3 +108,12 @@ val NodeLockedShadow = Color(0xFFC2CCE0)
 val NodeLockedText = Color(0xFF8A96B3)
 val HeroStart = Color(0xFF3F5FD8)         // Degradado del nivel en curso
 val HeroEnd = Color(0xFF6A5CE6)
+
+// ---- Tutor IA (guía §9) ----
+val TutorHeaderText = Color(0xFFDCE7FF)       // Texto de la cabecera
+val TutorHeaderIconBg = Color(0x21FFFFFF)     // Cuadro del ✦: blanco al 13 %
+val TutorUserBubbleBg = Color(0xFFE1EAFD)
+val TutorUserBubbleText = Color(0xFF2F4CA8)
+val TutorChipBorder = Color(0xFFCFDCF8)
+val TutorChipBg = Color(0xFFF5F8FF)
+

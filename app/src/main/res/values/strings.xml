@@ -202,6 +202,32 @@
     <string name="lesson_tutor_title">¿Necesitas una explicación diferente?</string>
     <string name="lesson_tutor_text">Pregunta al tutor para ver el concepto con otro ejemplo.</string>
     <string name="lesson_tutor_button">Preguntar al tutor IA</string>
+
+    <!-- Tutor IA (demostración, guía §9) -->
+    <string name="tutor_eyebrow">Siempre puedes preguntar</string>
+    <string name="tutor_demo_pill">Demo</string>
+    <string name="tutor_header_title">¡Vamos a resolverlo juntos!</string>
+    <string name="tutor_header_text">Pregunta con tus propias palabras. Aprenderás mejor si entiendes el porqué.</string>
+    <string name="tutor_greeting">¡Hola! Soy tu tutor de demostración. Puedes probar una pregunta sugerida y ver cómo aparecería la explicación aquí.</string>
+    <string name="tutor_suggestions_label">Prueba con una pregunta</string>
+    <string name="tutor_chip_if">¿Qué es un if?</string>
+    <string name="tutor_chip_if_question">¿Qué es un if?</string>
+    <string name="tutor_chip_else">if vs. else</string>
+    <string name="tutor_chip_else_question">¿Cuál es la diferencia entre if y else?</string>
+    <string name="tutor_chip_variable">¿Qué es una variable?</string>
+    <string name="tutor_chip_variable_question">Explícame las variables con un ejemplo</string>
+    <string name="tutor_input_label">Tu pregunta</string>
+    <string name="tutor_input_placeholder">Escribe tu duda...</string>
+    <string name="tutor_send">Enviar pregunta</string>
+    <string name="tutor_typing">El tutor está escribiendo…</string>
+    <string name="tutor_clear">Nueva conversación</string>
+    <string name="tutor_counter">%1$d / %2$d</string>
+    <string name="tutor_notice">Demostración visual: las respuestas son ejemplos predefinidos. Esta versión no está conectada a un servicio de IA.</string>
+    <string name="tutor_answer_else">if evalúa una condición. else define qué hacer cuando esa condición resulta falsa. Por eso normalmente va después de un bloque if.</string>
+    <string name="tutor_answer_if">Un if permite ejecutar un bloque solo cuando una condición es verdadera. Ejemplo: if edad >= 18: print(\"Mayor de edad\"). Si la condición es falsa, puedes usar else para indicar qué hacer en el otro caso.</string>
+    <string name="tutor_answer_variable">Una variable es un nombre asociado a un dato. En Python, edad = 20 guarda el valor 20 bajo el nombre edad. Luego puedes usarlo en operaciones y condiciones.</string>
+    <string name="tutor_answer_loop">Un bucle repite instrucciones. Por ejemplo, for numero in range(3): print(numero) muestra 0, 1 y 2. Es útil cuando no quieres escribir la misma instrucción muchas veces.</string>
+    <string name="tutor_answer_unknown">Esta vista demuestra cómo se mostraría una respuesta paso a paso. En la versión final, el tutor podría conectarse a un modelo de IA para resolver tu duda con ejemplos personalizados.</string>
     <string name="lesson_practice">Ir a practicar →</string>
     <string name="lesson_next">Siguiente lección →</string>
     <!-- no están en la guía: regla de preguntas falladas, cierre y errores -->
