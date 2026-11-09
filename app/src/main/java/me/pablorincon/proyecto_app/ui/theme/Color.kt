@@ -117,3 +117,15 @@ val TutorUserBubbleText = Color(0xFF2F4CA8)
 val TutorChipBorder = Color(0xFFCFDCF8)
 val TutorChipBg = Color(0xFFF5F8FF)
 
+// ---- Comunes (guía §0): avatar y pills de color ----
+val AvatarStart = Color(0xFFC9DAFB)
+val AvatarEnd = Color(0xFFBDEFD9)
+val Yellow = Color(0xFFFDF0DA)               // Pill amarillo (racha)
+val YellowInk = Color(0xFFB9731A)
+
+// ---- Inicio (guía §2) ----
+val HeroEyebrow = Color(0xFFCBDAFF)
+val HeroText = Color(0xFFDCE4FA)
+val HeroCircle = Color(0x26FFFFFF)          // Blanco al 15 %
+val HeroTrack = Color(0x30FFFFFF)           // Blanco al 19 %
+val HeroFill = Color(0xFF6FDDB4)

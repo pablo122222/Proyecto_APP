@@ -23,6 +23,7 @@ class UserProfileMapperTest {
             gems = 7,
             streak = 3,
             lastActiveDate = "2026-11-05",
+            activitiesOnLastDay = 3,
             equippedTitleId = "t1",
             preferences = UserPreferences(
                 textSize = TextSize.ExtraLarge,

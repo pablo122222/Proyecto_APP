@@ -56,12 +56,15 @@ data class UserProfile(
     val xp: Int = 0,
     val gems: Int = 0,
     val streak: Int = 0,
-    val lastActiveDate: String? = null,       // "yyyy-MM-dd"; la racha lo usa en la Fase 12
+    val lastActiveDate: String? = null,       // "yyyy-MM-dd": último día con actividad
+    val activitiesOnLastDay: Int = 0,         // Actividades completadas ese día (meta diaria)
     val equippedTitleId: String = INITIAL_TITLE_ID,
     val preferences: UserPreferences = UserPreferences()
 ) {
     // Sin nivel y objetivo guardados, después del login toca Personalización (decisión A).
     val hasPersonalization: Boolean get() = level != null && goal != null
+
+    val dailyActivity: DailyActivity get() = DailyActivity(streak, lastActiveDate, activitiesOnLastDay)
 
     companion object {
         const val DEFAULT_DAILY_GOAL = 2        // "Ritmo recomendado"

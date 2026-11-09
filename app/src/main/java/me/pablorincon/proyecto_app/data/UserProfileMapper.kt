@@ -20,6 +20,7 @@ internal object UserProfileMapper {
     const val GEMS = "gems"
     const val STREAK = "streak"
     const val LAST_ACTIVE_DATE = "lastActiveDate"
+    const val ACTIVITIES_ON_LAST_DAY = "activitiesOnLastDay"
     const val EQUIPPED_TITLE = "equippedTitleId"
     const val PREFERENCES = "preferences"
 
@@ -39,6 +40,7 @@ internal object UserProfileMapper {
         GEMS to profile.gems,
         STREAK to profile.streak,
         LAST_ACTIVE_DATE to profile.lastActiveDate,
+        ACTIVITIES_ON_LAST_DAY to profile.activitiesOnLastDay,
         EQUIPPED_TITLE to profile.equippedTitleId,
         PREFERENCES to mapOf(
             TEXT_SIZE to profile.preferences.textSize.id,
@@ -63,6 +65,7 @@ internal object UserProfileMapper {
             gems = (data[GEMS] as? Number)?.toInt() ?: defaults.gems,
             streak = (data[STREAK] as? Number)?.toInt() ?: defaults.streak,
             lastActiveDate = data[LAST_ACTIVE_DATE] as? String,
+            activitiesOnLastDay = (data[ACTIVITIES_ON_LAST_DAY] as? Number)?.toInt() ?: defaults.activitiesOnLastDay,
             equippedTitleId = (data[EQUIPPED_TITLE] as? String) ?: defaults.equippedTitleId,
             preferences = UserPreferences(
                 textSize = TextSize.fromId(prefs[TEXT_SIZE] as? String),

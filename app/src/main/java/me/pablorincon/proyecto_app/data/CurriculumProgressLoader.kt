@@ -4,6 +4,7 @@ import me.pablorincon.proyecto_app.data.ProgressRepository.ProgressResult
 import me.pablorincon.proyecto_app.data.UserRepository.ProfileResult
 import me.pablorincon.proyecto_app.domain.Curriculum
 import me.pablorincon.proyecto_app.domain.CurriculumProgress
+import me.pablorincon.proyecto_app.domain.UserProfile
 
 // Arma el progreso del usuario: lee su nivel de Personalización (decide en qué módulo
 // empieza) y sus pasos completados, y calcula todo con CurriculumProgress.
@@ -14,7 +15,7 @@ class CurriculumProgressLoader(
     private val curriculum: Curriculum = Curriculum.Base
 ) {
     sealed interface LoadResult {
-        data class Loaded(val progress: CurriculumProgress) : LoadResult
+        data class Loaded(val progress: CurriculumProgress, val profile: UserProfile) : LoadResult
         data object Failed : LoadResult
     }
 
@@ -24,7 +25,8 @@ class CurriculumProgressLoader(
         val completed = (progress.loadCompletedLessons(uid) as? ProgressResult.Success)?.completedLessonIds
             ?: return LoadResult.Failed
         return LoadResult.Loaded(
-            CurriculumProgress(curriculum, completed, curriculum.startModuleIndex(profile.level), unlockAll)
+            CurriculumProgress(curriculum, completed, curriculum.startModuleIndex(profile.level), unlockAll),
+            profile
         )
     }
 }

@@ -136,4 +136,20 @@ object AppDimens {
     val PerksGap = 14.dp
     val PerkIconGap = 4.dp
     val CenterLinkTop = 13.dp
+
+    // ---- Comunes de las pantallas con pestaña ----
+    val LinkButtonPadding = 4.dp   // no está en el mockup: área táctil del .link-btn
+
+    // ---- Inicio (guía §2) ----
+    val GreetingBottom = 19.dp     // topline de Inicio: margen inferior 19
+    val GreetingGap = 10.dp        // no está en el mockup: entre avatar y saludo
+    val HeroPadding = 18.dp
+    val HeroCircle = 120.dp        // Círculo decorativo blanco 15 %
+    val HeroTitleMaxWidth = 205.dp
+    val HeroTextMaxWidth = 220.dp
+    val HeroBarHeight = 7.dp
+    val HeroButtonHeight = 40.dp
+    val HeroButtonMaxWidth = 170.dp // La guía dice 140; "Seguir aprendiendo →" no cabe en 140
+    val StatGap = 10.dp
+    val RecommendIcon = 42.dp
 }

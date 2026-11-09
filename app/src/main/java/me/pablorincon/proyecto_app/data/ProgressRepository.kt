@@ -4,6 +4,7 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.CancellationException
+import java.time.LocalDate
 
 // Único lugar de la app que lee el progreso del currículo (users/{uid}/progress/curriculum).
 // Igual que los otros repositorios: las pantallas solo ven resultados simples.
@@ -36,14 +37,22 @@ class ProgressRepository(private val db: FirebaseFirestore = FirebaseFirestore.g
         data object Failed : CompleteResult
     }
 
-    // Marca la lección como completada y suma su XP, las dos cosas juntas y una sola vez.
+    // Marca la lección (o el jefe) como completada, suma su XP y registra la actividad del día
+    // (racha y meta diaria), todo junto y una sola vez.
     // Usa una transacción: así el XP no se duplica si se reintenta, y sin red falla en lugar
     // de dejar una escritura en cola que se aplicaría dos veces al reintentar.
-    suspend fun completeLesson(uid: String, lessonId: String, xp: Int): CompleteResult = try {
+    suspend fun completeLesson(
+        uid: String,
+        lessonId: String,
+        xp: Int,
+        today: LocalDate = LocalDate.now()
+    ): CompleteResult = try {
         val userRef = db.collection(USERS).document(uid)
         val progressRef = userRef.collection(PROGRESS).document(CURRICULUM)
         val awarded = db.runTransaction { tx ->
+            // En una transacción todas las lecturas van antes de las escrituras
             val already = ProgressMapper.completedLessonIds(tx.get(progressRef).data)
+            val user = UserProfileMapper.fromMap(tx.get(userRef).data.orEmpty())
             if (lessonId in already) {
                 false
             } else {
@@ -52,7 +61,16 @@ class ProgressRepository(private val db: FirebaseFirestore = FirebaseFirestore.g
                     mapOf(ProgressMapper.COMPLETED_LESSONS to FieldValue.arrayUnion(lessonId)),
                     SetOptions.merge()
                 )
-                tx.update(userRef, "xp", FieldValue.increment(xp.toLong()))
+                val activity = user.dailyActivity.record(today)
+                tx.update(
+                    userRef,
+                    mapOf(
+                        UserProfileMapper.XP to FieldValue.increment(xp.toLong()),
+                        UserProfileMapper.STREAK to activity.streak,
+                        UserProfileMapper.LAST_ACTIVE_DATE to activity.lastActiveDate.orEmpty(),
+                        UserProfileMapper.ACTIVITIES_ON_LAST_DAY to activity.activitiesOnLastDay
+                    )
+                )
                 true
             }
         }.awaitResult()

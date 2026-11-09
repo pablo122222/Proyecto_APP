@@ -27,6 +27,7 @@ import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.ui.components.AppBottomBar
 import me.pablorincon.proyecto_app.ui.screens.boss.BossScreen
 import me.pablorincon.proyecto_app.ui.screens.forgotpassword.ForgotPasswordScreen
+import me.pablorincon.proyecto_app.ui.screens.home.HomeScreen
 import me.pablorincon.proyecto_app.ui.screens.learningpath.LearningPathScreen
 import me.pablorincon.proyecto_app.ui.screens.lesson.LessonScreen
 import me.pablorincon.proyecto_app.ui.screens.login.LoginScreen
@@ -155,7 +156,14 @@ private fun NavHostController.personalizationViewModel(entry: NavBackStackEntry)
 // ---------- Pestañas: un grafo anidado por pestaña ----------
 private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
     navigation(startDestination = AppRoutes.HOME, route = AppRoutes.TAB_HOME) {
-        placeholder(AppRoutes.HOME, R.string.tab_home)
+        composable(AppRoutes.HOME) {
+            HomeScreen(
+                onOpenStep = { navController.navigate(AppRoutes.step(it)) },
+                onOpenPath = { navController.openTab(BottomTab.Learn, BottomTab.Home) },
+                onOpenProfile = { navController.openTab(BottomTab.Profile, BottomTab.Home) },
+                onAskTutor = { navController.openTab(BottomTab.Tutor, BottomTab.Home) }
+            )
+        }
     }
     navigation(startDestination = AppRoutes.LEARNING_PATH, route = AppRoutes.TAB_LEARN) {
         composable(AppRoutes.LEARNING_PATH) {

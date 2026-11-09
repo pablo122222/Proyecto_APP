@@ -216,4 +216,36 @@ object AppTextStyles {
         fontFamily = FontFamily.Monospace, fontWeight = FontWeight(800),
         fontSize = 31.sp
     )
+
+    // ---- Comunes de las pantallas con pestaña (guía §0) ----
+    val LinkButton = TextStyle( // .link-btn
+        fontFamily = InterFamily, fontWeight = FontWeight(800),
+        fontSize = 10.sp
+    )
+    val StatEmoji = TextStyle(fontFamily = InterFamily, fontSize = 17.sp)
+    val StatValue = TextStyle( // Número del .statbox
+        fontFamily = InterFamily, fontWeight = FontWeight(800),
+        fontSize = 20.sp
+    )
+    val StatCaption = TextStyle(fontFamily = InterFamily, fontSize = 10.sp, lineHeight = 14.sp)
+
+    // ---- Inicio (guía §2) ----
+    val Greeting = TextStyle( // "Hola, {nombre} 👋"
+        fontFamily = InterFamily, fontWeight = FontWeight(800),
+        fontSize = 22.sp, lineHeight = 26.sp, letterSpacing = (-0.4).sp
+    )
+    val GreetingSub = TextStyle(fontFamily = InterFamily, fontSize = 11.sp)
+    val HeroTitle = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight(800),
+        fontSize = 19.sp, lineHeight = 23.sp
+    )
+    val HeroText = TextStyle(fontFamily = InterFamily, fontSize = 11.sp, lineHeight = 16.sp)
+    val HeroButton = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight(800),
+        fontSize = 12.sp
+    )
+    val RecommendTitle = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight.Bold,
+        fontSize = 12.sp, lineHeight = 16.sp
+    )
 }
