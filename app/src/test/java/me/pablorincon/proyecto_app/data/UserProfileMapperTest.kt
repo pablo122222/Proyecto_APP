@@ -24,14 +24,20 @@ class UserProfileMapperTest {
             streak = 3,
             lastActiveDate = "2026-11-05",
             activitiesOnLastDay = 3,
+            bestStreak = 9,
+            bugsFound = 4,
+            recoveredExercises = 2,
+            achievementTiers = mapOf("habit" to 2, "bug_hunter" to 1),
             equippedTitleId = "t1",
             preferences = UserPreferences(
                 textSize = TextSize.ExtraLarge,
                 highContrast = true,
                 reduceMotion = true,
-                captions = false,
                 soundCues = true,
-                reminders = false
+                vibration = false,
+                reminders = true,
+                reminderHour = 8,
+                reminderMinute = 30
             )
         )
         assertEquals(profile, UserProfileMapper.fromMap(UserProfileMapper.toMap(profile)))
@@ -63,7 +69,7 @@ class UserProfileMapperTest {
         )
         assertEquals(0, profile.xp)
         assertNull(profile.level)
-        assertTrue(profile.preferences.captions)
+        assertEquals(UserPreferences(), profile.preferences)
     }
 
     @Test

@@ -21,10 +21,11 @@ class UserProfileTest {
     }
 
     @Test
-    fun `subtitulos y recordatorios vienen activados por defecto`() {
+    fun `vibracion activada y recordatorio apagado por defecto`() {
         val prefs = UserProfile.initial("Ana").preferences
-        assertTrue(prefs.captions)
-        assertTrue(prefs.reminders)
+        assertTrue(prefs.vibration)
+        assertFalse(prefs.reminders)
+        assertEquals(19, prefs.reminderHour)
         assertFalse(prefs.highContrast)
         assertFalse(prefs.reduceMotion)
         assertFalse(prefs.soundCues)

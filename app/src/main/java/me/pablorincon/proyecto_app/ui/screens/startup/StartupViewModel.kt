@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import me.pablorincon.proyecto_app.data.AuthRepository
+import me.pablorincon.proyecto_app.data.PreferencesRepository
 import me.pablorincon.proyecto_app.data.UserRepository
 import me.pablorincon.proyecto_app.data.UserRepository.ProfileResult
 import me.pablorincon.proyecto_app.ui.navigation.AppRoutes
@@ -40,12 +41,16 @@ class StartupViewModel(
         _uiState.value = StartupUiState.Loading
         viewModelScope.launch {
             _uiState.value = when (val result = users.ensureProfile(uid, auth.currentName().orEmpty())) {
-                is ProfileResult.Success -> StartupUiState.Ready(
-                    AppRoutes.startDestination(
-                        isLoggedIn = true,
-                        hasPersonalization = result.profile.hasPersonalization
+                is ProfileResult.Success -> {
+                    // Las preferencias de la cuenta mandan sobre la copia del teléfono
+                    PreferencesRepository().applyOnDevice(result.profile.preferences)
+                    StartupUiState.Ready(
+                        AppRoutes.startDestination(
+                            isLoggedIn = true,
+                            hasPersonalization = result.profile.hasPersonalization
+                        )
                     )
-                )
+                }
                 // Sin red y sin copia local no se asume que el usuario es nuevo
                 else -> StartupUiState.Error
             }

@@ -36,14 +36,25 @@ import me.pablorincon.proyecto_app.ui.screens.personalization.LevelScreen
 import me.pablorincon.proyecto_app.ui.screens.personalization.PathReadyScreen
 import me.pablorincon.proyecto_app.ui.screens.personalization.PersonalizationViewModel
 import me.pablorincon.proyecto_app.ui.screens.placeholder.PlaceholderScreen
+import me.pablorincon.proyecto_app.ui.screens.achievements.AchievementsScreen
+import me.pablorincon.proyecto_app.ui.screens.profile.AboutScreen
+import me.pablorincon.proyecto_app.ui.screens.profile.DailyGoalScreen
+import me.pablorincon.proyecto_app.ui.screens.profile.EditProfileScreen
+import me.pablorincon.proyecto_app.ui.screens.profile.LevelGoalScreen
+import me.pablorincon.proyecto_app.ui.screens.profile.ProfileActions
 import me.pablorincon.proyecto_app.ui.screens.profile.ProfileScreen
+import me.pablorincon.proyecto_app.ui.screens.profile.ProfileViewModel
+import me.pablorincon.proyecto_app.ui.screens.profile.SecurityScreen
+import me.pablorincon.proyecto_app.ui.screens.profile.StatsScreen
 import me.pablorincon.proyecto_app.ui.screens.register.RegisterScreen
+import me.pablorincon.proyecto_app.ui.screens.settings.SettingsScreen
 import me.pablorincon.proyecto_app.ui.screens.tutor.TutorScreen
 import me.pablorincon.proyecto_app.ui.screens.welcome.WelcomeScreen
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
+import me.pablorincon.proyecto_app.ui.theme.motionMillis
 
 // Duración del fundido entre pantallas (la guía no define transiciones).
-// En la Fase 18, "Reducir animaciones" podrá quitarlo.
+// "Reducir animaciones" (Configuración) lo quita.
 private const val FADE_MILLIS = 200
 
 // Grafo de navegación de toda la app y barra de pestañas inferior.
@@ -64,8 +75,8 @@ fun AppNavHost(startDestination: String, modifier: Modifier = Modifier) {
             navController = navController,
             startDestination = startDestination,
             modifier = Modifier.fillMaxSize(),
-            enterTransition = { fadeIn(tween(FADE_MILLIS)) },
-            exitTransition = { fadeOut(tween(FADE_MILLIS)) }
+            enterTransition = { fadeIn(tween(motionMillis(FADE_MILLIS))) },
+            exitTransition = { fadeOut(tween(motionMillis(FADE_MILLIS))) }
         ) {
             accountDestinations(navController)
             personalizationDestinations(navController)
@@ -153,6 +164,13 @@ private fun NavHostController.personalizationViewModel(entry: NavBackStackEntry)
     return viewModel(graphEntry)
 }
 
+// ViewModel de Perfil compartido con sus pantallas internas (Perfil siempre queda debajo).
+@Composable
+private fun NavHostController.profileViewModel(entry: NavBackStackEntry): ProfileViewModel {
+    val profileEntry = remember(entry) { getBackStackEntry(AppRoutes.PROFILE) }
+    return viewModel(profileEntry)
+}
+
 // ---------- Pestañas: un grafo anidado por pestaña ----------
 private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
     navigation(startDestination = AppRoutes.HOME, route = AppRoutes.TAB_HOME) {
@@ -161,7 +179,8 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
                 onOpenStep = { navController.navigate(AppRoutes.step(it)) },
                 onOpenPath = { navController.openTab(BottomTab.Learn, BottomTab.Home) },
                 onOpenProfile = { navController.openTab(BottomTab.Profile, BottomTab.Home) },
-                onAskTutor = { navController.openTab(BottomTab.Tutor, BottomTab.Home) }
+                onAskTutor = { navController.openTab(BottomTab.Tutor, BottomTab.Home) },
+                onOpenAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) }
             )
         }
     }
@@ -184,7 +203,8 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
                     }
                 },
                 onPractice = { navController.openTab(BottomTab.Challenges, BottomTab.Learn) },
-                onAskTutor = { navController.openTab(BottomTab.Tutor, BottomTab.Learn) }
+                onAskTutor = { navController.openTab(BottomTab.Tutor, BottomTab.Learn) },
+                onOpenAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) }
             )
         }
         composable(
@@ -199,7 +219,8 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
                     navController.navigate(AppRoutes.step(next)) {
                         popUpTo(AppRoutes.BOSS) { inclusive = true }
                     }
-                }
+                },
+                onOpenAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) }
             )
         }
     }
@@ -216,15 +237,51 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
         composable(AppRoutes.TUTOR) { TutorScreen() }
     }
     navigation(startDestination = AppRoutes.PROFILE, route = AppRoutes.TAB_PROFILE) {
-        composable(AppRoutes.PROFILE) {
+        composable(AppRoutes.PROFILE) { entry ->
             ProfileScreen(
-                onAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) },
-                onSettings = { navController.navigate(AppRoutes.SETTINGS) },
-                onSignedOut = { navController.openClearingHistory(AppRoutes.WELCOME) }
+                actions = ProfileActions(
+                    onEditProfile = { navController.navigate(AppRoutes.PROFILE_EDIT) },
+                    onSecurity = { navController.navigate(AppRoutes.PROFILE_SECURITY) },
+                    onDailyGoal = { navController.navigate(AppRoutes.PROFILE_DAILY_GOAL) },
+                    onLevelGoal = { navController.navigate(AppRoutes.PROFILE_LEVEL_GOAL) },
+                    onStats = { navController.navigate(AppRoutes.PROFILE_STATS) },
+                    onAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) },
+                    onSettings = { navController.navigate(AppRoutes.SETTINGS) },
+                    onAbout = { navController.navigate(AppRoutes.PROFILE_ABOUT) },
+                    onSignedOut = { navController.openClearingHistory(AppRoutes.WELCOME) }
+                ),
+                viewModel = viewModel(entry)
             )
         }
-        placeholder(AppRoutes.ACHIEVEMENTS, R.string.title_achievements, navController)
-        placeholder(AppRoutes.SETTINGS, R.string.title_settings, navController)
+        // Pantallas internas: comparten el ViewModel de Perfil (la pantalla de Perfil queda debajo)
+        composable(AppRoutes.PROFILE_EDIT) { entry ->
+            EditProfileScreen(navController.profileViewModel(entry), onBack = navController::goBack)
+        }
+        composable(AppRoutes.PROFILE_SECURITY) { entry ->
+            SecurityScreen(navController.profileViewModel(entry), onBack = navController::goBack)
+        }
+        composable(AppRoutes.PROFILE_DAILY_GOAL) { entry ->
+            DailyGoalScreen(navController.profileViewModel(entry), onBack = navController::goBack)
+        }
+        composable(AppRoutes.PROFILE_LEVEL_GOAL) { entry ->
+            LevelGoalScreen(navController.profileViewModel(entry), onBack = navController::goBack)
+        }
+        composable(AppRoutes.PROFILE_STATS) { entry ->
+            StatsScreen(navController.profileViewModel(entry), onBack = navController::goBack)
+        }
+        composable(AppRoutes.PROFILE_ABOUT) { AboutScreen(onBack = navController::goBack) }
+        composable(AppRoutes.ACHIEVEMENTS) {
+            AchievementsScreen(
+                onBack = navController::goBack,
+                onKeepPracticing = { navController.openTab(BottomTab.Learn, BottomTab.Profile) }
+            )
+        }
+        composable(AppRoutes.SETTINGS) {
+            SettingsScreen(
+                onBack = navController::goBack,
+                onLeftAccount = { navController.openClearingHistory(AppRoutes.WELCOME) }
+            )
+        }
     }
 }
 

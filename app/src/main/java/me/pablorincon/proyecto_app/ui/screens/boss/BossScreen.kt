@@ -41,6 +41,7 @@ import me.pablorincon.proyecto_app.domain.BossContent
 import me.pablorincon.proyecto_app.domain.LessonQuiz
 import me.pablorincon.proyecto_app.domain.MultipleChoice
 import me.pablorincon.proyecto_app.domain.PathStep
+import me.pablorincon.proyecto_app.ui.components.AchievementUnlockedDialog
 import me.pablorincon.proyecto_app.ui.components.BackButton
 import me.pablorincon.proyecto_app.ui.components.MoreSoonCard
 import me.pablorincon.proyecto_app.ui.components.Pill
@@ -71,6 +72,7 @@ fun BossScreen(
     bossId: String,
     onBack: () -> Unit,
     onNextStep: (PathStep) -> Unit,
+    onOpenAchievements: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel: BossViewModel = viewModel(
@@ -87,6 +89,15 @@ fun BossScreen(
         onRetrySave = viewModel::onRetrySave,
         onNextStep = onNextStep,
         modifier = modifier
+    )
+    // Aviso de logro desbloqueado al vencer al jefe
+    AchievementUnlockedDialog(
+        unlocks = (state as? BossUiState.Ready)?.data?.unlocks.orEmpty(),
+        onSeeAchievements = {
+            viewModel.onUnlocksSeen()
+            onOpenAchievements()
+        },
+        onDismiss = viewModel::onUnlocksSeen
     )
 }
 

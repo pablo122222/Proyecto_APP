@@ -57,7 +57,9 @@ import me.pablorincon.proyecto_app.domain.glitch.GlitchStep
 import me.pablorincon.proyecto_app.domain.glitch.ProgramError
 import me.pablorincon.proyecto_app.domain.glitch.RunOutcome
 import me.pablorincon.proyecto_app.ui.components.PrimaryButton
+import me.pablorincon.proyecto_app.ui.theme.AppAppearance
 import me.pablorincon.proyecto_app.ui.theme.AppDimens
+import me.pablorincon.proyecto_app.ui.theme.motionMillis
 import me.pablorincon.proyecto_app.ui.theme.AppTextStyles
 import me.pablorincon.proyecto_app.ui.theme.ChoiceSelectedBackground
 import me.pablorincon.proyecto_app.ui.theme.CodeBg
@@ -79,6 +81,7 @@ import me.pablorincon.proyecto_app.ui.theme.SyntaxNumber
 private val ChipShape = RoundedCornerShape(12.dp)
 private val MaxCell = 56.dp
 private const val STEP_MILLIS = 380L
+private const val REDUCED_STEP_MILLIS = 150L // Con "Reducir animaciones": salta de casilla sin deslizarse
 
 // Colores propios del tablero (no están en el mockup)
 private val SelectedLineBg = Color(0x334B7BE5)
@@ -128,7 +131,7 @@ internal fun GlitchPuzzleView(
             running = true
             for (index in result.run.steps.indices) {
                 frame = index
-                delay(STEP_MILLIS)
+                delay(if (AppAppearance.reduceMotion) REDUCED_STEP_MILLIS else STEP_MILLIS)
             }
             running = false
         }
@@ -289,9 +292,9 @@ private fun BoardView(
                 }
             }
             // Glitch
-            val x by animateDpAsState(stride * cell.x, tween(STEP_MILLIS.toInt() - 60), label = "glitchX")
-            val y by animateDpAsState(stride * cell.y, tween(STEP_MILLIS.toInt() - 60), label = "glitchY")
-            val angle by animateFloatAsState(direction.angle(), tween(200), label = "glitchAngle")
+            val x by animateDpAsState(stride * cell.x, tween(motionMillis(STEP_MILLIS.toInt() - 60)), label = "glitchX")
+            val y by animateDpAsState(stride * cell.y, tween(motionMillis(STEP_MILLIS.toInt() - 60)), label = "glitchY")
+            val angle by animateFloatAsState(direction.angle(), tween(motionMillis(200)), label = "glitchAngle")
             Box(
                 modifier = Modifier
                     .offset(x = x + if (bump) 3.dp else 0.dp, y = y)

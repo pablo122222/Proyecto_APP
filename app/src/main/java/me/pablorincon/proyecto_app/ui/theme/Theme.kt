@@ -3,6 +3,9 @@ package me.pablorincon.proyecto_app.ui.theme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.graphics.Color
 
 // Solo modo claro y sin colores dinámicos (Material You):
@@ -36,10 +39,15 @@ private val CodeMentorColorScheme = lightColorScheme(
 
 @Composable
 fun CodeMentorTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = CodeMentorColorScheme,
-        typography = Typography,
-        shapes = AppMaterialShapes,
-        content = content
-    )
+    // "Tamaño del texto" de Configuración: escala todo el texto (sp) sobre la escala del sistema
+    val density = LocalDensity.current
+    val scaled = Density(density.density, density.fontScale * AppAppearance.textScale)
+    CompositionLocalProvider(LocalDensity provides scaled) {
+        MaterialTheme(
+            colorScheme = CodeMentorColorScheme,
+            typography = Typography,
+            shapes = AppMaterialShapes,
+            content = content
+        )
+    }
 }

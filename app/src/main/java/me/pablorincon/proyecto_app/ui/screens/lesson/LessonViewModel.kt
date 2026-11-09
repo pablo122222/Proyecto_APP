@@ -13,6 +13,8 @@ import me.pablorincon.proyecto_app.data.ProgressRepository
 import me.pablorincon.proyecto_app.data.ProgressRepository.CompleteResult
 import me.pablorincon.proyecto_app.data.CurriculumProgressLoader
 import me.pablorincon.proyecto_app.data.CurriculumProgressLoader.LoadResult
+import me.pablorincon.proyecto_app.domain.AchievementUnlock
+import me.pablorincon.proyecto_app.domain.CompletionStats
 import me.pablorincon.proyecto_app.domain.Curriculum
 import me.pablorincon.proyecto_app.domain.Lesson
 import me.pablorincon.proyecto_app.domain.LessonContent
@@ -36,6 +38,7 @@ data class LessonReady(
     val moduleLessonCount: Int,
     val quiz: LessonQuiz,
     val save: SaveState = SaveState.Idle,
+    val unlocks: List<AchievementUnlock> = emptyList(), // Logros recién ganados: se celebran y se cierran
     val nextStep: PathStep?        // Siguiente lección o jefe; null si es el último paso de la ruta
 )
 
@@ -123,15 +126,19 @@ class LessonViewModel(
         val uid = auth.currentUid() ?: return updateReady { it.copy(save = SaveState.Failed) }
         updateReady { it.copy(save = SaveState.Saving) }
         viewModelScope.launch {
-            val save = when (val result = progressRepository.completeLesson(uid, lessonId, ready.lesson.xp)) {
+            val result = progressRepository.completeLesson(uid, lessonId, ready.lesson.xp, CompletionStats.of(ready.content.exercises, ready.quiz))
+            val save = when (result) {
                 is CompleteResult.Completed -> SaveState.Saved(result.xpAwarded)
                 CompleteResult.AlreadyCompleted -> SaveState.Saved(0)
                 CompleteResult.NoConnection -> SaveState.NoConnection
                 CompleteResult.Failed -> SaveState.Failed
             }
-            updateReady { it.copy(save = save) }
+            val unlocks = (result as? CompleteResult.Completed)?.unlocks.orEmpty()
+            updateReady { it.copy(save = save, unlocks = unlocks) }
         }
     }
+
+    fun onUnlocksSeen() = updateReady { it.copy(unlocks = emptyList()) }
 
     private fun updateReady(transform: (LessonReady) -> LessonReady) {
         _uiState.update { state ->

@@ -35,16 +35,23 @@ enum class TextSize(val id: String) {
     }
 }
 
-// Preferencias de Configuración y accesibilidad. Subtítulos y recordatorios
-// vienen activados por defecto, como en la guía de diseño.
+// Preferencias de Configuración y accesibilidad (todas se aplican de verdad).
+// El recordatorio viene apagado: Android exige pedir permiso de notificaciones al activarlo.
+// (Subtítulos se quitó: la app no tiene audio ni video.)
 data class UserPreferences(
     val textSize: TextSize = TextSize.Standard,
     val highContrast: Boolean = false,
     val reduceMotion: Boolean = false,
-    val captions: Boolean = true,
     val soundCues: Boolean = false,
-    val reminders: Boolean = true
-)
+    val vibration: Boolean = true,
+    val reminders: Boolean = false,
+    val reminderHour: Int = DEFAULT_REMINDER_HOUR,
+    val reminderMinute: Int = 0
+) {
+    companion object {
+        const val DEFAULT_REMINDER_HOUR = 19   // 7:00 p. m.
+    }
+}
 
 // Perfil del usuario: todo lo que vive en el documento users/{uid}.
 // Un usuario nuevo empieza desde cero (decisión E): nada de datos de ejemplo.
@@ -58,6 +65,10 @@ data class UserProfile(
     val streak: Int = 0,
     val lastActiveDate: String? = null,       // "yyyy-MM-dd": último día con actividad
     val activitiesOnLastDay: Int = 0,         // Actividades completadas ese día (meta diaria)
+    val bestStreak: Int = 0,                  // Mejor racha de la historia (logro Hábito)
+    val bugsFound: Int = 0,                   // Ejercicios "Caza el bug" resueltos (logro Cazador de errores)
+    val recoveredExercises: Int = 0,          // Ejercicios acertados después de fallarlos (logro Aprender del error)
+    val achievementTiers: Map<String, Int> = emptyMap(), // Niveles de logro ya obtenidos (id → cuántos)
     val equippedTitleId: String = INITIAL_TITLE_ID,
     val preferences: UserPreferences = UserPreferences()
 ) {

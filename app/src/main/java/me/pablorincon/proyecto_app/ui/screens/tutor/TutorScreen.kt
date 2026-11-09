@@ -69,6 +69,7 @@ import me.pablorincon.proyecto_app.domain.tutor.TutorMessage
 import me.pablorincon.proyecto_app.domain.tutor.TutorReply
 import me.pablorincon.proyecto_app.domain.tutor.TutorTopic
 import me.pablorincon.proyecto_app.ui.components.Pill
+import me.pablorincon.proyecto_app.ui.theme.AppAppearance
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
 import me.pablorincon.proyecto_app.ui.theme.AppDimens
 import me.pablorincon.proyecto_app.ui.theme.AppTextStyles
@@ -343,12 +344,14 @@ private fun TypingBubble() {
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         repeat(3) { index ->
-            val alpha by transition.animateFloat(
+            val pulse by transition.animateFloat(
                 initialValue = 0.25f,
                 targetValue = 1f,
                 animationSpec = infiniteRepeatable(tween(450, delayMillis = index * 150), RepeatMode.Reverse),
                 label = "dot$index"
             )
+            // Con "Reducir animaciones" los puntos quedan quietos
+            val alpha = if (AppAppearance.reduceMotion) 0.7f else pulse
             Box(
                 Modifier
                     .size(7.dp)

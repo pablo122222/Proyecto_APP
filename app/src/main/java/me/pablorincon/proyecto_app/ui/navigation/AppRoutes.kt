@@ -42,6 +42,14 @@ object AppRoutes {
     const val ACHIEVEMENTS = "logros"
     const val SETTINGS = "configuracion"
 
+    // Pantallas internas de Perfil (sin barra de pestañas)
+    const val PROFILE_EDIT = "perfil_editar"
+    const val PROFILE_SECURITY = "perfil_seguridad"
+    const val PROFILE_DAILY_GOAL = "perfil_meta_diaria"
+    const val PROFILE_LEVEL_GOAL = "perfil_nivel_objetivo"
+    const val PROFILE_STATS = "perfil_estadisticas"
+    const val PROFILE_ABOUT = "perfil_acerca"
+
     // Los ids van dentro de la ruta: solo se aceptan caracteres seguros en una URL.
     private val SafeId = Regex("[a-z0-9_-]+")
 

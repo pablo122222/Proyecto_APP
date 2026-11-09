@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.pablorincon.proyecto_app.data.AuthRepository
 import me.pablorincon.proyecto_app.data.AuthRepository.LoginResult
+import me.pablorincon.proyecto_app.data.PreferencesRepository
 import me.pablorincon.proyecto_app.data.UserRepository
 import me.pablorincon.proyecto_app.data.UserRepository.ProfileResult
 import me.pablorincon.proyecto_app.domain.AuthValidator
@@ -71,11 +72,15 @@ class LoginViewModel(
         val fallbackName = result.name.orEmpty()
         when (val profile = userRepository.ensureProfile(result.uid, fallbackName)) {
             // Se limpia el formulario para que no quede la contraseña escrita
-            is ProfileResult.Success -> _uiState.value = LoginUiState(
-                loggedIn = true,
-                userName = result.name,
-                hasPersonalization = profile.profile.hasPersonalization
-            )
+            is ProfileResult.Success -> {
+                // Las preferencias de la cuenta (texto, contraste, recordatorio…) se aplican ya
+                PreferencesRepository().applyOnDevice(profile.profile.preferences)
+                _uiState.value = LoginUiState(
+                    loggedIn = true,
+                    userName = result.name,
+                    hasPersonalization = profile.profile.hasPersonalization
+                )
+            }
             else -> showError(LoginError.ProfileNotLoaded)
         }
     }

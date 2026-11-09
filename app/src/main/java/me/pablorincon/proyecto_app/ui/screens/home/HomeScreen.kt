@@ -51,6 +51,7 @@ import me.pablorincon.proyecto_app.domain.Lesson
 import me.pablorincon.proyecto_app.domain.NextUp
 import me.pablorincon.proyecto_app.domain.PathStep
 import me.pablorincon.proyecto_app.domain.ReviewSuggestion
+import me.pablorincon.proyecto_app.ui.components.AchievementUnlockedDialog
 import me.pablorincon.proyecto_app.ui.components.AppCard
 import me.pablorincon.proyecto_app.ui.components.Avatar
 import me.pablorincon.proyecto_app.ui.components.Pill
@@ -89,6 +90,7 @@ fun HomeScreen(
     onOpenPath: () -> Unit,
     onOpenProfile: () -> Unit,
     onAskTutor: () -> Unit,
+    onOpenAchievements: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel()
 ) {
@@ -106,6 +108,15 @@ fun HomeScreen(
         onAskTutor = onAskTutor,
         onRetry = viewModel::load,
         modifier = modifier
+    )
+    // Logros pendientes entregados al abrir Inicio
+    AchievementUnlockedDialog(
+        unlocks = (state as? HomeUiState.Ready)?.unlocks.orEmpty(),
+        onSeeAchievements = {
+            viewModel.onUnlocksSeen()
+            onOpenAchievements()
+        },
+        onDismiss = viewModel::onUnlocksSeen
     )
 }
 
@@ -200,12 +211,21 @@ private fun Greeting(summary: HomeSummary) {
         Spacer(Modifier.width(AppDimens.TopLineGap))
         val days = pluralStringResource(R.plurals.home_streak, summary.streak, summary.streak)
         val description = stringResource(R.string.home_streak_description, days)
-        Pill(
-            text = "🔥 $days",
-            containerColor = Yellow,
-            contentColor = YellowInk,
-            modifier = Modifier.semantics { contentDescription = description }
-        )
+        // Racha y, debajo y discretas, las gemas ganadas con los logros
+        Column(horizontalAlignment = Alignment.End) {
+            Pill(
+                text = "🔥 $days",
+                containerColor = Yellow,
+                contentColor = YellowInk,
+                modifier = Modifier.semantics { contentDescription = description }
+            )
+            Spacer(Modifier.height(5.dp))
+            val gemsDescription = stringResource(R.string.gems_description, summary.gems)
+            Pill(
+                text = stringResource(R.string.gems_pill, summary.gems),
+                modifier = Modifier.semantics { contentDescription = gemsDescription }
+            )
+        }
     }
 }
 
@@ -420,6 +440,7 @@ private fun HomeScreenPreview() {
                     initials = "JD",
                     streak = 3,
                     xp = 120,
+                    gems = 25,
                     todayDone = 1,
                     dailyGoal = 2,
                     next = NextUp.Step(lesson, level = 1, title = "Glitch no lee mentes 🤖", doneInLevel = 2, stepsInLevel = 12, firstTime = false),

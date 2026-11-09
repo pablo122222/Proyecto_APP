@@ -46,6 +46,7 @@ import me.pablorincon.proyecto_app.domain.LessonQuiz
 import me.pablorincon.proyecto_app.domain.PathStep
 
 import me.pablorincon.proyecto_app.domain.content.LessonCatalog
+import me.pablorincon.proyecto_app.ui.components.AchievementUnlockedDialog
 import me.pablorincon.proyecto_app.ui.components.BackButton
 import me.pablorincon.proyecto_app.ui.components.MoreSoonCard
 import me.pablorincon.proyecto_app.ui.components.Pill
@@ -90,6 +91,7 @@ fun LessonScreen(
     onNextLesson: (PathStep) -> Unit,
     onPractice: () -> Unit,
     onAskTutor: () -> Unit,
+    onOpenAchievements: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val viewModel: LessonViewModel = viewModel(
@@ -108,6 +110,15 @@ fun LessonScreen(
         onPractice = onPractice,
         onAskTutor = onAskTutor,
         modifier = modifier
+    )
+    // Aviso de logro desbloqueado al terminar la lección
+    AchievementUnlockedDialog(
+        unlocks = (state as? LessonUiState.Ready)?.data?.unlocks.orEmpty(),
+        onSeeAchievements = {
+            viewModel.onUnlocksSeen()
+            onOpenAchievements()
+        },
+        onDismiss = viewModel::onUnlocksSeen
     )
 }
 

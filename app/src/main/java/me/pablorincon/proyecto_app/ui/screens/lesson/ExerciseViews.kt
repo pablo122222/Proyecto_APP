@@ -29,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -51,6 +50,7 @@ import me.pablorincon.proyecto_app.domain.MultipleChoice
 import me.pablorincon.proyecto_app.domain.OrderLines
 import me.pablorincon.proyecto_app.domain.PredictOutput
 import me.pablorincon.proyecto_app.domain.TypeCode
+import me.pablorincon.proyecto_app.ui.feedback.AnswerFeedback
 import me.pablorincon.proyecto_app.ui.components.Pill
 import me.pablorincon.proyecto_app.ui.components.PrimaryButton
 import me.pablorincon.proyecto_app.ui.theme.AnswerCorrectBg
@@ -88,7 +88,7 @@ internal fun ExerciseCard(
     val exercise = quiz.current ?: return
     val haptic = LocalHapticFeedback.current
     val submit: (Boolean) -> Unit = { correct ->
-        haptic.performHapticFeedback(if (correct) HapticFeedbackType.Confirm else HapticFeedbackType.Reject)
+        AnswerFeedback.onAnswer(correct, haptic) // Vibración y sonido según Configuración
         onSubmit(correct)
     }
 

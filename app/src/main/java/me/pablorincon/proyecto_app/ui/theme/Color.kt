@@ -4,6 +4,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 // Paleta de CodeMentor AI tomada del mockup (prototipo v5).
+// Los grises de texto y bordes cambian con "Alto contraste" (Configuración): se leen con
+// get() para que la pantalla se redibuje al activarlo.
 
 // ---- Fondos y superficies ----
 val AppBackground = Color(0xFFF5F7FC)     // Fondo de todas las pantallas
@@ -11,9 +13,9 @@ val Paper = Color(0xFFFFFFFF)             // Tarjetas, campos de texto, botón a
 
 // ---- Texto ----
 val Ink = Color(0xFF1F2A44)               // Texto principal
-val Muted = Color(0xFF66708A)             // Subtítulos y textos secundarios
-val LabelInk = Color(0xFF2F3B5C)          // Etiquetas de los campos
-val FinePrintText = Color(0xFF8590AB)     // Letra pequeña
+val Muted: Color get() = if (AppAppearance.highContrast) Color(0xFF3B4562) else Color(0xFF66708A)             // Subtítulos y textos secundarios
+val LabelInk: Color get() = if (AppAppearance.highContrast) Color(0xFF1F2A44) else Color(0xFF2F3B5C)          // Etiquetas de los campos
+val FinePrintText: Color get() = if (AppAppearance.highContrast) Color(0xFF4A5470) else Color(0xFF8590AB)     // Letra pequeña
 
 // ---- Color primario ----
 val Primary = Color(0xFF4B7BE5)           // Botones, enlaces, acentos
@@ -22,10 +24,10 @@ val PrimarySoft = Color(0xFFE5EDFD)       // Pills, botón secundario, tarjeta d
 val PrimarySoftBorder = Color(0xFFC5D6F7) // Borde de la tarjeta demo
 
 // ---- Bordes ----
-val Line = Color(0xFFE4E9F3)              // Bordes generales
-val InputBorder = Color(0xFFDDE4F2)       // Borde de los campos de texto
+val Line: Color get() = if (AppAppearance.highContrast) Color(0xFF9AA5BD) else Color(0xFFE4E9F3)              // Bordes generales
+val InputBorder: Color get() = if (AppAppearance.highContrast) Color(0xFF8590AB) else Color(0xFFDDE4F2)       // Borde de los campos de texto
 val FocusHaloColor = Color(0x144B7BE5)    // Halo azul del campo con foco
-val Placeholder = Color(0xFFA9A9A9)       // El mockup no lo define: gris por defecto de Chrome
+val Placeholder: Color get() = if (AppAppearance.highContrast) Color(0xFF5E6680) else Color(0xFFA9A9A9)       // El mockup no lo define: gris por defecto de Chrome
 
 // ---- Estados ----
 val ErrorRed = Color(0xFFC24A4A)          // Mensajes de error
@@ -41,17 +43,17 @@ val FloatCardBorder = Color(0xB8FFFFFF)   // Borde blanco semitransparente de la
 
 // ---- Barra de pestañas inferior ----
 val TabBarBackground = Color(0xEDFFFFFF)  // Blanco al 93 % (rgba(255,255,255,.93))
-val TabInactive = Color(0xFF8A96B3)       // Icono y texto de las pestañas inactivas
+val TabInactive: Color get() = if (AppAppearance.highContrast) Color(0xFF4A5470) else Color(0xFF8A96B3)       // Icono y texto de las pestañas inactivas
 
 // ---- Filas (.rowline) ----
 val RowIconBackground = Color(0xFFE5EDFD) // Fondo del icono de la fila
-val Chevron = Color(0xFF9AA5BD)           // Flecha "›" de las filas
+val Chevron: Color get() = if (AppAppearance.highContrast) Color(0xFF4A5470) else Color(0xFF9AA5BD)           // Flecha "›" de las filas
 val LogoutIconBackground = Color(0xFFFDECEC) // Fondo del icono de "Cerrar sesión"
 
 // ---- Personalización: opciones, pasos e ilustración de "Ruta lista" ----
 val ChoiceSelectedBackground = Color(0xFFEEF3FE) // Fondo de la opción elegida (choice.selected)
 val ChoiceIconBackground = Color(0xFFEAF0FD)     // Cuadro del emoji de la opción
-val RadioBorder = Color(0xFFCBD3E6)              // Círculo del radio sin elegir
+val RadioBorder: Color get() = if (AppAppearance.highContrast) Color(0xFF66708A) else Color(0xFFCBD3E6)              // Círculo del radio sin elegir
 val StepInactive = Color(0xFFE1E6F1)             // Barrita de paso sin completar
 val PathIllustrationStart = Color(0xFFCFE0FC)    // Degradado del cuadro 🚀 (inicio)
 val PathIllustrationEnd = Color(0xFFC9F2E1)      // Degradado del cuadro 🚀 (fin)
@@ -69,7 +71,7 @@ val NodeLockedRing = Color(0xFFD8DFEF)
 val CurrentCardBorder = Color(0xFF8FB0F5)
 val CurrentCardBackground = Color(0xFFF4F8FF)
 val LockedPillBackground = Color(0xFFEEF1F8)
-val LockedPillText = Color(0xFF7A86A3)
+val LockedPillText: Color get() = if (AppAppearance.highContrast) Color(0xFF3B4562) else Color(0xFF7A86A3)
 
 // ---- Sombras ----
 val ButtonShadow = Color(0x264B7BE5)      // Botón primario
@@ -80,12 +82,12 @@ val CardShadow = Color(0x081B2540)        // Tarjetas (.card)
 // ---- Lección (guía §0 y §4) ----
 val CodeBg = Color(0xFF1C2540)
 val CodeText = Color(0xFFE9EDFA)
-val CodeLineNumber = Color(0xFF7F8AA6)
+val CodeLineNumber: Color get() = if (AppAppearance.highContrast) Color(0xFFB8C1D9) else Color(0xFF7F8AA6)
 val SyntaxKeyword = Color(0xFFB3A8FF)
 val SyntaxNumber = Color(0xFFFFC46B)
 val SyntaxString = Color(0xFF8CE0B7)
 val SyntaxFunction = Color(0xFF80C9FF)
-val SyntaxComment = Color(0xFF7F8AA6)     // no está en la guía: igual que los números de línea
+val SyntaxComment: Color get() = if (AppAppearance.highContrast) Color(0xFFB8C1D9) else Color(0xFF7F8AA6)     // no está en la guía: igual que los números de línea
 val OutputBg = Color(0xFFEDFAF4)
 val OutputBorder = Color(0xFFCDEEDD)
 val OutputText = Color(0xFF1B7A5C)
@@ -105,7 +107,7 @@ val SoftBlueCardBorder = Color(0xFFD3E2FC)
 val NodeDoneShadow = Color(0xFF229A77)
 val NodeLockedFill = Color(0xFFDDE4F2)
 val NodeLockedShadow = Color(0xFFC2CCE0)
-val NodeLockedText = Color(0xFF8A96B3)
+val NodeLockedText: Color get() = if (AppAppearance.highContrast) Color(0xFF3B4562) else Color(0xFF8A96B3)
 val HeroStart = Color(0xFF3F5FD8)         // Degradado del nivel en curso
 val HeroEnd = Color(0xFF6A5CE6)
 
@@ -129,3 +131,7 @@ val HeroText = Color(0xFFDCE4FA)
 val HeroCircle = Color(0x26FFFFFF)          // Blanco al 15 %
 val HeroTrack = Color(0x30FFFFFF)           // Blanco al 19 %
 val HeroFill = Color(0xFF6FDDB4)
+
+// ---- Listas de ajustes (Perfil y Configuración, estilo de lista a ancho completo) ----
+val SettingsBand: Color get() = if (AppAppearance.highContrast) Color(0xFFC9D0E0) else Color(0xFFEEF1F7) // Franja entre secciones
+val SwitchOff: Color get() = if (AppAppearance.highContrast) Color(0xFF8A96B3) else Color(0xFFD5DCEC)   // Interruptor apagado (guía §8)

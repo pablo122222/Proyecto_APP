@@ -21,15 +21,21 @@ internal object UserProfileMapper {
     const val STREAK = "streak"
     const val LAST_ACTIVE_DATE = "lastActiveDate"
     const val ACTIVITIES_ON_LAST_DAY = "activitiesOnLastDay"
+    const val BEST_STREAK = "bestStreak"
+    const val BUGS_FOUND = "bugsFound"
+    const val RECOVERED_EXERCISES = "recoveredExercises"
+    const val ACHIEVEMENT_TIERS = "achievementTiers"
     const val EQUIPPED_TITLE = "equippedTitleId"
     const val PREFERENCES = "preferences"
 
     private const val TEXT_SIZE = "textSize"
     private const val HIGH_CONTRAST = "highContrast"
     private const val REDUCE_MOTION = "reduceMotion"
-    private const val CAPTIONS = "captions"
     private const val SOUND_CUES = "soundCues"
+    private const val VIBRATION = "vibration"
     private const val REMINDERS = "reminders"
+    private const val REMINDER_HOUR = "reminderHour"
+    private const val REMINDER_MINUTE = "reminderMinute"
 
     fun toMap(profile: UserProfile): Map<String, Any?> = mapOf(
         NAME to profile.name,
@@ -41,40 +47,63 @@ internal object UserProfileMapper {
         STREAK to profile.streak,
         LAST_ACTIVE_DATE to profile.lastActiveDate,
         ACTIVITIES_ON_LAST_DAY to profile.activitiesOnLastDay,
+        BEST_STREAK to profile.bestStreak,
+        BUGS_FOUND to profile.bugsFound,
+        RECOVERED_EXERCISES to profile.recoveredExercises,
+        ACHIEVEMENT_TIERS to profile.achievementTiers,
         EQUIPPED_TITLE to profile.equippedTitleId,
-        PREFERENCES to mapOf(
-            TEXT_SIZE to profile.preferences.textSize.id,
-            HIGH_CONTRAST to profile.preferences.highContrast,
-            REDUCE_MOTION to profile.preferences.reduceMotion,
-            CAPTIONS to profile.preferences.captions,
-            SOUND_CUES to profile.preferences.soundCues,
-            REMINDERS to profile.preferences.reminders
-        )
+        PREFERENCES to preferencesToMap(profile.preferences)
+    )
+
+    fun preferencesToMap(prefs: UserPreferences): Map<String, Any> = mapOf(
+        TEXT_SIZE to prefs.textSize.id,
+        HIGH_CONTRAST to prefs.highContrast,
+        REDUCE_MOTION to prefs.reduceMotion,
+        SOUND_CUES to prefs.soundCues,
+        VIBRATION to prefs.vibration,
+        REMINDERS to prefs.reminders,
+        REMINDER_HOUR to prefs.reminderHour,
+        REMINDER_MINUTE to prefs.reminderMinute
     )
 
     fun fromMap(data: Map<String, Any?>, fallbackName: String = ""): UserProfile {
         val defaults = UserProfile.initial(fallbackName)
-        val prefs = (data[PREFERENCES] as? Map<*, *>).orEmpty()
-        val defaultPrefs = UserPreferences()
         return UserProfile(
             name = (data[NAME] as? String) ?: fallbackName,
             level = LearningLevel.fromId(data[LEVEL] as? String),
             goal = LearningGoal.fromId(data[GOAL] as? String),
-            dailyGoal = (data[DAILY_GOAL] as? Number)?.toInt() ?: defaults.dailyGoal,
-            xp = (data[XP] as? Number)?.toInt() ?: defaults.xp,
-            gems = (data[GEMS] as? Number)?.toInt() ?: defaults.gems,
-            streak = (data[STREAK] as? Number)?.toInt() ?: defaults.streak,
+            dailyGoal = data.int(DAILY_GOAL) ?: defaults.dailyGoal,
+            xp = data.int(XP) ?: defaults.xp,
+            gems = data.int(GEMS) ?: defaults.gems,
+            streak = data.int(STREAK) ?: defaults.streak,
             lastActiveDate = data[LAST_ACTIVE_DATE] as? String,
-            activitiesOnLastDay = (data[ACTIVITIES_ON_LAST_DAY] as? Number)?.toInt() ?: defaults.activitiesOnLastDay,
+            activitiesOnLastDay = data.int(ACTIVITIES_ON_LAST_DAY) ?: defaults.activitiesOnLastDay,
+            bestStreak = data.int(BEST_STREAK) ?: defaults.bestStreak,
+            bugsFound = data.int(BUGS_FOUND) ?: defaults.bugsFound,
+            recoveredExercises = data.int(RECOVERED_EXERCISES) ?: defaults.recoveredExercises,
+            achievementTiers = (data[ACHIEVEMENT_TIERS] as? Map<*, *>).orEmpty()
+                .mapNotNull { (key, value) -> (key as? String)?.let { k -> (value as? Number)?.let { k to it.toInt() } } }
+                .toMap(),
             equippedTitleId = (data[EQUIPPED_TITLE] as? String) ?: defaults.equippedTitleId,
-            preferences = UserPreferences(
-                textSize = TextSize.fromId(prefs[TEXT_SIZE] as? String),
-                highContrast = prefs[HIGH_CONTRAST] as? Boolean ?: defaultPrefs.highContrast,
-                reduceMotion = prefs[REDUCE_MOTION] as? Boolean ?: defaultPrefs.reduceMotion,
-                captions = prefs[CAPTIONS] as? Boolean ?: defaultPrefs.captions,
-                soundCues = prefs[SOUND_CUES] as? Boolean ?: defaultPrefs.soundCues,
-                reminders = prefs[REMINDERS] as? Boolean ?: defaultPrefs.reminders
-            )
+            preferences = preferencesFromMap(data[PREFERENCES] as? Map<*, *>)
         )
     }
+
+    fun preferencesFromMap(prefs: Map<*, *>?): UserPreferences {
+        val p = prefs.orEmpty()
+        val d = UserPreferences()
+        return UserPreferences(
+            textSize = TextSize.fromId(p[TEXT_SIZE] as? String),
+            highContrast = p[HIGH_CONTRAST] as? Boolean ?: d.highContrast,
+            reduceMotion = p[REDUCE_MOTION] as? Boolean ?: d.reduceMotion,
+            soundCues = p[SOUND_CUES] as? Boolean ?: d.soundCues,
+            vibration = p[VIBRATION] as? Boolean ?: d.vibration,
+            reminders = p[REMINDERS] as? Boolean ?: d.reminders,
+            reminderHour = (p[REMINDER_HOUR] as? Number)?.toInt()?.takeIf { it in 0..23 } ?: d.reminderHour,
+            reminderMinute = (p[REMINDER_MINUTE] as? Number)?.toInt()?.takeIf { it in 0..59 } ?: d.reminderMinute
+        )
+    }
+
+    // Firestore devuelve los números como Long: se aceptan Int, Long o Double.
+    private fun Map<String, Any?>.int(key: String): Int? = (this[key] as? Number)?.toInt()
 }

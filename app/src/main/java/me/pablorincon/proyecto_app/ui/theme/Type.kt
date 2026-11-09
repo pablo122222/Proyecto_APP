@@ -248,4 +248,21 @@ object AppTextStyles {
         fontFamily = InterFamily, fontWeight = FontWeight.Bold,
         fontSize = 12.sp, lineHeight = 16.sp
     )
+
+    // ---- Listas de ajustes (Perfil y Configuración) ----
+    val SubScreenTitle = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight.Bold,
+        fontSize = 18.sp, lineHeight = 22.sp
+    )
+    val SettingsHeader = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight.SemiBold,
+        fontSize = 13.sp
+    )
+    val SettingsTitle = TextStyle(
+        fontFamily = InterFamily, fontWeight = FontWeight.Medium,
+        fontSize = 15.sp, lineHeight = 20.sp
+    )
+    val SettingsSubtitle = TextStyle(fontFamily = InterFamily, fontSize = 12.sp, lineHeight = 16.sp)
+    val SettingsValue = TextStyle(fontFamily = InterFamily, fontSize = 13.sp)
+    val SettingsNote = TextStyle(fontFamily = InterFamily, fontSize = 11.sp, lineHeight = 16.sp)
 }

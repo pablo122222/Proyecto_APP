@@ -8,7 +8,8 @@ data class LessonQuiz(
     private val pending: List<Exercise>,
     val total: Int,
     val lastResult: Boolean? = null,   // Resultado del ejercicio actual, tras comprobarlo
-    val step: Int = 0                  // Sube con cada "Continuar": la pantalla lo usa para reiniciar el ejercicio
+    val step: Int = 0,                 // Sube con cada "Continuar": la pantalla lo usa para reiniciar el ejercicio
+    private val failed: Set<Exercise> = emptySet() // Ejercicios fallados al menos una vez
 ) {
     constructor(exercises: List<Exercise>) : this(exercises, exercises.size)
 
@@ -16,6 +17,10 @@ data class LessonQuiz(
     val isComplete: Boolean get() = pending.isEmpty()
     val isAnswered: Boolean get() = lastResult != null
     val isLastCorrect: Boolean get() = lastResult == true
+
+    // Ejercicios que se fallaron y luego se acertaron (logro "Aprender del error").
+    // Al completar la lección todos los fallados ya se acertaron.
+    val recoveredCount: Int get() = if (isComplete) failed.size else 0
 
     // Ejercicios ya resueltos (el que se acaba de acertar cuenta de inmediato).
     val correctCount: Int get() = total - pending.size + if (isLastCorrect) 1 else 0
@@ -34,7 +39,8 @@ data class LessonQuiz(
         return copy(
             pending = if (isLastCorrect) rest else rest + exercise,
             lastResult = null,
-            step = step + 1
+            step = step + 1,
+            failed = if (isLastCorrect) failed else failed + exercise
         )
     }
 }
