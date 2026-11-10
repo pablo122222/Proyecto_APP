@@ -407,7 +407,7 @@
     <string name="settings_reset_progress">Restablecer mi progreso</string>
     <string name="settings_reset_progress_subtitle">Empieza la ruta de nuevo, desde cero.</string>
     <string name="settings_reset_confirm_title">¿Restablecer tu progreso?</string>
-    <string name="settings_reset_confirm_message">Se borran tus lecciones completadas, XP, gemas, racha y logros. Tu nombre, tu nivel, tu objetivo y estas preferencias se conservan. No se puede deshacer.</string>
+    <string name="settings_reset_confirm_message">Se borran tus lecciones completadas, tus retos de Glitch City, XP, gemas, racha y logros. Tu nombre, tu nivel, tu objetivo y estas preferencias se conservan. No se puede deshacer.</string>
     <string name="settings_reset_confirm_yes">Sí, restablecer</string>
     <string name="settings_reset_done">Listo: tu progreso empieza de cero.</string>
     <string name="settings_delete_account">Eliminar mi cuenta</string>

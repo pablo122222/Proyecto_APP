@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
+import me.pablorincon.proyecto_app.domain.UserProfile
 
 // Acciones sobre la cuenta desde Perfil y Configuración: cambiar nombre y meta diaria,
 // restablecer el progreso y eliminar la cuenta. Igual que los demás repositorios,
@@ -22,6 +23,7 @@ class AccountRepository(
 
     private fun user(uid: String) = db.collection(USERS).document(uid)
     private fun progress(uid: String) = user(uid).collection(PROGRESS).document(CURRICULUM)
+    private fun glitchCity(uid: String) = user(uid).collection(PROGRESS).document(GLITCH_CITY)
 
     // Nombre visible: en el perfil de Firestore (lo que muestra la app) y en Firebase Auth.
     suspend fun updateName(uid: String, name: String): Result = attempt {
@@ -33,11 +35,13 @@ class AccountRepository(
         user(uid).set(mapOf(UserProfileMapper.DAILY_GOAL to goal), SetOptions.merge()).awaitResult()
     }
 
-    // Borra lecciones completadas, XP, gemas, racha, contadores y logros. Conserva el nombre,
+    // Borra lecciones completadas, Glitch City, XP, gemas, racha, contadores, logros y el título
+    // equipado. Conserva el nombre,
     // el nivel y objetivo de Personalización, la meta diaria y las preferencias.
     suspend fun resetProgress(uid: String): Result = attempt {
         val batch = db.batch()
         batch.delete(progress(uid))
+        batch.delete(glitchCity(uid))
         batch.set(
             user(uid),
             mapOf(
@@ -49,7 +53,8 @@ class AccountRepository(
                 UserProfileMapper.BEST_STREAK to 0,
                 UserProfileMapper.BUGS_FOUND to 0,
                 UserProfileMapper.RECOVERED_EXERCISES to 0,
-                UserProfileMapper.ACHIEVEMENT_TIERS to emptyMap<String, Int>()
+                UserProfileMapper.ACHIEVEMENT_TIERS to emptyMap<String, Int>(),
+                UserProfileMapper.EQUIPPED_TITLE to UserProfile.INITIAL_TITLE_ID
             ),
             SetOptions.merge()
         )
@@ -66,6 +71,7 @@ class AccountRepository(
             current.reauthenticate(EmailAuthProvider.getCredential(email, password)).awaitResult()
             withTimeoutOrNull(TIMEOUT_MILLIS) {
                 progress(current.uid).delete().awaitResult()
+                glitchCity(current.uid).delete().awaitResult()
                 user(current.uid).delete().awaitResult()
                 current.delete().awaitResult()
                 Result.Done
@@ -98,6 +104,7 @@ class AccountRepository(
         const val USERS = "users"
         const val PROGRESS = "progress"
         const val CURRICULUM = "curriculum"
+        const val GLITCH_CITY = "glitchCity"
         const val TIMEOUT_MILLIS = 8_000L
     }
 }
