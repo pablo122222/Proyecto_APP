@@ -176,8 +176,8 @@
     <string name="path_screen_percent">%1$d%%</string>
     <string name="module_level">Nivel %1$d</string>
     <string name="module_level_description">Nivel %1$d, dificultad %2$d de %3$d</string>
-    <string name="path_more_soon_title">🚧 Pronto: más módulos y retos</string>
-    <string name="path_more_soon_text">Estamos preparando más lecciones. ¡Sigue practicando mientras tanto!</string>
+    <string name="path_more_soon_title">🚧 Pronto: más niveles y retos</string>
+    <string name="path_more_soon_text">Estamos preparando nuevos niveles para que sigas aprendiendo. ¡Sigue practicando mientras tanto!</string>
     <!-- no está en la guía: falló la carga del progreso -->
     <string name="path_screen_error">No pudimos cargar tu progreso. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="path_screen_loading">Cargando tu progreso…</string>
@@ -365,7 +365,7 @@
     <string name="home_soon_title">¡Vas al día! 🎉</string>
     <string name="home_soon_text">Completaste todo lo disponible. Pronto llegan las lecciones del nivel %1$d.</string>
     <string name="home_finished_title">¡Completaste la ruta! 🏆</string>
-    <string name="home_finished_text">Terminaste los %1$d niveles. Sigue practicando o pregunta al tutor lo que quieras.</string>
+    <string name="home_finished_text">Terminaste los %1$d niveles. Pronto llegarán más; mientras tanto, sigue practicando en Retos o pregunta al tutor.</string>
     <string name="home_see_path">Ver mi ruta →</string>
     <string name="home_numbers_title">Tu día en números</string>
     <string name="home_numbers_link">Ver perfil</string>

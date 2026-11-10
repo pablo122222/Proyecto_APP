@@ -25,7 +25,7 @@ import me.pablorincon.proyecto_app.ui.theme.Ink
 import me.pablorincon.proyecto_app.ui.theme.Muted
 import me.pablorincon.proyecto_app.ui.theme.RadioBorder
 
-// Aviso final de la ruta: vendrán más módulos. Estado vacío de la guía (borde punteado).
+// Aviso final de la ruta: vendrán más niveles. Estado vacío de la guía (borde punteado).
 @Composable
 fun MoreSoonCard() {
     val shape = RoundedCornerShape(14.dp)
