@@ -38,6 +38,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import me.pablorincon.proyecto_app.ui.theme.AppDimens
 import me.pablorincon.proyecto_app.ui.theme.AppTextStyles
@@ -238,7 +239,7 @@ fun AppSwitch(checked: Boolean, modifier: Modifier = Modifier) {
     ) {
         Box(
             Modifier
-                .offset(x = knobOffset, y = 3.dp)
+                .offset { IntOffset(knobOffset.roundToPx(), 3.dp.roundToPx()) }
                 .size(17.dp)
                 .clip(CircleShape)
                 .background(Paper)

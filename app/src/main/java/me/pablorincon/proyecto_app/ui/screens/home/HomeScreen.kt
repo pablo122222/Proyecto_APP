@@ -230,7 +230,7 @@ private fun Greeting(summary: HomeSummary) {
                 modifier = Modifier.semantics { contentDescription = description }
             )
             Spacer(Modifier.height(5.dp))
-            val gemsDescription = stringResource(R.string.gems_description, summary.gems)
+            val gemsDescription = pluralStringResource(R.plurals.gems_description, summary.gems, summary.gems)
             Pill(
                 text = stringResource(R.string.gems_pill, summary.gems),
                 modifier = Modifier.semantics { contentDescription = gemsDescription }

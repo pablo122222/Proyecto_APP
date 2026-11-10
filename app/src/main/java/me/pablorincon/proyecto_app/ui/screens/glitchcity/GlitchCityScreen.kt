@@ -229,7 +229,7 @@ private fun GlitchCityContent(
 // Pills "◆ gemas" (azul), "🔥 racha" (amarillo) y "XP" (mint).
 @Composable
 private fun Header(gems: Int, streak: Int, xp: Int) {
-    val gemsDescription = pluralStringResource(R.plurals.city_gems_description, gems, gems)
+    val gemsDescription = pluralStringResource(R.plurals.gems_description, gems, gems)
     val streakDescription = stringResource(
         R.string.home_streak_description,
         pluralStringResource(R.plurals.home_streak, streak, streak)

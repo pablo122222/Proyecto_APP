@@ -280,7 +280,7 @@ private fun ReadyBody(state: DroneUiState.Ready, visibleSteps: Int, animationDon
         Text(stringResource(R.string.drone_repeat), style = AppTextStyles.RowTitle, color = Ink)
         (1..DroneBlock.MAX_REPEAT).forEach { times ->
             val active = times == state.repeat
-            val description = stringResource(R.string.drone_repeat_description, times)
+            val description = pluralStringResource(R.plurals.drone_repeat_description, times, times)
             SmallChip(
                 text = stringResource(R.string.drone_repeat_option, times),
                 active = active,

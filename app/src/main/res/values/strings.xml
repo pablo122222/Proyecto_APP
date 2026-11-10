@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">CodeMentor AI</string>
 
     <!-- Componentes comunes -->
@@ -96,7 +96,6 @@
     <string name="title_goal">¿Qué quieres lograr?</string>
     <string name="title_path_ready">Tu ruta está lista</string>
     <string name="title_learning_path">Ruta de aprendizaje</string>
-    <string name="title_lesson">Lección</string>
     <string name="title_glitch_city">Glitch City</string>
     <string name="title_achievements">Mis logros</string>
     <string name="title_settings">Configuración</string>
@@ -198,8 +197,7 @@
     <string name="lesson_walk_next">Siguiente ▶</string>
     <string name="lesson_walk_done">Terminar</string>
     <string name="lesson_check_title">Comprueba lo aprendido</string>
-    <string name="lesson_quick_question">Pregunta rápida</string>
-    <string name="lesson_correct_counter">%1$d de %2$d acertadas</string>
+    <string name="lesson_correct_counter" tools:ignore="PluralsCandidate">%1$d de %2$d acertadas</string>
     <string name="lesson_continue">Continuar</string>
     <string name="lesson_tutor_title">¿Necesitas una explicación diferente?</string>
     <string name="lesson_tutor_text">Pregunta al tutor para ver el concepto con otro ejemplo.</string>
@@ -219,7 +217,7 @@
     <string name="tutor_chip_variable">¿Qué es una variable?</string>
     <string name="tutor_chip_variable_question">Explícame las variables con un ejemplo</string>
     <string name="tutor_input_label">Tu pregunta</string>
-    <string name="tutor_input_placeholder">Escribe tu duda...</string>
+    <string name="tutor_input_placeholder">Escribe tu duda…</string>
     <string name="tutor_send">Enviar pregunta</string>
     <string name="tutor_typing">El tutor está escribiendo…</string>
     <string name="tutor_clear">Nueva conversación</string>
@@ -281,12 +279,12 @@
     <string name="glitch_outcome_not_at_goal">El programa terminó y Glitch se quedó lejos de la meta.</string>
     <string name="glitch_outcome_missing_batteries">Glitch llegó a la meta, pero dejó baterías sin recoger 🔋.</string>
     <string name="glitch_outcome_too_many_steps">😵 Glitch se mareó: dio demasiados pasos. ¿Hay un bucle que nunca termina?</string>
-    <string name="glitch_too_long">Tu programa tiene %1$d líneas y el máximo es %2$d. Prueba con un bucle.</string>
+    <string name="glitch_too_long" tools:ignore="PluralsCandidate">Tu programa tiene %1$d líneas y el máximo es %2$d. Prueba con un bucle.</string>
     <string name="glitch_error_empty">El programa está vacío: agrega al menos un bloque.</string>
-    <string name="glitch_error_hole">La línea %1$d tiene un hueco sin rellenar.</string>
-    <string name="glitch_error_indent">La línea %1$d tiene más sangría de la que toca.</string>
-    <string name="glitch_error_empty_body">La línea %1$d termina en «:» y necesita líneas con sangría debajo.</string>
-    <string name="glitch_error_else">El else: de la línea %1$d tiene que ir justo después del cuerpo de un if.</string>
+    <string name="glitch_error_hole" tools:ignore="PluralsCandidate">La línea %1$d tiene un hueco sin rellenar.</string>
+    <string name="glitch_error_indent" tools:ignore="PluralsCandidate">La línea %1$d tiene más sangría de la que toca.</string>
+    <string name="glitch_error_empty_body" tools:ignore="PluralsCandidate">La línea %1$d termina en «:» y necesita líneas con sangría debajo.</string>
+    <string name="glitch_error_else" tools:ignore="PluralsCandidate">El else: de la línea %1$d tiene que ir justo después del cuerpo de un if.</string>
 
     <!-- Camino de la ruta: 15 niveles de 12 pasos (11 lecciones y un jefe) -->
     <string-array name="level_titles">
@@ -365,7 +363,7 @@
     <string name="home_soon_title">¡Vas al día! 🎉</string>
     <string name="home_soon_text">Completaste todo lo disponible. Pronto llegan las lecciones del nivel %1$d.</string>
     <string name="home_finished_title">¡Completaste la ruta! 🏆</string>
-    <string name="home_finished_text">Terminaste los %1$d niveles. Pronto llegarán más; mientras tanto, sigue practicando en Retos o pregunta al tutor.</string>
+    <string name="home_finished_text" tools:ignore="PluralsCandidate">Terminaste los %1$d niveles. Pronto llegarán más; mientras tanto, sigue practicando en Retos o pregunta al tutor.</string>
     <string name="home_see_path">Ver mi ruta →</string>
     <string name="home_numbers_title">Tu día en números</string>
     <string name="home_numbers_link">Ver perfil</string>
@@ -431,7 +429,7 @@
     <string name="settings_delete_password_placeholder">Tu contraseña actual</string>
     <string name="settings_delete_confirm_yes">Eliminar mi cuenta</string>
     <string name="settings_wrong_password">La contraseña no es correcta.</string>
-    <string name="settings_working">Un momento…</string>
+    <string name="settings_working" tools:ignore="Typos">Un momento…</string>
     <string name="settings_cancel">Cancelar</string>
     <string name="settings_save">Guardar</string>
     <string name="settings_no_connection">Sin conexión. Revisa tu internet e inténtalo de nuevo.</string>
@@ -445,7 +443,6 @@
 
     <!-- Gemas (recompensa de los logros) -->
     <string name="gems_pill">◆ %1$d</string>
-    <string name="gems_description">%1$d gemas</string>
     <string name="gems_reward">+%1$d ◆</string>
 
     <!-- Perfil (guía §7, con lista de opciones a ancho completo) -->
@@ -523,13 +520,13 @@
     <!-- Logros (guía §6) -->
     <string name="achievements_pill">%1$d / %2$d</string>
     <string name="achievements_sub">Logros por comprender, depurar y mejorar. Cada uno tiene niveles de dominio.</string>
-    <string name="achievements_summary">%1$d de %2$d niveles de dominio</string>
+    <string name="achievements_summary" tools:ignore="PluralsCandidate">%1$d de %2$d niveles de dominio</string>
     <string name="achievements_summary_text">Premian comprender, depurar y mejorar, no solo acertar ni acumular XP.</string>
     <string name="achievements_empty">Aún no tienes logros. Completa lecciones, caza bugs y mantén tu racha para ganar el primero.</string>
     <string name="achievements_keep_practicing">Seguir practicando</string>
     <string name="achievements_locked">Bloqueado</string>
     <string name="achievements_tier_count">%1$s · %2$d/%3$d</string>
-    <string name="achievements_next">%1$d / %2$d para %3$s</string>
+    <string name="achievements_next" tools:ignore="PluralsCandidate">%1$d / %2$d para %3$s</string>
     <string name="achievements_max_level">Nivel máximo</string>
     <string name="achievements_tier_goal">Llegar a %1$d</string>
     <string name="achievements_tier_obtained">✓ Obtenido</string>
@@ -571,7 +568,7 @@
     <string name="city_loading">Cargando Glitch City…</string>
     <string name="city_error">No pudimos cargar Glitch City. Revisa tu conexión e inténtalo de nuevo.</string>
     <string name="city_gems">◆ %1$d</string>
-    <plurals name="city_gems_description">
+    <plurals name="gems_description">
         <item quantity="one">%d gema</item>
         <item quantity="other">%d gemas</item>
     </plurals>
@@ -584,7 +581,7 @@
     <string name="city_explore_intro">Experimenta con los sistemas de la ciudad. No hay vidas ni castigos: cambia valores y mira qué pasa.</string>
     <string name="city_create_intro">Construye reglas con lo que aprendiste, pruébalas y publícalas cuando cumplan los objetivos.</string>
     <string name="city_compete_intro">Programa al dron con bloques. Menos bloques = más estrellas. Compites contra tus propios récords y los intentos son ilimitados.</string>
-    <string name="city_lab_progress">%1$s · %2$d/%3$d descubrimientos</string>
+    <string name="city_lab_progress" tools:ignore="PluralsCandidate">%1$s · %2$d/%3$d descubrimientos</string>
     <string name="city_enter">Entrar</string>
     <string name="city_creation_published">%1$s · Publicada ✓</string>
     <string name="city_creation_unpublished">%1$s · Sin publicar</string>
@@ -759,12 +756,15 @@
     <!-- Nivel del dron (guía §5.3) -->
     <string name="drone_label">Competir · Nivel %1$d</string>
     <string name="drone_subtitle">Lleva el dron 🚁 hasta el paquete 📦. Un bloque con ×n repite su movimiento; tú compites contra tu récord.</string>
-    <string name="drone_subtitle_max">%1$s Máximo %2$d bloques.</string>
+    <string name="drone_subtitle_max" tools:ignore="PluralsCandidate">%1$s Máximo %2$d bloques.</string>
     <string name="drone_locked">Completa el nivel anterior para desbloquear este.</string>
     <string name="drone_map_description">Mapa del nivel: el dron está en la fila %1$d, columna %2$d; el paquete, en la fila %3$d, columna %4$d.</string>
     <string name="drone_repeat">Repetir:</string>
     <string name="drone_repeat_option">×%1$d</string>
-    <string name="drone_repeat_description">Repetir %1$d veces</string>
+    <plurals name="drone_repeat_description">
+        <item quantity="one">Repetir %d vez</item>
+        <item quantity="other">Repetir %d veces</item>
+    </plurals>
     <plurals name="drone_program_title">
         <item quantity="one">Tu programa (%d bloque)</item>
         <item quantity="other">Tu programa (%d bloques)</item>
@@ -779,7 +779,7 @@
     <string name="drone_out_of_map">El dron se sale del mapa. Revisa el último bloque.</string>
     <string name="drone_wall">El dron choca con un muro. Revisa el último bloque.</string>
     <string name="drone_wrong_cell">El dron termina en otra casilla. Ajusta tu programa y prueba otra vez: no pasa nada.</string>
-    <string name="drone_too_many">Llegaste, pero con %1$d bloques. Este reto permite máximo %2$d.</string>
+    <string name="drone_too_many" tools:ignore="PluralsCandidate">Llegaste, pero con %1$d bloques. Este reto permite máximo %2$d.</string>
     <plurals name="drone_delivered">
         <item quantity="one">¡Entrega lograda con %1$d bloque! %2$s</item>
         <item quantity="other">¡Entrega lograda con %1$d bloques! %2$s</item>
@@ -812,7 +812,7 @@
     <string name="drone_python_title">Tu programa en Python</string>
     <string name="drone_python_intro">Cada flecha es una función que mueve el dron, y cada ×n es un bucle for que la repite n veces.</string>
     <string name="drone_python_step">%1$s() mueve el dron %2$s.</string>
-    <string name="drone_python_loop_step">Vuelta %1$d de %2$d del for: %3$s() mueve el dron %4$s.</string>
+    <string name="drone_python_loop_step" tools:ignore="PluralsCandidate">Vuelta %1$d de %2$d del for: %3$s() mueve el dron %4$s.</string>
     <string name="drone_python_out_of_map">En esta línea el dron se sale del mapa.</string>
     <string name="drone_python_wall">En esta línea el dron choca con un muro.</string>
     <string name="drone_dir_up">hacia arriba</string>

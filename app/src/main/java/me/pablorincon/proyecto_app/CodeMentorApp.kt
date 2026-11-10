@@ -1,5 +1,6 @@
 package me.pablorincon.proyecto_app
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import me.pablorincon.proyecto_app.data.LocalPreferences
@@ -18,6 +19,7 @@ class CodeMentorApp : Application() {
 
     companion object {
         // Contexto de la aplicación (nunca de una pantalla) para los repositorios que lo necesitan.
+        @SuppressLint("StaticFieldLeak") // applicationContext vive lo mismo que la app: no hay fuga
         lateinit var context: Context
             private set
     }

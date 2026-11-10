@@ -111,7 +111,7 @@ fun tierBackground(tier: Tier?): Color = when (tier) {
 
 // Medalla redonda con el emoji del logro y el anillo del color de su nivel.
 @Composable
-fun AchievementMedal(emoji: String, tier: Tier?, size: Int = 44, modifier: Modifier = Modifier) {
+fun AchievementMedal(emoji: String, tier: Tier?, modifier: Modifier = Modifier, size: Int = 44) {
     Box(
         modifier = modifier
             .size(size.dp)

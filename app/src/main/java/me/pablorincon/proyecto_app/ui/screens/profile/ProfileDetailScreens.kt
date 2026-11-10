@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -141,7 +142,7 @@ fun SecurityScreen(viewModel: ProfileViewModel, onBack: () -> Unit) {
 fun DailyGoalScreen(viewModel: ProfileViewModel, onBack: () -> Unit) {
     val state by viewModel.uiState.collectAsState()
     val current = state.summary?.profile?.dailyGoal
-    var selected by rememberSaveable(current) { mutableStateOf(current ?: 2) }
+    var selected by rememberSaveable(current) { mutableIntStateOf(current ?: 2) }
     ProfileMessages(viewModel)
     SettingsScaffold(title = stringResource(R.string.profile_daily_goal_title), onBack = onBack) {
         Body {
