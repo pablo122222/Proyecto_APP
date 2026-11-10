@@ -14,7 +14,7 @@ class LessonCatalogTest {
     private val curriculum = Curriculum.Base
 
     // Niveles con contenido escrito (se amplía a medida que se escriben más)
-    private val writtenLevels = (1..11).toList()
+    private val writtenLevels = (1..12).toList()
 
     private fun lessonsOf(level: Int) = curriculum.modules[level - 1].lessons.map { it.id }
 
