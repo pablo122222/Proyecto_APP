@@ -132,6 +132,9 @@ val HeroCircle = Color(0x26FFFFFF)          // Blanco al 15 %
 val HeroTrack = Color(0x30FFFFFF)           // Blanco al 19 %
 val HeroFill = Color(0xFF6FDDB4)
 
+// ---- Glitch City (guía §5.1) ----
+val CityNodeDone = Color(0xFF35C79A)        // Nivel del dron completado (sombra: NodeDoneShadow)
+
 // ---- Listas de ajustes (Perfil y Configuración, estilo de lista a ancho completo) ----
 val SettingsBand: Color get() = if (AppAppearance.highContrast) Color(0xFFC9D0E0) else Color(0xFFEEF1F7) // Franja entre secciones
 val SwitchOff: Color get() = if (AppAppearance.highContrast) Color(0xFF8A96B3) else Color(0xFFD5DCEC)   // Interruptor apagado (guía §8)

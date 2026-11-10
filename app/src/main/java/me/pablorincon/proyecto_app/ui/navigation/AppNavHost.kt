@@ -1,6 +1,5 @@
 package me.pablorincon.proyecto_app.ui.navigation
 
-import androidx.annotation.StringRes
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,6 +26,7 @@ import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.ui.components.AppBottomBar
 import me.pablorincon.proyecto_app.ui.screens.boss.BossScreen
 import me.pablorincon.proyecto_app.ui.screens.forgotpassword.ForgotPasswordScreen
+import me.pablorincon.proyecto_app.ui.screens.glitchcity.GlitchCityScreen
 import me.pablorincon.proyecto_app.ui.screens.home.HomeScreen
 import me.pablorincon.proyecto_app.ui.screens.learningpath.LearningPathScreen
 import me.pablorincon.proyecto_app.ui.screens.lesson.LessonScreen
@@ -225,7 +225,10 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
         }
     }
     navigation(startDestination = AppRoutes.GLITCH_CITY, route = AppRoutes.TAB_CHALLENGES) {
-        placeholder(AppRoutes.GLITCH_CITY, R.string.title_glitch_city)
+        composable(AppRoutes.GLITCH_CITY) {
+            GlitchCityScreen(onOpenActivity = { navController.navigate(AppRoutes.activity(it)) })
+        }
+        // Pantalla provisional hasta las Fases 14 y 15 (laboratorios y dron)
         composable(
             route = AppRoutes.ACTIVITY,
             arguments = listOf(navArgument(AppRoutes.ACTIVITY_ARG) { type = NavType.StringType })
@@ -273,7 +276,7 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
         composable(AppRoutes.ACHIEVEMENTS) {
             AchievementsScreen(
                 onBack = navController::goBack,
-                onKeepPracticing = { navController.openTab(BottomTab.Learn, BottomTab.Profile) }
+                onKeepPracticing = { navController.openTab(BottomTab.Challenges, BottomTab.Profile) }
             )
         }
         composable(AppRoutes.SETTINGS) {
@@ -282,17 +285,6 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
                 onLeftAccount = { navController.openClearingHistory(AppRoutes.WELCOME) }
             )
         }
-    }
-}
-
-// Destino provisional. Con navController lleva botón atrás; sin él es raíz de pestaña.
-private fun NavGraphBuilder.placeholder(
-    route: String,
-    @StringRes title: Int,
-    navController: NavHostController? = null
-) {
-    composable(route) {
-        PlaceholderScreen(title = title, onBack = navController?.let { it::goBack })
     }
 }
 

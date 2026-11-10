@@ -556,4 +556,66 @@
     <string name="achievement_unlocked_gems">+%1$d ◆ gemas</string>
     <string name="achievement_unlocked_see">Ver mis logros</string>
     <string name="achievement_unlocked_continue">Seguir</string>
+
+    <!-- Glitch City (guía §5.1) -->
+    <string name="city_loading">Cargando Glitch City…</string>
+    <string name="city_error">No pudimos cargar Glitch City. Revisa tu conexión e inténtalo de nuevo.</string>
+    <string name="city_gems">◆ %1$d</string>
+    <plurals name="city_gems_description">
+        <item quantity="one">%d gema</item>
+        <item quantity="other">%d gemas</item>
+    </plurals>
+    <string name="city_streak">🔥 %1$d</string>
+    <string name="city_xp">%1$d XP</string>
+    <string name="city_banner_title">Tu título: %1$s</string>
+    <string name="city_tab_explore">Explorar</string>
+    <string name="city_tab_create">Crear</string>
+    <string name="city_tab_compete">Competir</string>
+    <string name="city_explore_intro">Experimenta con los sistemas de la ciudad. No hay vidas ni castigos: cambia valores y mira qué pasa.</string>
+    <string name="city_create_intro">Construye reglas con lo que aprendiste, pruébalas y publícalas cuando cumplan los objetivos.</string>
+    <string name="city_compete_intro">Programa al dron con bloques. Menos bloques = más estrellas. Compites contra tus propios récords y los intentos son ilimitados.</string>
+    <string name="city_lab_progress">%1$s · %2$d/%3$d descubrimientos</string>
+    <string name="city_enter">Entrar</string>
+    <string name="city_creation_published">%1$s · Publicada ✓</string>
+    <string name="city_creation_unpublished">%1$s · Sin publicar</string>
+    <string name="city_create">Crear</string>
+    <string name="city_edit">Editar</string>
+    <plurals name="city_record">
+        <item quantity="one">Récord: %1$d bloque %2$s</item>
+        <item quantity="other">Récord: %1$d bloques %2$s</item>
+    </plurals>
+    <string name="city_stars_description">%1$d de 3 estrellas</string>
+    <string name="city_drone_locked_toast">Completa el nivel anterior para desbloquear este.</string>
+    <string name="city_node_description">Nivel %1$d: %2$s, %3$s</string>
+    <string name="city_node_done">completado</string>
+    <string name="city_node_current">siguiente</string>
+    <string name="city_node_locked">bloqueado</string>
+
+    <string name="city_lab_traffic_light">Semáforo inteligente</string>
+    <string name="city_lab_cashier">Cajero de la tienda</string>
+    <string name="city_lab_elevator">Ascensor de la torre</string>
+    <string name="city_lab_robot">Robot repartidor</string>
+    <string name="city_creation_offers_shop">Tienda de ofertas</string>
+    <string name="city_creation_npc_rules">Reglas para un NPC</string>
+    <string name="city_topic_variables_conditionals">Variables y condicionales</string>
+    <string name="city_topic_operators_conditionals">Operadores y condicionales</string>
+    <string name="city_topic_loops">Ciclos</string>
+    <string name="city_topic_lists_functions">Arreglos y funciones</string>
+    <string name="city_topic_conditionals_functions">Condicionales y funciones</string>
+    <string name="city_topic_conditionals">Condicionales</string>
+
+    <string name="city_drone_d1">Primer vuelo</string>
+    <string name="city_drone_d2">Callejón con muros</string>
+    <string name="city_drone_d3">Escalera de edificios</string>
+    <string name="city_drone_d4">Especial: depura el dron</string>
+    <string name="city_drone_d5">Especial: reto relámpago</string>
+
+    <string name="city_title_t0">Aprendiz de Glitch</string>
+    <string name="city_title_t1">Explorador Curioso</string>
+    <string name="city_title_t2">Arquitecto de Precios</string>
+    <string name="city_title_t3">Director de NPC</string>
+    <string name="city_title_t4">Piloto de Bucles</string>
+    <string name="city_title_t5">Cazabugs</string>
+    <string name="city_title_t6">Eficiencia Total</string>
+    <string name="city_title_t7">Récord Personal</string>
 </resources>
