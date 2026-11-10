@@ -22,7 +22,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.domain.glitchcity.Labs
 import me.pablorincon.proyecto_app.ui.components.AppBottomBar
 import me.pablorincon.proyecto_app.ui.screens.boss.BossScreen
@@ -37,7 +36,7 @@ import me.pablorincon.proyecto_app.ui.screens.personalization.GoalScreen
 import me.pablorincon.proyecto_app.ui.screens.personalization.LevelScreen
 import me.pablorincon.proyecto_app.ui.screens.personalization.PathReadyScreen
 import me.pablorincon.proyecto_app.ui.screens.personalization.PersonalizationViewModel
-import me.pablorincon.proyecto_app.ui.screens.placeholder.PlaceholderScreen
+import me.pablorincon.proyecto_app.ui.screens.drone.DroneScreen
 import me.pablorincon.proyecto_app.ui.screens.achievements.AchievementsScreen
 import me.pablorincon.proyecto_app.ui.screens.profile.AboutScreen
 import me.pablorincon.proyecto_app.ui.screens.profile.DailyGoalScreen
@@ -230,20 +229,18 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
         composable(AppRoutes.GLITCH_CITY) {
             GlitchCityScreen(onOpenActivity = { navController.navigate(AppRoutes.activity(it)) })
         }
-        // Laboratorios de Explorar y Crear; el dron sigue provisional (Fase 15)
+        // Actividad de Glitch City
         composable(
             route = AppRoutes.ACTIVITY,
             arguments = listOf(navArgument(AppRoutes.ACTIVITY_ARG) { type = NavType.StringType })
         ) { entry ->
             val activityId = entry.arguments?.getString(AppRoutes.ACTIVITY_ARG).orEmpty()
+            val openAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) }
+            // Laboratorio (Explorar o Crear) o nivel del dron (Competir)
             if (Labs.byId(activityId) != null) {
-                LabScreen(
-                    activityId = activityId,
-                    onBack = navController::goBack,
-                    onOpenAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) }
-                )
+                LabScreen(activityId = activityId, onBack = navController::goBack, onOpenAchievements = openAchievements)
             } else {
-                PlaceholderScreen(title = R.string.title_activity, onBack = navController::goBack)
+                DroneScreen(levelId = activityId, onBack = navController::goBack, onOpenAchievements = openAchievements)
             }
         }
     }

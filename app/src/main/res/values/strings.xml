@@ -98,7 +98,6 @@
     <string name="title_learning_path">Ruta de aprendizaje</string>
     <string name="title_lesson">Lección</string>
     <string name="title_glitch_city">Glitch City</string>
-    <string name="title_activity">Actividad</string>
     <string name="title_achievements">Mis logros</string>
     <string name="title_settings">Configuración</string>
 
@@ -745,4 +744,56 @@
     <string name="why_d5_correct">Porque abajo a la izquierda hay un muro: hay que desviarse antes.</string>
     <string name="why_d5_three">Porque el dron no puede bajar más de 3 veces seguidas.</string>
     <string name="why_d5_forward">Porque avanzar primero siempre usa menos bloques.</string>
+
+    <!-- Nivel del dron (guía §5.3) -->
+    <string name="drone_label">Competir · Nivel %1$d</string>
+    <string name="drone_subtitle">Lleva el dron 🚁 hasta el paquete 📦. Un bloque con ×n repite su movimiento; tú compites contra tu récord.</string>
+    <string name="drone_subtitle_max">%1$s Máximo %2$d bloques.</string>
+    <string name="drone_locked">Completa el nivel anterior para desbloquear este.</string>
+    <string name="drone_map_description">Mapa del nivel: el dron está en la fila %1$d, columna %2$d; el paquete, en la fila %3$d, columna %4$d.</string>
+    <string name="drone_repeat">Repetir:</string>
+    <string name="drone_repeat_option">×%1$d</string>
+    <string name="drone_repeat_description">Repetir %1$d veces</string>
+    <plurals name="drone_program_title">
+        <item quantity="one">Tu programa (%d bloque)</item>
+        <item quantity="other">Tu programa (%d bloques)</item>
+    </plurals>
+    <string name="drone_program_empty">Añade bloques con los botones de arriba.</string>
+    <string name="drone_run">▶ Ejecutar</string>
+    <string name="drone_remove_last">Borrar último</string>
+    <string name="drone_clear">Limpiar</string>
+    <string name="drone_idea">Idea</string>
+    <string name="drone_idea_text">💡 %1$s</string>
+    <string name="drone_empty">Tu programa está vacío: añade algunos bloques.</string>
+    <string name="drone_out_of_map">El dron se sale del mapa. Revisa el último bloque.</string>
+    <string name="drone_wall">El dron choca con un muro. Revisa el último bloque.</string>
+    <string name="drone_wrong_cell">El dron termina en otra casilla. Ajusta tu programa y prueba otra vez: no pasa nada.</string>
+    <string name="drone_too_many">Llegaste, pero con %1$d bloques. Este reto permite máximo %2$d.</string>
+    <plurals name="drone_delivered">
+        <item quantity="one">¡Entrega lograda con %1$d bloque! %2$s</item>
+        <item quantity="other">¡Entrega lograda con %1$d bloques! %2$s</item>
+    </plurals>
+    <string name="drone_new_record">¡Nuevo récord!</string>
+    <plurals name="drone_not_better">
+        <item quantity="one">Tu récord es %d bloque: ¿puedes mejorarlo?</item>
+        <item quantity="other">Tu récord es %d bloques: ¿puedes mejorarlo?</item>
+    </plurals>
+    <plurals name="drone_record">
+        <item quantity="one">Récord personal: %1$d bloque %2$s</item>
+        <item quantity="other">Récord personal: %1$d bloques %2$s</item>
+    </plurals>
+    <string name="drone_reward">+%1$d XP · +%2$d ◆</string>
+    <string name="drone_save_no_connection">Sin conexión: no pudimos guardar tu entrega. Vuelve a ejecutarla con internet.</string>
+    <string name="drone_save_failed">No pudimos guardar tu entrega. Vuelve a ejecutarla.</string>
+    <string name="drone_move_up">Arriba</string>
+    <string name="drone_move_down">Abajo</string>
+    <string name="drone_move_left">Izquierda</string>
+    <string name="drone_move_right">Derecha</string>
+    <string name="drone_move_right_down">Derecha y abajo</string>
+    <string name="drone_move_down_right">Abajo y derecha</string>
+    <string name="drone_idea_d1">Un bloque con ×4 repite el movimiento 4 veces.</string>
+    <string name="drone_idea_d2">Baja por la izquierda y rodea los muros.</string>
+    <string name="drone_idea_d3">Prueba el bloque →↓ repetido varias veces.</string>
+    <string name="drone_idea_d4">Tras bajar 2, el dron se sale por la derecha. Quita lo que sobra.</string>
+    <string name="drone_idea_d5">Baja, avanza, baja y avanza otra vez.</string>
 </resources>
