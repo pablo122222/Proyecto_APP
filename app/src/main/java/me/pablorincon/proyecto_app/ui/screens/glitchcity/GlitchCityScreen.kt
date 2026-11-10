@@ -31,13 +31,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -51,6 +54,7 @@ import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -64,7 +68,9 @@ import me.pablorincon.proyecto_app.domain.glitchcity.DroneLevelStatus
 import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityCatalog
 import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityProgress
 import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityState
+import me.pablorincon.proyecto_app.domain.glitchcity.GlitchTitles
 import me.pablorincon.proyecto_app.ui.components.AppCard
+import me.pablorincon.proyecto_app.ui.components.ConfirmSheet
 import me.pablorincon.proyecto_app.ui.components.Pill
 import me.pablorincon.proyecto_app.ui.components.PrimaryButton
 import me.pablorincon.proyecto_app.ui.theme.AccentYellow
@@ -79,6 +85,9 @@ import me.pablorincon.proyecto_app.ui.theme.HeroEnd
 import me.pablorincon.proyecto_app.ui.theme.HeroStart
 import me.pablorincon.proyecto_app.ui.theme.HeroText
 import me.pablorincon.proyecto_app.ui.theme.Ink
+import me.pablorincon.proyecto_app.ui.theme.Line
+import me.pablorincon.proyecto_app.ui.theme.LockedPillBackground
+import me.pablorincon.proyecto_app.ui.theme.LockedPillText
 import me.pablorincon.proyecto_app.ui.theme.Mint
 import me.pablorincon.proyecto_app.ui.theme.MintInk
 import me.pablorincon.proyecto_app.ui.theme.Muted
@@ -103,6 +112,7 @@ fun GlitchCityScreen(
     viewModel: GlitchCityViewModel = viewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
     // Al volver de una actividad u otra pestaña se actualizan los números
     LifecycleResumeEffect(viewModel) {
         viewModel.load(silent = true)
@@ -110,20 +120,54 @@ fun GlitchCityScreen(
     }
     GlitchCityContent(
         state = state,
-        onSelectTab = viewModel::selectTab,
-        onOpenActivity = onOpenActivity,
-        onRetry = viewModel::load,
+        actions = CityActions(
+            onSelectTab = viewModel::selectTab,
+            onOpenActivity = onOpenActivity,
+            onEquipTitle = viewModel::equipTitle,
+            onOpenReset = viewModel::openResetSheet,
+            onRetry = viewModel::load
+        ),
         modifier = modifier
     )
+    if (state.showResetSheet) {
+        ConfirmSheet(
+            title = stringResource(R.string.city_reset_title),
+            message = stringResource(R.string.city_reset_message),
+            confirmLabel = stringResource(R.string.city_reset_yes),
+            cancelLabel = stringResource(R.string.city_reset_close),
+            onConfirm = viewModel::reset,
+            onDismiss = viewModel::closeResetSheet
+        )
+    }
+    // Avisos cortos (toast de la guía §0)
+    val toastText = when (state.message) {
+        CityMessage.Reset -> stringResource(R.string.city_reset_done)
+        CityMessage.NoConnection -> stringResource(R.string.settings_no_connection)
+        CityMessage.Failed -> stringResource(R.string.settings_failed)
+        null -> null
+    }
+    LaunchedEffect(toastText) {
+        if (toastText != null) {
+            Toast.makeText(context, toastText, Toast.LENGTH_SHORT).show()
+            viewModel.onMessageShown()
+        }
+    }
 }
+
+// Lo que el usuario puede hacer en la pantalla.
+private class CityActions(
+    val onSelectTab: (CityTab) -> Unit,
+    val onOpenActivity: (String) -> Unit,
+    val onEquipTitle: (String) -> Unit,
+    val onOpenReset: () -> Unit,
+    val onRetry: () -> Unit
+)
 
 // Solo dibuja: avisa de lo que hace el usuario.
 @Composable
 private fun GlitchCityContent(
     state: GlitchCityUiState,
-    onSelectTab: (CityTab) -> Unit,
-    onOpenActivity: (String) -> Unit,
-    onRetry: () -> Unit,
+    actions: CityActions,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -149,7 +193,7 @@ private fun GlitchCityContent(
                     modifier = Modifier.fillMaxWidth().padding(top = 96.dp)
                 )
                 Spacer(Modifier.height(AppDimens.ErrorToButton))
-                PrimaryButton(text = stringResource(R.string.startup_retry), onClick = onRetry)
+                PrimaryButton(text = stringResource(R.string.startup_retry), onClick = actions.onRetry)
             }
             is CityContent.Ready -> {
                 // La cabecera queda fija arriba; el resto se desplaza
@@ -166,13 +210,16 @@ private fun GlitchCityContent(
                 ) {
                     Banner(titleId = content.city.shownTitleId)
                     Spacer(Modifier.height(12.dp))
-                    TabRow(selected = state.tab, onSelect = onSelectTab)
+                    TabRow(selected = state.tab, onSelect = actions.onSelectTab)
                     Spacer(Modifier.height(16.dp))
+                    val progress = content.city.progress
                     when (state.tab) {
-                        CityTab.Explore -> ExploreTab(content.city.progress, onOpenActivity)
-                        CityTab.Create -> CreateTab(content.city.progress, onOpenActivity)
-                        CityTab.Compete -> CompeteTab(content.city.progress, onOpenActivity)
+                        CityTab.Explore -> ExploreTab(progress, actions.onOpenActivity)
+                        CityTab.Create -> CreateTab(progress, actions.onOpenActivity)
+                        CityTab.Compete -> CompeteTab(progress, actions.onOpenActivity)
+                        CityTab.Titles -> TitlesTab(progress, content.city.shownTitleId, actions.onEquipTitle)
                     }
+                    ResetLink(onClick = actions.onOpenReset)
                 }
             }
         }
@@ -246,6 +293,7 @@ private fun TabRow(selected: CityTab, onSelect: (CityTab) -> Unit) {
                         CityTab.Explore -> R.string.city_tab_explore
                         CityTab.Create -> R.string.city_tab_create
                         CityTab.Compete -> R.string.city_tab_compete
+                        CityTab.Titles -> R.string.city_tab_titles
                     }
                 ),
                 style = AppTextStyles.SmallButton.copy(fontSize = 11.sp),
@@ -258,7 +306,7 @@ private fun TabRow(selected: CityTab, onSelect: (CityTab) -> Unit) {
                     .background(if (active) Primary else PrimarySoft)
                     .semantics { this.selected = active }
                     .clickable(role = Role.Tab) { onSelect(tab) }
-                    .padding(10.dp)
+                    .padding(vertical = 10.dp, horizontal = 4.dp) // Poco margen lateral: caben 4 botones
             )
         }
     }
@@ -492,6 +540,85 @@ private fun DroneNode(
 
 private const val MAX_STARS = 3
 
+// ---------- Títulos ----------
+
+@Composable
+private fun TitlesTab(progress: GlitchCityProgress, equippedId: String, onEquip: (String) -> Unit) {
+    val earned = GlitchTitles.earned(progress)
+    Intro(stringResource(R.string.city_titles_intro))
+    AppCard {
+        GlitchTitles.all.forEachIndexed { index, title ->
+            TitleRow(
+                titleId = title.id,
+                isEarned = title.id in earned,
+                isEquipped = title.id == equippedId,
+                showDivider = index < GlitchTitles.all.lastIndex,
+                onEquip = { onEquip(title.id) }
+            )
+        }
+    }
+}
+
+// Fila: nombre + "Ganado: / Cómo ganarlo:" y a la derecha "Equipado", "Equipar" o "Bloqueado".
+@Composable
+private fun TitleRow(titleId: String, isEarned: Boolean, isEquipped: Boolean, showDivider: Boolean, onEquip: () -> Unit) {
+    val description = stringResource(GlitchCityText.titleDescriptions.getValue(titleId))
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(if (showDivider) Modifier.drawBottomLine() else Modifier)
+            .padding(vertical = 13.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(stringResource(GlitchCityText.titleName(titleId)), style = AppTextStyles.RowTitle, color = Ink)
+            Spacer(Modifier.height(4.dp))
+            Text(
+                text = stringResource(if (isEarned) R.string.city_title_earned else R.string.city_title_how, description),
+                style = AppTextStyles.RowSubtitle,
+                color = Muted
+            )
+        }
+        Spacer(Modifier.width(10.dp))
+        when {
+            isEquipped -> Pill(stringResource(R.string.city_title_equipped), containerColor = Mint, contentColor = MintInk)
+            isEarned -> Pill(
+                text = stringResource(R.string.city_title_equip),
+                modifier = Modifier
+                    .clip(AppShapes.Pill)
+                    .clickable(role = Role.Button, onClick = onEquip)
+            )
+            else -> Pill(
+                stringResource(R.string.city_title_locked),
+                containerColor = LockedPillBackground,
+                contentColor = LockedPillText
+            )
+        }
+    }
+}
+
+// Separador inferior de la fila (la última no lo lleva).
+private fun Modifier.drawBottomLine(): Modifier = drawBehind {
+    val stroke = AppDimens.BorderWidth.toPx()
+    drawLine(Line, Offset(0f, size.height - stroke / 2), Offset(size.width, size.height - stroke / 2), stroke)
+}
+
+// Enlace gris subrayado al final: abre la hoja de confirmación.
+@Composable
+private fun ResetLink(onClick: () -> Unit) {
+    Spacer(Modifier.height(AppDimens.SectionTop))
+    Text(
+        text = stringResource(R.string.city_reset_link),
+        style = AppTextStyles.RowSubtitle.copy(textDecoration = TextDecoration.Underline),
+        color = Muted,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(role = Role.Button, onClick = onClick)
+            .padding(vertical = 10.dp)
+    )
+}
+
 @Preview(showSystemUi = true)
 @Composable
 private fun GlitchCityPreview() {
@@ -507,9 +634,7 @@ private fun GlitchCityPreview() {
                     streak = 0
                 )
             ),
-            onSelectTab = {},
-            onOpenActivity = {},
-            onRetry = {}
+            actions = CityActions({}, {}, {}, {}, {})
         )
     }
 }

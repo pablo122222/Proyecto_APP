@@ -36,6 +36,18 @@ internal object GlitchCityText {
         "t7" to R.string.city_title_t7
     )
 
+    // Cómo se gana cada título (en minúscula: va después de "Ganado:" o "Cómo ganarlo:")
+    val titleDescriptions: Map<String, Int> = mapOf(
+        "t0" to R.string.city_title_t0_desc,
+        "t1" to R.string.city_title_t1_desc,
+        "t2" to R.string.city_title_t2_desc,
+        "t3" to R.string.city_title_t3_desc,
+        "t4" to R.string.city_title_t4_desc,
+        "t5" to R.string.city_title_t5_desc,
+        "t6" to R.string.city_title_t6_desc,
+        "t7" to R.string.city_title_t7_desc
+    )
+
     @StringRes
     fun titleName(id: String): Int = titleNames[id] ?: R.string.city_title_t0
 }

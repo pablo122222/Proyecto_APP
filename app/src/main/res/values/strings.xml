@@ -618,4 +618,27 @@
     <string name="city_title_t5">Cazabugs</string>
     <string name="city_title_t6">Eficiencia Total</string>
     <string name="city_title_t7">Récord Personal</string>
+
+    <!-- Glitch City: Títulos y reinicio (guía §5.1) -->
+    <string name="city_tab_titles">Títulos</string>
+    <string name="city_titles_intro">Los títulos se ganan demostrando habilidades. Equipa el que quieras presumir.</string>
+    <string name="city_title_earned">Ganado: %1$s</string>
+    <string name="city_title_how">Cómo ganarlo: %1$s</string>
+    <string name="city_title_equipped">Equipado</string>
+    <string name="city_title_equip">Equipar</string>
+    <string name="city_title_locked">Bloqueado</string>
+    <string name="city_title_t0_desc">título inicial</string>
+    <string name="city_title_t1_desc">haz 3 descubrimientos en los laboratorios</string>
+    <string name="city_title_t2_desc">publica la Tienda de ofertas</string>
+    <string name="city_title_t3_desc">publica las reglas del NPC</string>
+    <string name="city_title_t4_desc">completa el nivel 3 del dron</string>
+    <string name="city_title_t5_desc">depura el dron del nivel especial 4</string>
+    <string name="city_title_t6_desc">consigue 3 estrellas en 3 niveles</string>
+    <string name="city_title_t7_desc">mejora uno de tus récords</string>
+    <string name="city_reset_link">Reiniciar mi progreso en Glitch City</string>
+    <string name="city_reset_title">¿Reiniciar Glitch City?</string>
+    <string name="city_reset_message">Se reinician descubrimientos, creaciones, récords, títulos y gemas de los retos. Tu XP se conserva.</string>
+    <string name="city_reset_yes">Sí, reiniciar</string>
+    <string name="city_reset_close">Cerrar</string>
+    <string name="city_reset_done">Listo: Glitch City empieza de cero.</string>
 </resources>

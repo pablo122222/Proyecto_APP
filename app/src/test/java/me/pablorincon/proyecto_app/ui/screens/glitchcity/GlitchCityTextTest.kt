@@ -19,7 +19,8 @@ class GlitchCityTextTest {
     }
 
     @Test
-    fun cadaTituloTieneNombre() {
+    fun cadaTituloTieneNombreYDescripcion() {
         assertEquals(GlitchTitles.all.map { it.id }.toSet(), GlitchCityText.titleNames.keys)
+        assertEquals(GlitchTitles.all.map { it.id }.toSet(), GlitchCityText.titleDescriptions.keys)
     }
 }
