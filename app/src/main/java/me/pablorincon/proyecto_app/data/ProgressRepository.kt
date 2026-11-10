@@ -85,10 +85,12 @@ class ProgressRepository(private val db: FirebaseFirestore = FirebaseFirestore.g
     suspend fun claimPendingAchievements(uid: String): List<AchievementUnlock> = try {
         val userRef = db.collection(USERS).document(uid)
         val progressRef = userRef.collection(PROGRESS).document(CURRICULUM)
+        val cityRef = userRef.collection(PROGRESS).document(GLITCH_CITY)
         db.runTransaction { tx ->
             val completed = ProgressMapper.completedLessonIds(tx.get(progressRef).data)
+            val city = GlitchCityMapper.fromMap(tx.get(cityRef).data)
             val userData = tx.get(userRef).data ?: return@runTransaction emptyList()
-            val result = CompletionOutcome.pending(UserProfileMapper.fromMap(userData), stepsOf(completed))
+            val result = CompletionOutcome.pending(UserProfileMapper.fromMap(userData), stepsOf(completed), city)
             if (result.unlocks.isNotEmpty()) {
                 tx.update(
                     userRef,
@@ -111,6 +113,7 @@ class ProgressRepository(private val db: FirebaseFirestore = FirebaseFirestore.g
         const val USERS = "users"
         const val PROGRESS = "progress"
         const val CURRICULUM = "curriculum"
+        const val GLITCH_CITY = "glitchCity"
     }
 }
 

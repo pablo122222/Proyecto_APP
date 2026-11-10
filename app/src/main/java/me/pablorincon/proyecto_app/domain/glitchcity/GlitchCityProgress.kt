@@ -15,8 +15,15 @@ data class GlitchCityProgress(
     val creationValues: Map<String, Map<String, Int>> = emptyMap(), // Valores publicados de cada creación ("Editar")
     val droneRecords: Map<String, Int> = emptyMap(), // Nivel del dron → menos bloques con que se completó
     val recordsImproved: Int = 0,                   // Veces que se mejoró un récord (título "Récord Personal")
-    val gemsEarned: Int = 0                         // Gemas ganadas en los retos: lo que quita "Reiniciar"
+    val gemsEarned: Int = 0,                        // Gemas ganadas en los retos: lo que quita "Reiniciar"
+    val cleanSolves: Set<String> = emptySet(),      // Niveles del dron completados al primer intento, sin chocar ni ver la idea
+    val perfectFirstTries: Set<String> = emptySet() // Niveles del dron cuyo primer programa entregado dio 3 estrellas
 ) {
+    // Retos de casos límite resueltos (logro "Casos límite").
+    val edgeCasesSolved: Int
+        get() = GlitchCityCatalog.edgeCaseDiscoveries.count { it in discoveries } +
+            GlitchCityCatalog.edgeCaseCreations.count { it in published }
+
     fun discoveriesIn(lab: Lab): Int = lab.discoveryIds.count { lab.key(it) in discoveries }
 
     fun isPublished(creation: Creation): Boolean = creation.id in published

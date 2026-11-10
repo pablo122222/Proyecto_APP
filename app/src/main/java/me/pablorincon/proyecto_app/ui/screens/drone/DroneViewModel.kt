@@ -75,6 +75,7 @@ class DroneViewModel(
 
     private var attempts = 0
     private var alreadyExplained = false   // La pregunta de este nivel ya se acertó antes
+    private var clean = true               // Sin ejecuciones fallidas ni idea abierta (logro "Solución autónoma")
 
     init {
         load()
@@ -111,7 +112,10 @@ class DroneViewModel(
 
     fun clear() = update { it.copy(program = it.program.clear(), attempt = null) }
 
-    fun toggleIdea() = update { it.copy(showIdea = !it.showIdea) }
+    fun toggleIdea() = update {
+        if (!it.showIdea) clean = false
+        it.copy(showIdea = !it.showIdea)
+    }
 
     fun execute() {
         val ready = _uiState.value as? DroneUiState.Ready ?: return
@@ -120,14 +124,16 @@ class DroneViewModel(
         _uiState.value = ready.copy(attempt = DroneAttempt(attempts, run, ready.record), message = null)
         val outcome = run.outcome
         if (outcome is DroneOutcome.Delivered && (ready.record == null || outcome.blocks < ready.record)) {
-            save(ready.level, outcome.blocks, isFirst = ready.record == null)
+            save(ready.level, outcome.blocks, isFirst = ready.record == null, clean = clean)
         }
+        // Ejecutar sin bloques no cuenta como intento fallido
+        if (outcome !is DroneOutcome.Delivered && outcome !is DroneOutcome.Empty) clean = false
     }
 
-    private fun save(level: DroneLevel, blocks: Int, isFirst: Boolean) {
+    private fun save(level: DroneLevel, blocks: Int, isFirst: Boolean, clean: Boolean) {
         val uid = auth.currentUid() ?: return
         viewModelScope.launch {
-            val result = repository.completeDrone(uid, level, blocks)
+            val result = repository.completeDrone(uid, level, blocks, clean)
             update { state ->
                 when (result) {
                     is SaveResult.Saved -> state.copy(

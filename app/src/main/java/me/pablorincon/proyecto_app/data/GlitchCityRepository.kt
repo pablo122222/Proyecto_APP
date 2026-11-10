@@ -53,6 +53,15 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
         if (e.isNetworkError()) LoadResult.NoConnection else LoadResult.Failed
     }
 
+    // Solo el progreso de los retos (para Logros e Inicio). null si no se pudo leer.
+    suspend fun loadProgress(uid: String): GlitchCityProgress? = try {
+        GlitchCityMapper.fromMap(city(uid).get().awaitResult().data)
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
+        null
+    }
+
     suspend fun discover(uid: String, lab: Lab, discoveryId: String, today: LocalDate = LocalDate.now()): SaveResult =
         applyEvent(uid, today) { GlitchCityRules.discover(it, lab, discoveryId) }
 
@@ -61,9 +70,14 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
         applyEvent(uid, today) { GlitchCityRules.publish(it, creation, values) }
 
     // Nivel del dron entregado con `blocks` bloques: la primera vez lo completa; después solo
-    // cuenta si mejora el récord.
-    suspend fun completeDrone(uid: String, level: DroneLevel, blocks: Int, today: LocalDate = LocalDate.now()): SaveResult =
-        applyEvent(uid, today) { GlitchCityRules.completeDrone(it, level, blocks) }
+    // cuenta si mejora el récord. clean: sin ejecuciones fallidas ni idea abierta antes de entregar.
+    suspend fun completeDrone(
+        uid: String,
+        level: DroneLevel,
+        blocks: Int,
+        clean: Boolean,
+        today: LocalDate = LocalDate.now()
+    ): SaveResult = applyEvent(uid, today) { GlitchCityRules.completeDrone(it, level, blocks, clean) }
 
     // Aplica un evento de Glitch City y, si da recompensa, suma XP y gemas y registra la actividad
     // del día (racha, meta diaria y logros), todo junto y una sola vez. Usa una transacción: sin red
@@ -78,7 +92,7 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
                 val result = event(progress)
                 if (result.progress != progress) tx.set(city(uid), GlitchCityMapper.toMap(result.progress))
                 val reward = result.reward ?: return@runTransaction SaveResult.Saved(null)
-                val outcome = CompletionOutcome.completing(profile, stepsOf(completed), CompletionStats(), today)
+                val outcome = CompletionOutcome.completing(profile, stepsOf(completed), CompletionStats(), today, result.progress)
                 tx.update(
                     user(uid),
                     outcomeFields(outcome) + mapOf(
@@ -96,8 +110,11 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
         db.runTransaction { tx ->
             val profile = UserProfileMapper.fromMap(tx.get(user(uid)).data.orEmpty())
             val completed = ProgressMapper.completedLessonIds(tx.get(curriculum(uid)).data)
+            val progress = GlitchCityMapper.fromMap(tx.get(city(uid)).data)
             if (activityId in profile.explainedWhy) return@runTransaction SaveResult.Saved(null)
-            val outcome = CompletionOutcome.pending(profile.copy(explainedWhy = profile.explainedWhy + activityId), stepsOf(completed))
+            val outcome = CompletionOutcome.pending(
+                profile.copy(explainedWhy = profile.explainedWhy + activityId), stepsOf(completed), progress
+            )
             tx.update(
                 user(uid),
                 mapOf(

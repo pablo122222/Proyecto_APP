@@ -31,11 +31,21 @@ object GlitchCityRules {
     }
 
     // Primera vez: 20 + 10 × (nivel − 1) XP y 3 gemas. Después solo da algo si mejora el récord.
-    fun completeDrone(progress: GlitchCityProgress, level: DroneLevel, blocks: Int): GlitchEvent {
+    // clean: se entregó sin ejecuciones fallidas antes y sin abrir la idea (logro "Solución autónoma").
+    // Si el primer programa entregado ya da 3 estrellas, cuenta para el logro "Estratega".
+    fun completeDrone(progress: GlitchCityProgress, level: DroneLevel, blocks: Int, clean: Boolean = false): GlitchEvent {
         val record = progress.record(level)
         val records = progress.droneRecords + (level.id to blocks)
         return when {
-            record == null -> rewarded(progress.copy(droneRecords = records), firstDroneReward(level))
+            record == null -> rewarded(
+                progress.copy(
+                    droneRecords = records,
+                    cleanSolves = if (clean) progress.cleanSolves + level.id else progress.cleanSolves,
+                    perfectFirstTries = if (level.starsFor(blocks) == 3) progress.perfectFirstTries + level.id
+                    else progress.perfectFirstTries
+                ),
+                firstDroneReward(level)
+            )
             blocks < record -> rewarded(
                 progress.copy(droneRecords = records, recordsImproved = progress.recordsImproved + 1),
                 RECORD_IMPROVED

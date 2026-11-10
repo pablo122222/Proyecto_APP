@@ -67,6 +67,11 @@ object GlitchCityCatalog {
     const val OFFERS_SHOP = "offers_shop"
     const val NPC_RULES = "npc_rules"
 
+    // Retos que dependen de un caso límite (logro "Casos límite"): en el Cajero, comprobar que
+    // con menos de 5 no hay descuento; en la Tienda de ofertas, que la compra de 30 no lo recibe.
+    val edgeCaseDiscoveries: Set<String> = setOf("cashier:no_discount")
+    val edgeCaseCreations: Set<String> = setOf(OFFERS_SHOP)
+
     fun lab(id: String): Lab? = labs.firstOrNull { it.id == id }
     fun creation(id: String): Creation? = creations.firstOrNull { it.id == id }
     fun droneLevel(id: String): DroneLevel? = droneLevels.firstOrNull { it.id == id }

@@ -1,5 +1,7 @@
 package me.pablorincon.proyecto_app.domain
 
+import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityCatalog
+import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityProgress
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -15,10 +17,38 @@ class AchievementsAndLevelsTest {
 
     // ---------- Logros ----------
     @Test
-    fun hayNueveLogrosYCincoSeMidenHoy() {
+    fun hayNueveLogrosYTodosSeMiden() {
         assertEquals(9, Achievements.all.size)
-        assertEquals(setOf("explain_why", "bug_hunter", "learn_from_error", "level_up", "habit"), Achievements.all.filter { it.available }.map { it.id }.toSet())
-        assertEquals(3 + 2 + 3 + 3 + 3, Achievements.availableTiers)
+        assertEquals(9, Achievements.all.map { it.metric }.toSet().size) // Cada logro con su propia métrica
+        assertEquals(3 + 3 + 3 + 2 + 2 + 2 + 3 + 3 + 3, Achievements.totalTiers)
+        assertEquals(listOf(1, 3, 5), Achievements.byId("autonomous")!!.thresholds) // Solo hay 5 niveles del dron
+    }
+
+    @Test
+    fun lasEstadisticasDeGlitchCitySalenDelProgresoDeLosRetos() {
+        val city = GlitchCityProgress(
+            discoveries = setOf("cashier:no_discount", "traffic_light:red"),
+            published = setOf(GlitchCityCatalog.OFFERS_SHOP, GlitchCityCatalog.NPC_RULES),
+            cleanSolves = setOf("d1", "d2"),
+            perfectFirstTries = setOf("d1"),
+            recordsImproved = 3
+        )
+        val stats = AchievementStats.of(UserProfile.initial("Ana"), emptyList(), city)
+        assertEquals(2, stats.cleanSolves)
+        assertEquals(1, stats.perfectFirstTries)
+        assertEquals(2, stats.edgeCases) // El descubrimiento del Cajero y la Tienda de ofertas
+        assertEquals(3, stats.recordsImproved)
+    }
+
+    @Test
+    fun losRetosResueltosAntesSeEntreganComoPendientes() {
+        val city = GlitchCityProgress(discoveries = setOf("cashier:no_discount"), recordsImproved = 2)
+        val pending = CompletionOutcome.pending(UserProfile.initial("Ana"), emptyList(), city)
+        assertEquals(
+            setOf("edge_cases" to Tier.Bronze, "cost_meter" to Tier.Bronze, "cost_meter" to Tier.Silver),
+            pending.unlocks.map { it.achievementId to it.tier }.toSet()
+        )
+        assertEquals(15 + 20 + 40, pending.gemsGained)
     }
 
     @Test

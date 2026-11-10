@@ -11,6 +11,7 @@ import me.pablorincon.proyecto_app.data.AdminAccess
 import me.pablorincon.proyecto_app.data.AuthRepository
 import me.pablorincon.proyecto_app.data.CurriculumProgressLoader
 import me.pablorincon.proyecto_app.data.CurriculumProgressLoader.LoadResult
+import me.pablorincon.proyecto_app.data.GlitchCityRepository
 import me.pablorincon.proyecto_app.data.ProgressRepository
 import me.pablorincon.proyecto_app.domain.AchievementProgress
 import me.pablorincon.proyecto_app.domain.AchievementStats
@@ -27,7 +28,7 @@ sealed interface AchievementsUiState {
     ) : AchievementsUiState {
         val unlocked: Int get() = items.count { it.tiersReached > 0 }
         val tiersReached: Int get() = items.sumOf { it.tiersReached }
-        val tiersTotal: Int get() = Achievements.availableTiers
+        val tiersTotal: Int get() = Achievements.totalTiers
     }
 }
 
@@ -37,6 +38,7 @@ class AchievementsViewModel(
     private val auth: AuthRepository = AuthRepository(),
     private val loader: CurriculumProgressLoader = CurriculumProgressLoader(),
     private val progress: ProgressRepository = ProgressRepository(),
+    private val glitchCity: GlitchCityRepository = GlitchCityRepository(),
     private val curriculum: Curriculum = Curriculum.Base
 ) : ViewModel() {
 
@@ -52,16 +54,17 @@ class AchievementsViewModel(
         _uiState.value = AchievementsUiState.Loading
         viewModelScope.launch {
             progress.claimPendingAchievements(uid)
-            _uiState.value = when (val result = loader.load(uid, auth.currentName().orEmpty(), AdminAccess.isAdmin(auth.currentEmail()))) {
-                is LoadResult.Loaded -> {
-                    val profile = result.profile
-                    val done = curriculum.steps.filter { result.progress.isCompleted(it.id) }
-                    AchievementsUiState.Ready(
-                        items = Achievements.progress(AchievementStats.of(profile, done), profile.achievementTiers),
-                        gems = profile.gems
-                    )
-                }
-                LoadResult.Failed -> AchievementsUiState.Error
+            val result = loader.load(uid, auth.currentName().orEmpty(), AdminAccess.isAdmin(auth.currentEmail()))
+            val city = glitchCity.loadProgress(uid)
+            _uiState.value = if (result is LoadResult.Loaded && city != null) {
+                val profile = result.profile
+                val done = curriculum.steps.filter { result.progress.isCompleted(it.id) }
+                AchievementsUiState.Ready(
+                    items = Achievements.progress(AchievementStats.of(profile, done, city), profile.achievementTiers),
+                    gems = profile.gems
+                )
+            } else {
+                AchievementsUiState.Error
             }
         }
     }

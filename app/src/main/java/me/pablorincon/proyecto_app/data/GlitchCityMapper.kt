@@ -13,6 +13,8 @@ internal object GlitchCityMapper {
     const val DRONE_RECORDS = "droneRecords"
     const val RECORDS_IMPROVED = "recordsImproved"
     const val GEMS_EARNED = "gemsEarned"
+    const val CLEAN_SOLVES = "cleanSolves"
+    const val PERFECT_FIRST_TRIES = "perfectFirstTries"
 
     fun toMap(progress: GlitchCityProgress): Map<String, Any> = mapOf(
         DISCOVERIES to progress.discoveries.toList(),
@@ -20,7 +22,9 @@ internal object GlitchCityMapper {
         CREATION_VALUES to progress.creationValues,
         DRONE_RECORDS to progress.droneRecords,
         RECORDS_IMPROVED to progress.recordsImproved,
-        GEMS_EARNED to progress.gemsEarned
+        GEMS_EARNED to progress.gemsEarned,
+        CLEAN_SOLVES to progress.cleanSolves.toList(),
+        PERFECT_FIRST_TRIES to progress.perfectFirstTries.toList()
     )
 
     fun fromMap(data: Map<String, Any?>?): GlitchCityProgress {
@@ -33,7 +37,9 @@ internal object GlitchCityMapper {
                 .toMap(),
             droneRecords = intMap(d[DRONE_RECORDS]).filterValues { it > 0 },
             recordsImproved = (d[RECORDS_IMPROVED] as? Number)?.toInt()?.coerceAtLeast(0) ?: 0,
-            gemsEarned = (d[GEMS_EARNED] as? Number)?.toInt()?.coerceAtLeast(0) ?: 0
+            gemsEarned = (d[GEMS_EARNED] as? Number)?.toInt()?.coerceAtLeast(0) ?: 0,
+            cleanSolves = d.strings(CLEAN_SOLVES),
+            perfectFirstTries = d.strings(PERFECT_FIRST_TRIES)
         )
     }
 

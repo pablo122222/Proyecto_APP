@@ -175,13 +175,11 @@ private fun AchievementsContent(
         )
     }
 
-    // Los que ya se pueden ganar, por categoría; los que llegan con Glitch City, al final
+    // Por categoría
     AchievementCategory.entries.forEach { category ->
-        val items = state.items.filter { it.achievement.category == category && it.achievement.available }
+        val items = state.items.filter { it.achievement.category == category }
         if (items.isNotEmpty()) AchievementGrid(stringResource(categoryName(category)), items, onSelect)
     }
-    val soon = state.items.filter { !it.achievement.available }
-    if (soon.isNotEmpty()) AchievementGrid(stringResource(R.string.achievements_soon_section), soon, onSelect)
     Spacer(Modifier.height(12.dp))
     PrimaryButton(text = stringResource(R.string.achievements_keep_practicing), onClick = onKeepPracticing)
 }
@@ -223,10 +221,6 @@ private fun AchievementCard(item: AchievementProgress, modifier: Modifier = Modi
             maxLines = 3
         )
         Spacer(Modifier.height(8.dp))
-        if (!a.available) {
-            Pill(text = stringResource(R.string.achievements_soon), containerColor = LockedPillBackground, contentColor = LockedPillText)
-            return@Column
-        }
         ProgressBar(percent = (item.fraction * 100).toInt())
         Spacer(Modifier.height(5.dp))
         Text(
@@ -284,15 +278,6 @@ private fun AchievementDetailSheet(item: AchievementProgress, onDismiss: () -> U
                 textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(16.dp))
-            if (!a.available) {
-                Text(
-                    text = stringResource(R.string.achievements_soon_detail),
-                    style = AppTextStyles.SmallBody,
-                    color = Muted,
-                    textAlign = TextAlign.Center
-                )
-                return@Column
-            }
             a.thresholds.indices.forEach { index ->
                 val tier = Tier.entries[index]
                 val reached = index < item.tiersReached

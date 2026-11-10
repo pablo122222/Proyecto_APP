@@ -162,6 +162,34 @@ class GlitchCityTest {
     }
 
     @Test
+    fun laPrimeraEntregaLimpiaCuentaParaSolucionAutonoma() {
+        val clean = GlitchCityRules.completeDrone(GlitchCityProgress(), level(2), 4, clean = true).progress
+        assertEquals(setOf("d2"), clean.cleanSolves)
+        val notClean = GlitchCityRules.completeDrone(GlitchCityProgress(), level(2), 4, clean = false).progress
+        assertTrue(notClean.cleanSolves.isEmpty())
+        // Mejorar el récord después ya no cuenta, aunque sea limpio
+        val improved = GlitchCityRules.completeDrone(notClean, level(2), 3, clean = true).progress
+        assertTrue(improved.cleanSolves.isEmpty())
+    }
+
+    @Test
+    fun soloElPrimerProgramaConTresEstrellasCuentaParaEstratega() {
+        val perfect = GlitchCityRules.completeDrone(GlitchCityProgress(), level(1), 2).progress
+        assertEquals(setOf("d1"), perfect.perfectFirstTries)
+        val twoStars = GlitchCityRules.completeDrone(GlitchCityProgress(), level(1), 4).progress
+        assertTrue(twoStars.perfectFirstTries.isEmpty())
+        // Llegar a 3 estrellas mejorando el récord no cuenta: no fue al primer intento
+        val later = GlitchCityRules.completeDrone(twoStars, level(1), 2).progress
+        assertTrue(later.perfectFirstTries.isEmpty())
+    }
+
+    @Test
+    fun soloLosRetosDeCasoLimiteCuentan() {
+        assertEquals(0, GlitchCityProgress(discoveries = setOf("cashier:bulk_discount"), published = setOf(GlitchCityCatalog.NPC_RULES)).edgeCasesSolved)
+        assertEquals(2, GlitchCityProgress(discoveries = setOf("cashier:no_discount"), published = setOf(GlitchCityCatalog.OFFERS_SHOP)).edgeCasesSolved)
+    }
+
+    @Test
     fun soloMejorarElRecordDaRecompensa() {
         val done = GlitchCityRules.completeDrone(GlitchCityProgress(), level(1), 4).progress
 

@@ -19,7 +19,9 @@ class GlitchCityMapperTest {
             GlitchCityMapper.CREATION_VALUES to mapOf("offers_shop" to mapOf("percent" to 20L)),
             GlitchCityMapper.DRONE_RECORDS to mapOf("d1" to 2L, "d2" to 5L),
             GlitchCityMapper.RECORDS_IMPROVED to 1L,
-            GlitchCityMapper.GEMS_EARNED to 14L
+            GlitchCityMapper.GEMS_EARNED to 14L,
+            GlitchCityMapper.CLEAN_SOLVES to listOf("d1"),
+            GlitchCityMapper.PERFECT_FIRST_TRIES to listOf("d1", "d2")
         )
         val expected = GlitchCityProgress(
             discoveries = setOf("traffic_light:red", "robot:six_packages"),
@@ -27,7 +29,9 @@ class GlitchCityMapperTest {
             creationValues = mapOf("offers_shop" to mapOf("percent" to 20)),
             droneRecords = mapOf("d1" to 2, "d2" to 5),
             recordsImproved = 1,
-            gemsEarned = 14
+            gemsEarned = 14,
+            cleanSolves = setOf("d1"),
+            perfectFirstTries = setOf("d1", "d2")
         )
         assertEquals(expected, GlitchCityMapper.fromMap(data))
         assertEquals(expected, GlitchCityMapper.fromMap(GlitchCityMapper.toMap(expected))) // Ida y vuelta

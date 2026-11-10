@@ -1,5 +1,6 @@
 package me.pablorincon.proyecto_app.domain
 
+import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityProgress
 import java.time.LocalDate
 
 // Lo que aporta una lección o un jefe terminado a los logros.
@@ -29,11 +30,13 @@ data class CompletionOutcome(
 
     companion object {
         // completedSteps: pasos ya completados INCLUYENDO el que se acaba de terminar.
+        // city: progreso de Glitch City (si viene de un reto, ya con el reto aplicado).
         fun completing(
             user: UserProfile,
             completedSteps: List<PathStep>,
             stats: CompletionStats,
-            today: LocalDate
+            today: LocalDate,
+            city: GlitchCityProgress = GlitchCityProgress()
         ): CompletionOutcome {
             val activity = user.dailyActivity.record(today)
             val updated = user.copy(
@@ -42,16 +45,24 @@ data class CompletionOutcome(
                 bugsFound = user.bugsFound + stats.bugsFound,
                 recoveredExercises = user.recoveredExercises + stats.recovered
             )
-            return withUnlocks(updated, activity, completedSteps)
+            return withUnlocks(updated, activity, completedSteps, city)
         }
 
         // Sin actividad nueva: solo desbloquea lo que los números ya alcanzan (por ejemplo,
         // progreso hecho antes de que existieran los logros).
-        fun pending(user: UserProfile, completedSteps: List<PathStep>): CompletionOutcome =
-            withUnlocks(user, user.dailyActivity, completedSteps)
+        fun pending(
+            user: UserProfile,
+            completedSteps: List<PathStep>,
+            city: GlitchCityProgress = GlitchCityProgress()
+        ): CompletionOutcome = withUnlocks(user, user.dailyActivity, completedSteps, city)
 
-        private fun withUnlocks(user: UserProfile, activity: DailyActivity, completedSteps: List<PathStep>): CompletionOutcome {
-            val stats = AchievementStats.of(user, completedSteps)
+        private fun withUnlocks(
+            user: UserProfile,
+            activity: DailyActivity,
+            completedSteps: List<PathStep>,
+            city: GlitchCityProgress
+        ): CompletionOutcome {
+            val stats = AchievementStats.of(user, completedSteps, city)
             val unlocks = Achievements.newlyReached(stats, user.achievementTiers)
             return CompletionOutcome(
                 activity = activity,
