@@ -46,8 +46,9 @@ sealed interface LabResult {
     data class Npc(val distance: Int, val action: NpcAction) : LabResult
 }
 
-// code: líneas de Python; met: ids de los descubrimientos u objetivos que se cumplen ahora.
-data class LabRun(val code: List<String>, val result: LabResult, val met: Set<String>)
+// code: líneas de Python; met: ids de los descubrimientos u objetivos que se cumplen ahora;
+// trace: qué pasó en cada línea de code (mismo orden y tamaño).
+data class LabRun(val code: List<String>, val result: LabResult, val met: Set<String>, val trace: List<LineTrace>)
 
 // ---------- Laboratorios ----------
 
@@ -83,7 +84,9 @@ object TrafficLightLab : LabSimulation {
             if (light == TrafficLight.Red) add("red")
             if (light == TrafficLight.Green) add("green")
         }
-        return LabRun(code, LabResult.Light(light), met)
+        val trace = listOf(LineTrace(LineStatus.Ran, LineNote.Assign("tiempo", t.toString()))) +
+            branchTrace(listOf("$t > 40", "$t > 10"), listOf(t > 40, t > 10), hasElse = true)
+        return LabRun(code, LabResult.Light(light), met, trace)
     }
 }
 
@@ -115,7 +118,14 @@ object CashierLab : LabSimulation {
             if (discounted && cents < 40 * 100) add("bulk_discount")
             if (!discounted && d > 0) add("no_discount") // Sin descuento: total = precio × cantidad
         }
-        return LabRun(code, LabResult.Total(formatHundredths(cents)), met)
+        val total = formatHundredths(cents)
+        val trace = listOf(
+            LineTrace(LineStatus.Ran, LineNote.Assign("total", (p * q).toString())),
+            LineTrace(if (discounted) LineStatus.Ran else LineStatus.False, LineNote.Check("$q >= $BULK", discounted)),
+            if (discounted) LineTrace(LineStatus.Ran, LineNote.Assign("total", total))
+            else LineTrace(LineStatus.Skipped, LineNote.InsideFalseIf)
+        )
+        return LabRun(code, LabResult.Total(total), met, trace)
     }
 }
 
@@ -141,7 +151,11 @@ object ElevatorLab : LabSimulation {
             if (floors.size == 5) add("five_stops")
             if (s == 3 && n >= 10) add("skip_three")
         }
-        return LabRun(code, LabResult.Floors(floors), met)
+        val trace = listOf(
+            LineTrace(LineStatus.Ran, LineNote.Loop("piso", floors)),
+            LineTrace(LineStatus.Ran, LineNote.LoopBody(floors.size))
+        )
+        return LabRun(code, LabResult.Floors(floors), met, trace)
     }
 }
 
@@ -179,7 +193,11 @@ object RobotLab : LabSimulation {
             if (packages.isNotEmpty() && (tried[FUNCTION].orEmpty() + function).containsAll(functions)) add("all_functions")
             if (packages.size >= 6) add("six_packages")
         }
-        return LabRun(code, result, met)
+        val trace = listOf(
+            LineTrace(LineStatus.Ran, LineNote.ListValue("paquetes", packages.size)),
+            LineTrace(LineStatus.Ran, LineNote.Call(function, (result as? LabResult.RobotOutput)?.output))
+        )
+        return LabRun(code, result, met, trace)
     }
 }
 
@@ -210,7 +228,19 @@ object OffersShopLab : LabSimulation {
             if (60 >= u) add("discount_60")
             if (cents(90) <= 72 * 100) add("max_72_for_90")
         }
-        return LabRun(code, LabResult.Prices(purchases.map { it to formatHundredths(cents(it)) }), met)
+        val prices = purchases.map { it to formatHundredths(cents(it)) }
+        // La función se usa con las 3 compras: cada línea dice con cuáles se ejecuta
+        val (yes, no) = purchases.partition { it >= u }
+        val trace = listOf(
+            LineTrace(LineStatus.Ran, LineNote.Define("precio_final", purchases)),
+            LineTrace(LineStatus.Ran, LineNote.ShopCheck(u, yes, no)),
+            LineTrace(
+                if (yes.isEmpty()) LineStatus.Skipped else LineStatus.Ran,
+                LineNote.ReturnDiscount(prices.filter { it.first in yes })
+            ),
+            LineTrace(if (no.isEmpty()) LineStatus.Skipped else LineStatus.Ran, LineNote.ReturnPlain(no))
+        )
+        return LabRun(code, LabResult.Prices(prices), met, trace)
     }
 }
 
@@ -248,7 +278,9 @@ object NpcRulesLab : LabSimulation {
             if (action(4, h, s) == NpcAction.Greet) add("greet_4")
             if ((8..MAX_DISTANCE).all { action(it, h, s) == NpcAction.Wander }) add("wander_8")
         }
-        return LabRun(code, LabResult.Npc(x, action(x, h, s)), met)
+        // El trazado usa la distancia de prueba: muestra qué regla gana con ella
+        val trace = branchTrace(listOf("$x <= $h", "$x <= $s"), listOf(x <= h, x <= s), hasElse = true)
+        return LabRun(code, LabResult.Npc(x, action(x, h, s)), met, trace)
     }
 }
 

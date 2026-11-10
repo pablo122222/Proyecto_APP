@@ -71,7 +71,6 @@ import me.pablorincon.proyecto_app.ui.components.Pill
 import me.pablorincon.proyecto_app.ui.components.PrimaryButton
 import me.pablorincon.proyecto_app.ui.components.SectionHeading
 import me.pablorincon.proyecto_app.ui.screens.glitchcity.GlitchCityText
-import me.pablorincon.proyecto_app.ui.screens.lesson.CodeBlock
 import me.pablorincon.proyecto_app.ui.theme.AccentYellow
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
 import me.pablorincon.proyecto_app.ui.theme.AppDimens
@@ -229,7 +228,7 @@ private fun ReadyBody(
     }
 
     Spacer(Modifier.height(18.dp))
-    CodeBlock(code = state.run.code.joinToString("\n"))
+    TracedCode(state.run)
     Spacer(Modifier.height(12.dp))
     ResultBox(state.run.result)
 

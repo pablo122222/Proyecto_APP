@@ -808,4 +808,37 @@
     <string name="drone_dir_down">hacia abajo</string>
     <string name="drone_dir_left">a la izquierda</string>
     <string name="drone_dir_right">a la derecha</string>
+
+    <!-- Código visible de los laboratorios: qué hace cada línea -->
+    <string name="code_legend">Verde: se ejecuta · Rojo: su condición es falsa · Atenuada: no se ejecuta</string>
+    <string name="code_tap_hint">Toca una línea del código para ver qué hace.</string>
+    <string name="code_line_title">Línea %1$d: ¿qué hace?</string>
+    <string name="code_none">ninguna</string>
+    <string name="note_assign">Guarda %2$s en la variable %1$s.</string>
+    <string name="note_check_true">Revisa la condición: %1$s es verdadero, así que se ejecuta lo que sigue.</string>
+    <string name="note_check_false">Revisa la condición: %1$s es falso, así que se salta lo que sigue y pasa a la línea de abajo.</string>
+    <string name="note_not_reached">No se revisa: una condición de arriba ya fue verdadera, así que Python se salta el resto.</string>
+    <string name="note_else">Ninguna condición de arriba fue verdadera, así que se ejecuta el else.</string>
+    <string name="note_inside_false_if">No se ejecuta: está dentro del if, y su condición fue falsa.</string>
+    <plurals name="note_loop">
+        <item quantity="one">Repite el bloque de abajo %1$d vez; en cada vuelta %2$s toma un valor: %3$s.</item>
+        <item quantity="other">Repite el bloque de abajo %1$d veces; en cada vuelta %2$s toma un valor: %3$s.</item>
+    </plurals>
+    <plurals name="note_loop_body">
+        <item quantity="one">Se ejecuta %d vez, una por cada vuelta del for.</item>
+        <item quantity="other">Se ejecuta %d veces, una por cada vuelta del for.</item>
+    </plurals>
+    <plurals name="note_list">
+        <item quantity="one">Guarda en %1$s una lista con %2$d número.</item>
+        <item quantity="other">Guarda en %1$s una lista con %2$d números.</item>
+    </plurals>
+    <string name="note_list_empty">Guarda en %1$s una lista vacía: no hay números válidos.</string>
+    <string name="note_call">Llama a la función %1$s con la lista y guarda lo que devuelve en resultado: %2$s.</string>
+    <string name="note_call_empty">Llama a %1$s, pero la lista está vacía: no hay resultado.</string>
+    <string name="note_define">Define la función %1$s. No hace nada hasta que se usa; aquí se usa con las compras %2$s.</string>
+    <string name="note_shop_check">Revisa si compra &gt;= %1$d. Es verdadero con %2$s y falso con %3$s.</string>
+    <string name="note_return_discount">Devuelve el precio con descuento: %1$s.</string>
+    <string name="note_return_discount_unused">Ninguna compra llega al mínimo: esta línea no se usa.</string>
+    <string name="note_return_plain">Devuelve la compra sin descuento: %1$s.</string>
+    <string name="note_return_plain_unused">Todas las compras tienen descuento: esta línea no se usa.</string>
 </resources>
