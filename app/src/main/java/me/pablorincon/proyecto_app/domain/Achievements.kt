@@ -10,7 +10,7 @@ enum class Tier { Bronze, Silver, Gold }
 
 // De dónde sale el número de cada logro. None = depende de retos que aún no existen
 // (llegan con Glitch City): se muestra como "Próximamente".
-enum class AchievementMetric { BestStreak, LevelsCompleted, BugsFound, Recovered, None }
+enum class AchievementMetric { BestStreak, LevelsCompleted, BugsFound, Recovered, ExplainedWhy, None }
 
 data class Achievement(
     val id: String,
@@ -37,13 +37,15 @@ data class AchievementStats(
     val bestStreak: Int = 0,
     val levelsCompleted: Int = 0,
     val bugsFound: Int = 0,
-    val recovered: Int = 0
+    val recovered: Int = 0,
+    val explainedWhy: Int = 0
 ) {
     fun valueOf(metric: AchievementMetric): Int = when (metric) {
         AchievementMetric.BestStreak -> bestStreak
         AchievementMetric.LevelsCompleted -> levelsCompleted
         AchievementMetric.BugsFound -> bugsFound
         AchievementMetric.Recovered -> recovered
+        AchievementMetric.ExplainedWhy -> explainedWhy
         AchievementMetric.None -> 0
     }
 
@@ -53,7 +55,8 @@ data class AchievementStats(
             bestStreak = maxOf(profile.bestStreak, profile.streak),
             levelsCompleted = completedSteps.count { it is Boss },
             bugsFound = profile.bugsFound,
-            recovered = profile.recoveredExercises
+            recovered = profile.recoveredExercises,
+            explainedWhy = profile.explainedWhy.size
         )
     }
 }
@@ -80,7 +83,7 @@ object Achievements {
 
     // Mismo orden y valores que la guía §6 (el logro de corazones se eliminó: no hay vidas).
     val all: List<Achievement> = listOf(
-        Achievement("explain_why", AchievementCategory.Comprehension, "🧠", AchievementMetric.None, listOf(1, 3, 5), listOf(10, 25, 50)),
+        Achievement("explain_why", AchievementCategory.Comprehension, "🧠", AchievementMetric.ExplainedWhy, listOf(1, 3, 5), listOf(10, 25, 50)),
         Achievement("autonomous", AchievementCategory.ProblemSolving, "🧩", AchievementMetric.None, listOf(1, 3, 6), listOf(15, 30, 60)),
         Achievement("strategist", AchievementCategory.Algorithmic, "♟️", AchievementMetric.None, listOf(1, 2, 3), listOf(15, 30, 60)),
         Achievement("bug_hunter", AchievementCategory.Debugging, "🐛", AchievementMetric.BugsFound, listOf(1, 2), listOf(15, 30)),

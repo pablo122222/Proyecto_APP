@@ -68,6 +68,7 @@ data class UserProfile(
     val bestStreak: Int = 0,                  // Mejor racha de la historia (logro Hábito)
     val bugsFound: Int = 0,                   // Ejercicios "Caza el bug" resueltos (logro Cazador de errores)
     val recoveredExercises: Int = 0,          // Ejercicios acertados después de fallarlos (logro Aprender del error)
+    val explainedWhy: Set<String> = emptySet(), // Actividades de Glitch City con el "¿Por qué funciona?" acertado (logro Explica el porqué)
     val achievementTiers: Map<String, Int> = emptyMap(), // Niveles de logro ya obtenidos (id → cuántos)
     val equippedTitleId: String = INITIAL_TITLE_ID,
     val preferences: UserPreferences = UserPreferences()

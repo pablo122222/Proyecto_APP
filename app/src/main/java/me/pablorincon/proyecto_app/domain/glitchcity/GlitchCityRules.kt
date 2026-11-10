@@ -23,10 +23,11 @@ object GlitchCityRules {
         return rewarded(progress.copy(discoveries = progress.discoveries + key), DISCOVERY)
     }
 
-    // Actualizar una creación ya publicada no da recompensa.
-    fun publish(progress: GlitchCityProgress, creation: Creation): GlitchEvent {
-        if (progress.isPublished(creation)) return GlitchEvent(progress, null)
-        return rewarded(progress.copy(published = progress.published + creation.id), FIRST_PUBLISH)
+    // Guarda los valores publicados. Actualizar una creación ya publicada no da recompensa.
+    fun publish(progress: GlitchCityProgress, creation: Creation, values: Map<String, Int> = emptyMap()): GlitchEvent {
+        val saved = progress.copy(creationValues = progress.creationValues + (creation.id to values))
+        if (progress.isPublished(creation)) return GlitchEvent(saved, null)
+        return rewarded(saved.copy(published = progress.published + creation.id), FIRST_PUBLISH)
     }
 
     // Primera vez: 20 + 10 × (nivel − 1) XP y 3 gemas. Después solo da algo si mejora el récord.

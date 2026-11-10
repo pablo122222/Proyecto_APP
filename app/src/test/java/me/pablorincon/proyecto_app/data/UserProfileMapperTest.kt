@@ -27,6 +27,7 @@ class UserProfileMapperTest {
             bestStreak = 9,
             bugsFound = 4,
             recoveredExercises = 2,
+            explainedWhy = setOf("offers_shop"),
             achievementTiers = mapOf("habit" to 2, "bug_hunter" to 1),
             equippedTitleId = "t1",
             preferences = UserPreferences(

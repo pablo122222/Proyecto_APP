@@ -53,6 +53,7 @@ class AccountRepository(
                 UserProfileMapper.BEST_STREAK to 0,
                 UserProfileMapper.BUGS_FOUND to 0,
                 UserProfileMapper.RECOVERED_EXERCISES to 0,
+                UserProfileMapper.EXPLAINED_WHY to emptyList<String>(),
                 UserProfileMapper.ACHIEVEMENT_TIERS to emptyMap<String, Int>(),
                 UserProfileMapper.EQUIPPED_TITLE to UserProfile.INITIAL_TITLE_ID
             ),

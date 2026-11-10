@@ -24,6 +24,7 @@ internal object UserProfileMapper {
     const val BEST_STREAK = "bestStreak"
     const val BUGS_FOUND = "bugsFound"
     const val RECOVERED_EXERCISES = "recoveredExercises"
+    const val EXPLAINED_WHY = "explainedWhy"
     const val ACHIEVEMENT_TIERS = "achievementTiers"
     const val EQUIPPED_TITLE = "equippedTitleId"
     const val PREFERENCES = "preferences"
@@ -50,6 +51,7 @@ internal object UserProfileMapper {
         BEST_STREAK to profile.bestStreak,
         BUGS_FOUND to profile.bugsFound,
         RECOVERED_EXERCISES to profile.recoveredExercises,
+        EXPLAINED_WHY to profile.explainedWhy.toList(),
         ACHIEVEMENT_TIERS to profile.achievementTiers,
         EQUIPPED_TITLE to profile.equippedTitleId,
         PREFERENCES to preferencesToMap(profile.preferences)
@@ -81,6 +83,7 @@ internal object UserProfileMapper {
             bestStreak = data.int(BEST_STREAK) ?: defaults.bestStreak,
             bugsFound = data.int(BUGS_FOUND) ?: defaults.bugsFound,
             recoveredExercises = data.int(RECOVERED_EXERCISES) ?: defaults.recoveredExercises,
+            explainedWhy = (data[EXPLAINED_WHY] as? List<*>).orEmpty().filterIsInstance<String>().toSet(),
             achievementTiers = (data[ACHIEVEMENT_TIERS] as? Map<*, *>).orEmpty()
                 .mapNotNull { (key, value) -> (key as? String)?.let { k -> (value as? Number)?.let { k to it.toInt() } } }
                 .toMap(),

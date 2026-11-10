@@ -12,6 +12,7 @@ data class GlitchCityState(val profile: UserProfile, val progress: GlitchCityPro
 data class GlitchCityProgress(
     val discoveries: Set<String> = emptySet(),      // Lab.key(...) de cada descubrimiento hecho
     val published: Set<String> = emptySet(),        // Ids de creaciones publicadas
+    val creationValues: Map<String, Map<String, Int>> = emptyMap(), // Valores publicados de cada creación ("Editar")
     val droneRecords: Map<String, Int> = emptyMap(), // Nivel del dron → menos bloques con que se completó
     val recordsImproved: Int = 0,                   // Veces que se mejoró un récord (título "Récord Personal")
     val gemsEarned: Int = 0                         // Gemas ganadas en los retos: lo que quita "Reiniciar"

@@ -15,10 +15,10 @@ class AchievementsAndLevelsTest {
 
     // ---------- Logros ----------
     @Test
-    fun hayNueveLogrosYCuatroSeMidenHoy() {
+    fun hayNueveLogrosYCincoSeMidenHoy() {
         assertEquals(9, Achievements.all.size)
-        assertEquals(setOf("bug_hunter", "learn_from_error", "level_up", "habit"), Achievements.all.filter { it.available }.map { it.id }.toSet())
-        assertEquals(2 + 3 + 3 + 3, Achievements.availableTiers)
+        assertEquals(setOf("explain_why", "bug_hunter", "learn_from_error", "level_up", "habit"), Achievements.all.filter { it.available }.map { it.id }.toSet())
+        assertEquals(3 + 2 + 3 + 3 + 3, Achievements.availableTiers)
     }
 
     @Test

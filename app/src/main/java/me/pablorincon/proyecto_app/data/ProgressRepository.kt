@@ -107,22 +107,25 @@ class ProgressRepository(private val db: FirebaseFirestore = FirebaseFirestore.g
         emptyList() // Se reintentará la próxima vez: no es un error que mostrar
     }
 
-    private fun stepsOf(ids: Set<String>): List<PathStep> = Curriculum.Base.steps.filter { it.id in ids }
-
-    private fun outcomeFields(o: CompletionOutcome): Map<String, Any> = mapOf(
-        UserProfileMapper.STREAK to o.activity.streak,
-        UserProfileMapper.LAST_ACTIVE_DATE to o.activity.lastActiveDate.orEmpty(),
-        UserProfileMapper.ACTIVITIES_ON_LAST_DAY to o.activity.activitiesOnLastDay,
-        UserProfileMapper.BEST_STREAK to o.bestStreak,
-        UserProfileMapper.BUGS_FOUND to o.bugsFound,
-        UserProfileMapper.RECOVERED_EXERCISES to o.recovered,
-        UserProfileMapper.ACHIEVEMENT_TIERS to o.achievementTiers,
-        UserProfileMapper.GEMS to FieldValue.increment(o.gemsGained.toLong())
-    )
-
     private companion object {
         const val USERS = "users"
         const val PROGRESS = "progress"
         const val CURRICULUM = "curriculum"
     }
 }
+
+// Pasos de la ruta con esos ids (para medir los logros).
+internal fun stepsOf(ids: Set<String>): List<PathStep> = Curriculum.Base.steps.filter { it.id in ids }
+
+// Campos del perfil que cambian al completar una actividad (racha, meta diaria, logros y sus
+// gemas). También lo usa Glitch City.
+internal fun outcomeFields(o: CompletionOutcome): Map<String, Any> = mapOf(
+    UserProfileMapper.STREAK to o.activity.streak,
+    UserProfileMapper.LAST_ACTIVE_DATE to o.activity.lastActiveDate.orEmpty(),
+    UserProfileMapper.ACTIVITIES_ON_LAST_DAY to o.activity.activitiesOnLastDay,
+    UserProfileMapper.BEST_STREAK to o.bestStreak,
+    UserProfileMapper.BUGS_FOUND to o.bugsFound,
+    UserProfileMapper.RECOVERED_EXERCISES to o.recovered,
+    UserProfileMapper.ACHIEVEMENT_TIERS to o.achievementTiers,
+    UserProfileMapper.GEMS to FieldValue.increment(o.gemsGained.toLong())
+)
