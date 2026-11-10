@@ -35,16 +35,22 @@ class UserRepository(private val db: FirebaseFirestore = FirebaseFirestore.getIn
 
     // Lee el perfil. Si el documento no existe todavía (registro que no alcanzó a
     // guardarlo), lo crea: así el login siempre termina con un perfil válido.
-    // Sin red y sin copia local da NoConnection: nunca se asume que el usuario es nuevo.
+    // Sin red da NoConnection: nunca se asume que el usuario es nuevo. Por eso un "no existe"
+    // que viene de la copia del teléfono no cuenta: crear el perfil ahí dejaría en cola una
+    // escritura que, al volver la red, borraría el progreso real del usuario.
     suspend fun ensureProfile(uid: String, fallbackName: String): ProfileResult = try {
-        val snapshot = document(uid).get().awaitResult()
+        val snapshot = document(uid).read()
         val data = snapshot.data
-        if (snapshot.exists() && data != null) {
-            ProfileResult.Success(UserProfileMapper.fromMap(data, fallbackName))
-        } else {
-            val profile = UserProfile.initial(fallbackName)
-            document(uid).set(UserProfileMapper.toMap(profile)).awaitResult()
-            ProfileResult.Success(profile)
+        when {
+            snapshot.exists() && data != null -> ProfileResult.Success(UserProfileMapper.fromMap(data, fallbackName))
+            snapshot.metadata.isFromCache -> ProfileResult.NoConnection
+            else -> {
+                val profile = UserProfile.initial(fallbackName)
+                withTimeoutOrNull(SAVE_TIMEOUT_MILLIS) {
+                    document(uid).set(UserProfileMapper.toMap(profile)).awaitResult()
+                    ProfileResult.Success(profile)
+                } ?: ProfileResult.NoConnection
+            }
         }
     } catch (e: CancellationException) {
         throw e

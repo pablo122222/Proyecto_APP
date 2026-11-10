@@ -44,8 +44,8 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
 
     // Un usuario que aún no entra a los retos no tiene el documento: eso es "sin progreso".
     suspend fun load(uid: String): LoadResult = try {
-        val profile = UserProfileMapper.fromMap(user(uid).get().awaitResult().data.orEmpty())
-        val progress = GlitchCityMapper.fromMap(city(uid).get().awaitResult().data)
+        val profile = UserProfileMapper.fromMap(user(uid).read().data.orEmpty())
+        val progress = GlitchCityMapper.fromMap(city(uid).read().data)
         LoadResult.Success(GlitchCityState(profile, progress))
     } catch (e: CancellationException) {
         throw e // La pantalla se cerró: no es un error que mostrar
@@ -55,7 +55,7 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
 
     // Solo el progreso de los retos (para Logros e Inicio). null si no se pudo leer.
     suspend fun loadProgress(uid: String): GlitchCityProgress? = try {
-        GlitchCityMapper.fromMap(city(uid).get().awaitResult().data)
+        GlitchCityMapper.fromMap(city(uid).read().data)
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
@@ -101,7 +101,7 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
                     )
                 )
                 SaveResult.Saved(reward, outcome.unlocks)
-            }.awaitResult()
+            }.awaitOrNoConnection()
         }
 
     // Respuesta correcta a "¿Por qué funciona?" (decisión D): suma una vez por actividad al
@@ -124,7 +124,7 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
                 )
             )
             SaveResult.Saved(null, outcome.unlocks)
-        }.awaitResult()
+        }.awaitOrNoConnection()
     }
 
     // Quien llama comprueba antes con GlitchTitles.canEquip que el título está ganado.
@@ -151,7 +151,7 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
                 ),
                 SetOptions.merge()
             )
-        }.awaitResult()
+        }.awaitOrNoConnection()
         Result.Done
     }
 

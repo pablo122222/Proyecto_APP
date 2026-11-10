@@ -27,7 +27,7 @@ class ProgressRepository(private val db: FirebaseFirestore = FirebaseFirestore.g
     suspend fun loadCompletedLessons(uid: String): ProgressResult = try {
         val snapshot = db.collection(USERS).document(uid)
             .collection(PROGRESS).document(CURRICULUM)
-            .get().awaitResult()
+            .read()
         ProgressResult.Success(ProgressMapper.completedLessonIds(snapshot.data))
     } catch (e: CancellationException) {
         throw e // La pantalla se cerró: no es un error que mostrar
@@ -72,7 +72,7 @@ class ProgressRepository(private val db: FirebaseFirestore = FirebaseFirestore.g
                 tx.update(userRef, outcomeFields(result) + (UserProfileMapper.XP to FieldValue.increment(xp.toLong())))
                 result
             }
-        }.awaitResult()
+        }.awaitOrNoConnection()
         if (outcome != null) CompleteResult.Completed(xp, outcome.unlocks) else CompleteResult.AlreadyCompleted
     } catch (e: CancellationException) {
         throw e
@@ -102,7 +102,7 @@ class ProgressRepository(private val db: FirebaseFirestore = FirebaseFirestore.g
                 )
             }
             result.unlocks
-        }.awaitResult()
+        }.awaitOrNoConnection()
     } catch (e: CancellationException) {
         throw e
     } catch (e: Exception) {
