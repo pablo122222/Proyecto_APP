@@ -120,7 +120,7 @@ fun AchievementMedal(emoji: String, tier: Tier?, modifier: Modifier = Modifier, 
             .border(2.dp, tierColor(tier), RoundedCornerShape((size / 3).dp)),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = emoji, fontSize = (size / 2).sp)
+        Text(text = emoji, fontSize = (size / 2).sp, modifier = Modifier.decorative())
     }
 }
 

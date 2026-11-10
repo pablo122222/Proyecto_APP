@@ -6,6 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,10 +34,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
@@ -168,6 +172,7 @@ fun ProfileScreen(actions: ProfileActions, viewModel: ProfileViewModel) {
 }
 
 // Héroe: avatar, nombre, nivel y rango, barra de XP y tres números rápidos.
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ProfileHeader(summary: ProfileSummary) {
     val level = summary.userLevel
@@ -187,31 +192,52 @@ private fun ProfileHeader(summary: ProfileSummary) {
             color = Muted
         )
         Spacer(Modifier.height(16.dp))
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        // Con el texto grande, "170 / 250 XP" baja a su propia línea en vez de pegarse a la frase
+        FlowRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(text = stringResource(R.string.profile_xp_to_next, level.xpToNext), style = AppTextStyles.RowSubtitle, color = Muted)
             Text(text = stringResource(R.string.profile_xp_progress, level.xpInLevel, level.xpForNext), style = AppTextStyles.RowSubtitle, color = Ink)
         }
         Spacer(Modifier.height(6.dp))
         ProgressBar(percent = level.percent)
         Spacer(Modifier.height(16.dp))
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            QuickStat(value = stringResource(R.string.profile_stat_xp, summary.profile.xp), label = stringResource(R.string.profile_stat_xp_label))
-            QuickStat(
-                value = "🔥 ${summary.streak}",
-                label = pluralStringResource(R.plurals.profile_stat_streak_label, summary.streak)
-            )
-            QuickStat(value = "📘 ${summary.lessonsCompleted}", label = stringResource(R.string.profile_stat_lessons_label))
-            QuickStat(value = stringResource(R.string.gems_pill, summary.profile.gems), label = stringResource(R.string.profile_stat_gems_label))
+        val xpLabel = stringResource(R.string.profile_stat_xp_label)
+        val streakLabel = pluralStringResource(R.plurals.profile_stat_streak_label, summary.streak)
+        val lessonsLabel = stringResource(R.string.profile_stat_lessons_label)
+        val gemsLabel = stringResource(R.string.profile_stat_gems_label)
+        val stats = listOf(
+            QuickStatData(stringResource(R.string.profile_stat_xp, summary.profile.xp), xpLabel, "${summary.profile.xp} $xpLabel"),
+            QuickStatData("🔥 ${summary.streak}", streakLabel, "${summary.streak} $streakLabel"),
+            QuickStatData("📘 ${summary.lessonsCompleted}", lessonsLabel, "${summary.lessonsCompleted} $lessonsLabel"),
+            QuickStatData(stringResource(R.string.gems_pill, summary.profile.gems), gemsLabel, "${summary.profile.gems} $gemsLabel")
+        )
+        // Cuatro columnas iguales; con el texto grande del sistema no caben ("leccione / s"),
+        // así que pasan a dos filas de dos.
+        val perRow = if (LocalDensity.current.fontScale > STATS_ONE_ROW_FONT_SCALE) 2 else stats.size
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            stats.chunked(perRow).forEach { row ->
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                    row.forEach { QuickStat(it, Modifier.weight(1f)) }
+                }
+            }
         }
     }
 }
 
+// Hasta este tamaño de letra del sistema las cuatro estadísticas caben en una fila.
+private const val STATS_ONE_ROW_FONT_SCALE = 1.3f
+
+// `spoken` es lo que lee TalkBack: el número y su leyenda, sin el emoji.
+private data class QuickStatData(val value: String, val label: String, val spoken: String)
+
 @Composable
-private fun QuickStat(value: String, label: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.semantics(mergeDescendants = true) {}) {
-        Text(text = value, style = AppTextStyles.RecommendTitle.copy(fontSize = AppTextStyles.SettingsTitle.fontSize), color = Ink)
+private fun QuickStat(stat: QuickStatData, modifier: Modifier = Modifier) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.clearAndSetSemantics { contentDescription = stat.spoken }
+    ) {
+        Text(text = stat.value, style = AppTextStyles.RecommendTitle.copy(fontSize = AppTextStyles.SettingsTitle.fontSize), color = Ink)
         Spacer(Modifier.height(2.dp))
-        Text(text = label, style = AppTextStyles.StatCaption, color = Muted)
+        Text(text = stat.label, style = AppTextStyles.StatCaption, color = Muted, textAlign = TextAlign.Center)
     }
 }
 

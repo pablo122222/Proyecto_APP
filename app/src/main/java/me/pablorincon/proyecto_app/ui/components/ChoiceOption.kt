@@ -71,7 +71,7 @@ fun ChoiceOption(
                 .background(ChoiceIconBackground),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = icon, style = AppTextStyles.RowIcon)
+            Text(text = icon, style = AppTextStyles.RowIcon, modifier = Modifier.decorative())
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(text = title, style = AppTextStyles.ChoiceTitle, color = Ink)

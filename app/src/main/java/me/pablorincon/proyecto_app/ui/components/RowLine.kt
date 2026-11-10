@@ -60,7 +60,7 @@ fun RowLine(
                 .background(if (danger) LogoutIconBackground else RowIconBackground),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = icon, style = AppTextStyles.RowIcon, color = if (danger) ErrorRed else Primary)
+            Text(text = icon, style = AppTextStyles.RowIcon, color = if (danger) ErrorRed else Primary, modifier = Modifier.decorative())
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(text = title, style = AppTextStyles.RowTitle, color = if (danger) ErrorRed else Ink)
@@ -72,7 +72,7 @@ fun RowLine(
             )
         }
         if (onClick != null) {
-            Text(text = stringResource(R.string.chevron_symbol), style = AppTextStyles.RowChevron, color = Chevron)
+            Text(text = stringResource(R.string.chevron_symbol), style = AppTextStyles.RowChevron, color = Chevron, modifier = Modifier.decorative())
         }
     }
 }

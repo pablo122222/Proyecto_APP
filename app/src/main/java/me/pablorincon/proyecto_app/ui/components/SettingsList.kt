@@ -163,7 +163,7 @@ fun SettingsRow(
         }
         if (showChevron && !danger) {
             Spacer(Modifier.width(8.dp))
-            Text(text = "›", style = AppTextStyles.RowChevron, color = Chevron)
+            Text(text = "›", style = AppTextStyles.RowChevron, color = Chevron, modifier = Modifier.decorative())
         }
     }
 }

@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -45,6 +46,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
@@ -71,6 +73,7 @@ import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityState
 import me.pablorincon.proyecto_app.domain.glitchcity.GlitchTitles
 import me.pablorincon.proyecto_app.ui.components.AppCard
 import me.pablorincon.proyecto_app.ui.components.ConfirmSheet
+import me.pablorincon.proyecto_app.ui.components.decorative
 import me.pablorincon.proyecto_app.ui.components.Pill
 import me.pablorincon.proyecto_app.ui.components.PrimaryButton
 import me.pablorincon.proyecto_app.ui.theme.AccentYellow
@@ -282,9 +285,17 @@ private fun Banner(titleId: String) {
 }
 
 // Fila de botones: el activo en azul con texto blanco.
+// Con el texto grande del sistema los 4 nombres ya no caben a lo ancho ("Explor", "Compe"):
+// entonces cada botón toma el ancho de su nombre y la fila se desliza de lado.
 @Composable
 private fun TabRow(selected: CityTab, onSelect: (CityTab) -> Unit) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    val fits = LocalDensity.current.fontScale <= TABS_FIT_FONT_SCALE
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .then(if (fits) Modifier else Modifier.horizontalScroll(rememberScrollState())),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         CityTab.entries.forEach { tab ->
             val active = tab == selected
             Text(
@@ -301,16 +312,20 @@ private fun TabRow(selected: CityTab, onSelect: (CityTab) -> Unit) {
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 modifier = Modifier
-                    .weight(1f)
+                    .then(if (fits) Modifier.weight(1f) else Modifier)
                     .clip(AppShapes.SmallButton)
                     .background(if (active) Primary else PrimarySoft)
                     .semantics { this.selected = active }
                     .clickable(role = Role.Tab) { onSelect(tab) }
-                    .padding(vertical = 10.dp, horizontal = 4.dp) // Poco margen lateral: caben 4 botones
+                    // Poco margen lateral para que quepan 4 botones; al deslizar, el normal
+                    .padding(vertical = 10.dp, horizontal = if (fits) 4.dp else 14.dp)
             )
         }
     }
 }
+
+// Hasta este tamaño de letra del sistema los 4 botones caben repartidos a lo ancho.
+private const val TABS_FIT_FONT_SCALE = 1.15f
 
 @Composable
 private fun Intro(text: String) {
@@ -374,7 +389,7 @@ private fun ActivityCard(emoji: String, title: String, subtitle: String, action:
                 Modifier.size(40.dp).clip(CardIconShape).background(RowIconBackground),
                 contentAlignment = Alignment.Center
             ) {
-                Text(emoji, style = AppTextStyles.RowIcon)
+                Text(emoji, style = AppTextStyles.RowIcon, modifier = Modifier.decorative())
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {

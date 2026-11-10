@@ -69,6 +69,7 @@ import me.pablorincon.proyecto_app.domain.tutor.TutorMessage
 import me.pablorincon.proyecto_app.domain.tutor.TutorReply
 import me.pablorincon.proyecto_app.domain.tutor.TutorTopic
 import me.pablorincon.proyecto_app.ui.components.Pill
+import me.pablorincon.proyecto_app.ui.components.decorative
 import me.pablorincon.proyecto_app.ui.theme.AppAppearance
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
 import me.pablorincon.proyecto_app.ui.theme.AppDimens
@@ -249,7 +250,7 @@ private fun HeaderCard() {
                 .background(TutorHeaderIconBg),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "✦", fontSize = 22.sp, color = Paper)
+            Text(text = "✦", fontSize = 22.sp, color = Paper, modifier = Modifier.decorative())
         }
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {

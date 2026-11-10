@@ -61,6 +61,7 @@ import me.pablorincon.proyecto_app.ui.components.PrimaryButton
 import me.pablorincon.proyecto_app.ui.components.SecondaryButton
 import me.pablorincon.proyecto_app.ui.components.SectionHeading
 import me.pablorincon.proyecto_app.ui.components.StatBox
+import me.pablorincon.proyecto_app.ui.components.decorative
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
 import me.pablorincon.proyecto_app.ui.theme.AppDimens
 import me.pablorincon.proyecto_app.ui.theme.AppTextStyles
@@ -479,7 +480,7 @@ private fun RecommendationLayout(emoji: String, title: String, text: String, but
                     .background(RowIconBackground),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = emoji, style = AppTextStyles.RowIcon)
+                Text(text = emoji, style = AppTextStyles.RowIcon, modifier = Modifier.decorative())
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {

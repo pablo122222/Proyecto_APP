@@ -22,9 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import me.pablorincon.proyecto_app.ui.navigation.BottomTab
 import me.pablorincon.proyecto_app.ui.theme.AppDimens
@@ -107,9 +109,20 @@ private fun TabItem(
                 modifier = Modifier.size(AppDimens.TabIcon)
             )
         }
-        Text(text = stringResource(tab.label), style = AppTextStyles.TabLabel, color = color)
+        Text(text = stringResource(tab.label), style = tabLabelStyle(), color = color, maxLines = 1)
     }
 }
+
+// La barra tiene alto fijo y cinco nombres en fila: el nombre crece con la letra del sistema
+// solo hasta 1,5 veces; más allá se tocaban ("AprenderRetos") y se salían de la barra.
+@Composable
+private fun tabLabelStyle(): TextStyle {
+    val base = AppTextStyles.TabLabel
+    val scale = LocalDensity.current.fontScale
+    return if (scale <= MAX_TAB_LABEL_SCALE) base else base.copy(fontSize = base.fontSize * (MAX_TAB_LABEL_SCALE / scale))
+}
+
+private const val MAX_TAB_LABEL_SCALE = 1.5f
 
 @Preview
 @Composable
