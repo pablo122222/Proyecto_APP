@@ -699,4 +699,30 @@
     <string name="lab_goal_npc_rules_flee_1">Huye cuando el jugador está a 1 de distancia</string>
     <string name="lab_goal_npc_rules_greet_4">Saluda cuando está a 4</string>
     <string name="lab_goal_npc_rules_wander_8">Pasea cuando está a 8 o más</string>
+
+    <!-- Laboratorio en modo Crear (guía §5.2) -->
+    <string name="lab_create_subtitle">Ajusta las reglas hasta cumplir todos los objetivos y publica tu creación.</string>
+    <string name="lab_objectives">Objetivos</string>
+    <string name="lab_publish">Publicar creación</string>
+    <string name="lab_update">Actualizar creación</string>
+    <string name="lab_published">¡Creación publicada! +%1$d XP · +%2$d ◆</string>
+    <string name="lab_updated">Listo: tu creación se actualizó.</string>
+    <string name="lab_publish_no_connection">Sin conexión: no pudimos publicar tu creación. Inténtalo de nuevo con internet.</string>
+    <string name="lab_publish_failed">No pudimos publicar tu creación. Inténtalo de nuevo.</string>
+
+    <!-- "¿Por qué funciona?" (decisión D) -->
+    <string name="why_title">¿Por qué funciona?</string>
+    <string name="why_optional">Pregunta opcional: si aciertas, sumas al logro «Explica el porqué».</string>
+    <string name="why_skip">Omitir</string>
+    <string name="why_correct">¡Exacto! Entendiste por qué funciona.</string>
+    <string name="why_wrong">Esa no es. La respuesta correcta está marcada en verde.</string>
+    <string name="why_continue">Seguir</string>
+    <string name="why_offers_shop">¿Por qué la compra de 30 no recibe descuento?</string>
+    <string name="why_offers_shop_even">Porque el descuento solo se aplica a números pares.</string>
+    <string name="why_offers_shop_correct">Porque 30 es menor que el mínimo, así que el if es falso y se ejecuta return compra.</string>
+    <string name="why_offers_shop_return">Porque return siempre devuelve el precio original.</string>
+    <string name="why_npc_rules">¿Por qué importa el orden de if y elif?</string>
+    <string name="why_npc_rules_elif">Porque elif se revisa siempre, aunque el if ya se haya cumplido.</string>
+    <string name="why_npc_rules_else">Porque else se ejecuta antes que el if.</string>
+    <string name="why_npc_rules_correct">Porque Python revisa las condiciones en orden y usa la primera verdadera: por eso a distancia 1 huye, aunque también cumpla la de saludar.</string>
 </resources>

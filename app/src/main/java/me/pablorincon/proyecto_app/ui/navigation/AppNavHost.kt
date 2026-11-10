@@ -23,7 +23,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import me.pablorincon.proyecto_app.R
-import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityCatalog
+import me.pablorincon.proyecto_app.domain.glitchcity.Labs
 import me.pablorincon.proyecto_app.ui.components.AppBottomBar
 import me.pablorincon.proyecto_app.ui.screens.boss.BossScreen
 import me.pablorincon.proyecto_app.ui.screens.forgotpassword.ForgotPasswordScreen
@@ -230,13 +230,13 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
         composable(AppRoutes.GLITCH_CITY) {
             GlitchCityScreen(onOpenActivity = { navController.navigate(AppRoutes.activity(it)) })
         }
-        // Laboratorios de Explorar; las creaciones y el dron siguen provisionales (Fases 14c y 15)
+        // Laboratorios de Explorar y Crear; el dron sigue provisional (Fase 15)
         composable(
             route = AppRoutes.ACTIVITY,
             arguments = listOf(navArgument(AppRoutes.ACTIVITY_ARG) { type = NavType.StringType })
         ) { entry ->
             val activityId = entry.arguments?.getString(AppRoutes.ACTIVITY_ARG).orEmpty()
-            if (GlitchCityCatalog.lab(activityId) != null) {
+            if (Labs.byId(activityId) != null) {
                 LabScreen(
                     activityId = activityId,
                     onBack = navController::goBack,

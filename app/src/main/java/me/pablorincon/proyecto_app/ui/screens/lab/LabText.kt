@@ -47,4 +47,18 @@ internal object LabText {
     )
 
     fun goal(activityId: String, goalId: String): Int = goals.getValue("$activityId:$goalId")
+
+    // Pregunta "¿Por qué funciona?" por actividad: (pregunta, opciones en el orden de WhyQuestions)
+    val why: Map<String, Pair<Int, List<Int>>> = mapOf(
+        "offers_shop" to (R.string.why_offers_shop to listOf(
+            R.string.why_offers_shop_even,
+            R.string.why_offers_shop_correct,
+            R.string.why_offers_shop_return
+        )),
+        "npc_rules" to (R.string.why_npc_rules to listOf(
+            R.string.why_npc_rules_elif,
+            R.string.why_npc_rules_else,
+            R.string.why_npc_rules_correct
+        ))
+    )
 }

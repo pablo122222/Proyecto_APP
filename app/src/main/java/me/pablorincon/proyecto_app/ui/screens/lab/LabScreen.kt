@@ -105,16 +105,23 @@ fun LabScreen(
         onBack = onBack,
         onNumberChange = viewModel::onNumberChange,
         onTextChange = viewModel::onTextChange,
+        onPublish = viewModel::publish,
         onRetry = viewModel::load,
         modifier = modifier
     )
     val ready = state as? LabUiState.Ready
     // Avisos cortos (toast de la guía §0)
+    val isCreation = ready?.isCreation == true
     val toastText = when (val message = ready?.message) {
         is LabMessage.Discovered -> stringResource(R.string.lab_reward, message.reward.xp, message.reward.gems)
-        LabMessage.NoConnection -> stringResource(R.string.lab_save_no_connection)
-        LabMessage.Failed -> stringResource(R.string.lab_save_failed)
+        is LabMessage.Published -> stringResource(R.string.lab_published, message.reward.xp, message.reward.gems)
+        LabMessage.Updated -> stringResource(R.string.lab_updated)
+        LabMessage.NoConnection -> stringResource(if (isCreation) R.string.lab_publish_no_connection else R.string.lab_save_no_connection)
+        LabMessage.Failed -> stringResource(if (isCreation) R.string.lab_publish_failed else R.string.lab_save_failed)
         null -> null
+    }
+    ready?.why?.let { why ->
+        WhySheet(state = why, onAnswer = viewModel::answerWhy, onClose = viewModel::closeWhy)
     }
     LaunchedEffect(ready?.message) {
         if (toastText != null) {
@@ -122,9 +129,9 @@ fun LabScreen(
             viewModel.onMessageShown()
         }
     }
-    // Logros ganados con un descubrimiento (por ejemplo, Hábito al subir la racha)
+    // Logros ganados (por ejemplo, Hábito al subir la racha); espera a que se cierre la pregunta
     AchievementUnlockedDialog(
-        unlocks = ready?.unlocks.orEmpty(),
+        unlocks = if (ready?.why == null) ready?.unlocks.orEmpty() else emptyList(),
         onSeeAchievements = {
             viewModel.onUnlocksSeen()
             onOpenAchievements()
@@ -139,6 +146,7 @@ private fun LabContent(
     onBack: () -> Unit,
     onNumberChange: (String, Int) -> Unit,
     onTextChange: (String, String) -> Unit,
+    onPublish: () -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -177,7 +185,7 @@ private fun LabContent(
                 Spacer(Modifier.height(AppDimens.ErrorToButton))
                 PrimaryButton(text = stringResource(R.string.startup_retry), onClick = onRetry)
             }
-            is LabUiState.Ready -> ReadyBody(state, onBack, onNumberChange, onTextChange)
+            is LabUiState.Ready -> ReadyBody(state, onBack, onNumberChange, onTextChange, onPublish)
         }
     }
 }
@@ -187,26 +195,31 @@ private fun ReadyBody(
     state: LabUiState.Ready,
     onBack: () -> Unit,
     onNumberChange: (String, Int) -> Unit,
-    onTextChange: (String, String) -> Unit
+    onTextChange: (String, String) -> Unit,
+    onPublish: () -> Unit
 ) {
     val activityId = state.simulation.activityId
-    val lab = GlitchCityCatalog.lab(activityId)
+    val emoji = GlitchCityCatalog.lab(activityId)?.emoji ?: GlitchCityCatalog.creation(activityId)?.emoji
     val (name, _) = GlitchCityText.activityNames.getValue(activityId)
 
-    // topline: atrás · "Explorar"
+    // topline: atrás · "Explorar" / "Crear"
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         BackButton(onClick = onBack)
         Spacer(Modifier.weight(1f))
-        Pill(text = stringResource(R.string.city_tab_explore))
+        Pill(text = stringResource(if (state.isCreation) R.string.city_tab_create else R.string.city_tab_explore))
     }
     Spacer(Modifier.height(AppDimens.TopLineBottom))
     Text(
-        text = stringResource(R.string.lab_title, lab?.emoji.orEmpty(), stringResource(name)),
+        text = stringResource(R.string.lab_title, emoji.orEmpty(), stringResource(name)),
         style = AppTextStyles.ScreenTitleSmall,
         color = Ink
     )
     Spacer(Modifier.height(AppDimens.TitleBottom))
-    Text(text = stringResource(R.string.lab_explore_subtitle), style = AppTextStyles.Subtitle, color = Muted)
+    Text(
+        text = stringResource(if (state.isCreation) R.string.lab_create_subtitle else R.string.lab_explore_subtitle),
+        style = AppTextStyles.Subtitle,
+        color = Muted
+    )
 
     Spacer(Modifier.height(18.dp))
     Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -220,8 +233,20 @@ private fun ReadyBody(
     Spacer(Modifier.height(12.dp))
     ResultBox(state.run.result)
 
-    SectionHeading(title = stringResource(R.string.lab_discoveries))
-    GoalList(activityId, state.simulation.goalIds, state.done)
+    if (state.isCreation) {
+        // Crear: los objetivos se marcan en vivo con los valores actuales
+        SectionHeading(title = stringResource(R.string.lab_objectives))
+        GoalList(activityId, state.simulation.goalIds, state.run.met)
+        Spacer(Modifier.height(18.dp))
+        PrimaryButton(
+            text = stringResource(if (state.published) R.string.lab_update else R.string.lab_publish),
+            onClick = onPublish,
+            enabled = state.canPublish
+        )
+    } else {
+        SectionHeading(title = stringResource(R.string.lab_discoveries))
+        GoalList(activityId, state.simulation.goalIds, state.done)
+    }
 }
 
 // ---------- Controles ----------

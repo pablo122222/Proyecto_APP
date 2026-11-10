@@ -1,6 +1,7 @@
 package me.pablorincon.proyecto_app.ui.screens.lab
 
 import me.pablorincon.proyecto_app.domain.glitchcity.Labs
+import me.pablorincon.proyecto_app.domain.glitchcity.WhyQuestions
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -15,5 +16,13 @@ class LabTextTest {
     fun cadaDescubrimientoYObjetivoTieneSuTexto() {
         val keys = Labs.all.flatMap { lab -> lab.goalIds.map { "${lab.activityId}:$it" } }.toSet()
         assertEquals(keys, LabText.goals.keys)
+    }
+
+    @Test
+    fun cadaPreguntaTieneSusTextosConLasOpcionesDelDominio() {
+        assertEquals(WhyQuestions.all.map { it.activityId }.toSet(), LabText.why.keys)
+        WhyQuestions.all.forEach { question ->
+            assertEquals(question.optionCount, LabText.why.getValue(question.activityId).second.size)
+        }
     }
 }
