@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import me.pablorincon.proyecto_app.BuildConfig
 import me.pablorincon.proyecto_app.data.AuthRepository
 import me.pablorincon.proyecto_app.data.AuthRepository.LoginResult
 import me.pablorincon.proyecto_app.data.PreferencesRepository
@@ -43,9 +44,11 @@ class LoginViewModel(
     fun onEmailChange(value: String) = _uiState.update { it.copy(email = value, error = null) }
     fun onPasswordChange(value: String) = _uiState.update { it.copy(password = value, error = null) }
 
-    // Botón "Usar cuenta de ejemplo": rellena los campos, no inicia sesión.
-    fun fillExampleAccount() = _uiState.update {
-        it.copy(email = EXAMPLE_EMAIL, password = EXAMPLE_PASSWORD, error = null)
+    // Botón "Usar cuenta de ejemplo": rellena los campos, no inicia sesión. Solo existe en las
+    // versiones de prueba; en release no hace nada (y R8 quita los datos de la cuenta del instalable).
+    fun fillExampleAccount() {
+        if (!BuildConfig.DEBUG) return
+        _uiState.update { it.copy(email = EXAMPLE_EMAIL, password = EXAMPLE_PASSWORD, error = null) }
     }
 
     fun submit() {

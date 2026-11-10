@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import me.pablorincon.proyecto_app.BuildConfig
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.ui.components.AppTextField
 import me.pablorincon.proyecto_app.ui.components.FooterLink
@@ -178,8 +179,11 @@ private fun LoginContent(
         Spacer(Modifier.height(AppDimens.ErrorToButton))
         PrimaryButton(text = stringResource(R.string.login_submit), onClick = onSubmit)
 
-        Spacer(Modifier.height(AppDimens.CardTop))
-        ExampleAccountCard(onUseExample = onUseExample)
+        // Cuenta de ejemplo solo en las versiones de prueba (decisión B): en release no se muestra
+        if (BuildConfig.DEBUG) {
+            Spacer(Modifier.height(AppDimens.CardTop))
+            ExampleAccountCard(onUseExample = onUseExample)
+        }
 
         FooterLink(
             text = stringResource(R.string.login_new),
