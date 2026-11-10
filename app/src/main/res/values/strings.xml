@@ -378,6 +378,11 @@
     <string name="home_review_title">Repasa: %1$s</string>
     <string name="home_review_text">Vuelve a la última lección que completaste: repasar ayuda a que no se te olvide.</string>
     <string name="home_review_button">Repasar</string>
+    <string name="home_challenge_title">Reto: %1$s</string>
+    <string name="home_challenge_drone_text">Siguiente nivel del dron en Glitch City: llega a la meta con los menos bloques posibles.</string>
+    <string name="home_challenge_lab_text">Laboratorio de Glitch City con descubrimientos pendientes: cambia los valores y mira qué pasa.</string>
+    <string name="home_challenge_creation_text">Creación de Glitch City sin publicar: cumple sus objetivos y publícala.</string>
+    <string name="home_challenge_button">Ir al reto</string>
     <string name="home_tutor_title">¿Tienes una duda?</string>
     <string name="home_tutor_text">El tutor te explica cualquier concepto con otro ejemplo, cuando lo necesites.</string>
     <string name="home_tutor_button">Preguntar al tutor</string>

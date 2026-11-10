@@ -51,6 +51,8 @@ import me.pablorincon.proyecto_app.domain.Lesson
 import me.pablorincon.proyecto_app.domain.NextUp
 import me.pablorincon.proyecto_app.domain.PathStep
 import me.pablorincon.proyecto_app.domain.ReviewSuggestion
+import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityCatalog
+import me.pablorincon.proyecto_app.ui.screens.glitchcity.GlitchCityText
 import me.pablorincon.proyecto_app.ui.components.AchievementUnlockedDialog
 import me.pablorincon.proyecto_app.ui.components.AppCard
 import me.pablorincon.proyecto_app.ui.components.Avatar
@@ -91,6 +93,7 @@ fun HomeScreen(
     onOpenProfile: () -> Unit,
     onAskTutor: () -> Unit,
     onOpenAchievements: () -> Unit,
+    onOpenChallenge: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel()
 ) {
@@ -106,6 +109,7 @@ fun HomeScreen(
         onOpenPath = onOpenPath,
         onOpenProfile = onOpenProfile,
         onAskTutor = onAskTutor,
+        onOpenChallenge = onOpenChallenge,
         onRetry = viewModel::load,
         modifier = modifier
     )
@@ -127,6 +131,7 @@ private fun HomeContent(
     onOpenPath: () -> Unit,
     onOpenProfile: () -> Unit,
     onAskTutor: () -> Unit,
+    onOpenChallenge: (String) -> Unit,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -177,7 +182,12 @@ private fun HomeContent(
                     linkText = stringResource(R.string.home_recommended_link),
                     onLinkClick = onAskTutor
                 )
-                RecommendedCard(review = summary.review, onOpenStep = onOpenStep, onAskTutor = onAskTutor)
+                RecommendedCard(
+                    recommendation = recommendationOf(summary),
+                    onOpenStep = onOpenStep,
+                    onAskTutor = onAskTutor,
+                    onOpenChallenge = onOpenChallenge
+                )
             }
         }
     }
@@ -389,9 +399,77 @@ private fun DayNumbers(summary: HomeSummary) {
     }
 }
 
-// "Recomendado para ti": repasar la última lección completada; sin ninguna, preguntar al tutor.
+// Qué recomienda la tarjeta, en orden: un reto de Glitch City, repasar la última lección
+// completada o, si no hay nada de eso, preguntar al tutor.
+private sealed interface Recommendation {
+    data class Challenge(val activityId: String) : Recommendation
+    data class Review(val review: ReviewSuggestion) : Recommendation
+    data object Tutor : Recommendation
+}
+
+private fun recommendationOf(summary: HomeSummary): Recommendation = when {
+    summary.challengeId != null -> Recommendation.Challenge(summary.challengeId)
+    summary.review != null -> Recommendation.Review(summary.review)
+    else -> Recommendation.Tutor
+}
+
 @Composable
-private fun RecommendedCard(review: ReviewSuggestion?, onOpenStep: (PathStep) -> Unit, onAskTutor: () -> Unit) {
+private fun RecommendedCard(
+    recommendation: Recommendation,
+    onOpenStep: (PathStep) -> Unit,
+    onAskTutor: () -> Unit,
+    onOpenChallenge: (String) -> Unit
+) {
+    when (recommendation) {
+        is Recommendation.Challenge -> ChallengeCard(recommendation.activityId) { onOpenChallenge(recommendation.activityId) }
+        is Recommendation.Review -> ReviewOrTutorCard(recommendation.review, onOpenStep, onAskTutor)
+        Recommendation.Tutor -> ReviewOrTutorCard(null, onOpenStep, onAskTutor)
+    }
+}
+
+// Reto de Glitch City: nivel del dron, laboratorio con descubrimientos pendientes o creación sin publicar.
+@Composable
+private fun ChallengeCard(activityId: String, onOpen: () -> Unit) {
+    val lab = GlitchCityCatalog.lab(activityId)
+    val creation = GlitchCityCatalog.creation(activityId)
+    val (emoji, nameRes, textRes) = when {
+        lab != null -> Triple(lab.emoji, GlitchCityText.activityNames.getValue(activityId).first, R.string.home_challenge_lab_text)
+        creation != null -> Triple(creation.emoji, GlitchCityText.activityNames.getValue(activityId).first, R.string.home_challenge_creation_text)
+        else -> Triple("🚁", GlitchCityText.droneLevelNames.getValue(activityId), R.string.home_challenge_drone_text)
+    }
+    RecommendationLayout(
+        emoji = emoji,
+        title = stringResource(R.string.home_challenge_title, stringResource(nameRes)),
+        text = stringResource(textRes),
+        button = stringResource(R.string.home_challenge_button),
+        onClick = onOpen
+    )
+}
+
+// Repasar la última lección completada; sin ninguna, preguntar al tutor.
+@Composable
+private fun ReviewOrTutorCard(review: ReviewSuggestion?, onOpenStep: (PathStep) -> Unit, onAskTutor: () -> Unit) {
+    if (review != null) {
+        RecommendationLayout(
+            emoji = "✨",
+            title = stringResource(R.string.home_review_title, review.title),
+            text = stringResource(R.string.home_review_text),
+            button = stringResource(R.string.home_review_button),
+            onClick = { onOpenStep(review.lesson) }
+        )
+    } else {
+        RecommendationLayout(
+            emoji = "✨",
+            title = stringResource(R.string.home_tutor_title),
+            text = stringResource(R.string.home_tutor_text),
+            button = stringResource(R.string.home_tutor_button),
+            onClick = onAskTutor
+        )
+    }
+}
+
+@Composable
+private fun RecommendationLayout(emoji: String, title: String, text: String, button: String, onClick: () -> Unit) {
     AppCard {
         Row(verticalAlignment = Alignment.Top) {
             Box(
@@ -401,28 +479,15 @@ private fun RecommendedCard(review: ReviewSuggestion?, onOpenStep: (PathStep) ->
                     .background(RowIconBackground),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "✨", style = AppTextStyles.RowIcon)
+                Text(text = emoji, style = AppTextStyles.RowIcon)
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(
-                    text = if (review != null) stringResource(R.string.home_review_title, review.title)
-                    else stringResource(R.string.home_tutor_title),
-                    style = AppTextStyles.RecommendTitle,
-                    color = Ink
-                )
+                Text(text = title, style = AppTextStyles.RecommendTitle, color = Ink)
                 Spacer(Modifier.height(4.dp))
-                Text(
-                    text = stringResource(if (review != null) R.string.home_review_text else R.string.home_tutor_text),
-                    style = AppTextStyles.RowSubtitle,
-                    color = Muted
-                )
+                Text(text = text, style = AppTextStyles.RowSubtitle, color = Muted)
                 Spacer(Modifier.height(12.dp))
-                if (review != null) {
-                    SecondaryButton(text = stringResource(R.string.home_review_button), onClick = { onOpenStep(review.lesson) })
-                } else {
-                    SecondaryButton(text = stringResource(R.string.home_tutor_button), onClick = onAskTutor)
-                }
+                SecondaryButton(text = button, onClick = onClick)
             }
         }
     }
@@ -444,9 +509,11 @@ private fun HomeScreenPreview() {
                     todayDone = 1,
                     dailyGoal = 2,
                     next = NextUp.Step(lesson, level = 1, title = "Glitch no lee mentes 🤖", doneInLevel = 2, stepsInLevel = 12, firstTime = false),
-                    review = ReviewSuggestion(Lesson("n01_l02", 20), "Comillas mágicas")
+                    review = ReviewSuggestion(Lesson("n01_l02", 20), "Comillas mágicas"),
+                    challengeId = "d2"
                 )
             ),
+            onOpenChallenge = {},
             onOpenStep = {},
             onOpenPath = {},
             onOpenProfile = {},

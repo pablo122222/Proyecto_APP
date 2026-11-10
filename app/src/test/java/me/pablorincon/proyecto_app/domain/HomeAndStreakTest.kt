@@ -1,5 +1,7 @@
 package me.pablorincon.proyecto_app.domain
 
+import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityCatalog
+import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityProgress
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -120,6 +122,38 @@ class HomeAndStreakTest {
     fun siLoSiguienteNoTieneContenidoAvisaQueVienePronto() {
         val done = curriculum.modules[0].steps.map { it.id }.toSet()
         assertEquals(NextUp.ComingSoon(level = 2), summary(done).next)
+    }
+
+    // ---------- Reto recomendado ----------
+    private fun cityHome(city: GlitchCityProgress?) =
+        HomeSummary.build(UserProfile.initial("Ana"), CurriculumProgress(curriculum, emptySet()), curriculum, today, titles, city)
+
+    @Test
+    fun sinLeerGlitchCityNoSeRecomiendaReto() {
+        assertNull(cityHome(null).challengeId)
+    }
+
+    @Test
+    fun primeroSeRecomiendaElSiguienteNivelDelDron() {
+        assertEquals("d1", cityHome(GlitchCityProgress()).challengeId)
+        assertEquals("d3", cityHome(GlitchCityProgress(droneRecords = mapOf("d1" to 2, "d2" to 3))).challengeId)
+    }
+
+    @Test
+    fun conElDronTerminadoSigueElPrimerLaboratorioPendiente() {
+        val allDrone = GlitchCityCatalog.droneLevels.associate { it.id to 9 }
+        val trafficDone = GlitchCityProgress(droneRecords = allDrone, discoveries = setOf("traffic_light:red", "traffic_light:green", "cashier:no_discount"))
+        assertEquals("cashier", cityHome(trafficDone).challengeId) // Al cajero le falta un descubrimiento
+    }
+
+    @Test
+    fun luegoLaCreacionSinPublicarYAlFinalNada() {
+        val allDrone = GlitchCityCatalog.droneLevels.associate { it.id to 9 }
+        val allLabs = GlitchCityCatalog.labs.flatMap { lab -> lab.discoveryIds.map(lab::key) }.toSet()
+        val labsDone = GlitchCityProgress(droneRecords = allDrone, discoveries = allLabs, published = setOf(GlitchCityCatalog.OFFERS_SHOP))
+        assertEquals(GlitchCityCatalog.NPC_RULES, cityHome(labsDone).challengeId)
+        val everything = labsDone.copy(published = GlitchCityCatalog.creations.map { it.id }.toSet())
+        assertNull(cityHome(everything).challengeId) // Se vuelve al repaso
     }
 
     @Test

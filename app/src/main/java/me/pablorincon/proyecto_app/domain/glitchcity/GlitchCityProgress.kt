@@ -24,6 +24,14 @@ data class GlitchCityProgress(
         get() = GlitchCityCatalog.edgeCaseDiscoveries.count { it in discoveries } +
             GlitchCityCatalog.edgeCaseCreations.count { it in published }
 
+    // Reto recomendado en Inicio (id de actividad): el siguiente nivel del dron sin completar;
+    // luego, el primer laboratorio con descubrimientos pendientes; luego, la primera creación sin
+    // publicar. null si ya hizo todo.
+    val recommendedActivityId: String?
+        get() = GlitchCityCatalog.droneLevels.firstOrNull { record(it) == null }?.id
+            ?: GlitchCityCatalog.labs.firstOrNull { discoveriesIn(it) < it.discoveryIds.size }?.id
+            ?: GlitchCityCatalog.creations.firstOrNull { !isPublished(it) }?.id
+
     fun discoveriesIn(lab: Lab): Int = lab.discoveryIds.count { lab.key(it) in discoveries }
 
     fun isPublished(creation: Creation): Boolean = creation.id in published

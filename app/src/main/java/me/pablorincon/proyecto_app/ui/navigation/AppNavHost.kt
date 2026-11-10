@@ -181,7 +181,8 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
                 onOpenPath = { navController.openTab(BottomTab.Learn, BottomTab.Home) },
                 onOpenProfile = { navController.openTab(BottomTab.Profile, BottomTab.Home) },
                 onAskTutor = { navController.openTab(BottomTab.Tutor, BottomTab.Home) },
-                onOpenAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) }
+                onOpenAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) },
+                onOpenChallenge = { navController.navigate(AppRoutes.activity(it)) }
             )
         }
     }

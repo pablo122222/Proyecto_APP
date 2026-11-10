@@ -1,5 +1,6 @@
 package me.pablorincon.proyecto_app.domain
 
+import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityProgress
 import java.time.LocalDate
 
 // Lo que muestra Inicio, calculado del perfil y del progreso reales (nada escrito a mano).
@@ -12,18 +13,21 @@ data class HomeSummary(
     val todayDone: Int,
     val dailyGoal: Int,
     val next: NextUp,
-    val review: ReviewSuggestion?   // null: aún no hay lecciones completadas que repasar
+    val review: ReviewSuggestion?,  // null: aún no hay lecciones completadas que repasar
+    val challengeId: String? = null // Reto recomendado de Glitch City; null: ninguno (se usa el repaso)
 ) {
     val goalMet: Boolean get() = DailyGoal.isMet(todayDone, dailyGoal)
 
     companion object {
         // `titleOf` da el título visible de un paso con contenido escrito (null = aún sin contenido).
+        // city: progreso de Glitch City (null si no se pudo leer: entonces no se recomienda reto).
         fun build(
             profile: UserProfile,
             progress: CurriculumProgress,
             curriculum: Curriculum,
             today: LocalDate,
-            titleOf: (PathStep) -> String?
+            titleOf: (PathStep) -> String?,
+            city: GlitchCityProgress? = null
         ): HomeSummary {
             val activity = profile.dailyActivity
             return HomeSummary(
@@ -35,7 +39,8 @@ data class HomeSummary(
                 todayDone = activity.countOn(today),
                 dailyGoal = profile.dailyGoal,
                 next = nextUp(progress, curriculum, titleOf),
-                review = review(progress, curriculum, titleOf)
+                review = review(progress, curriculum, titleOf),
+                challengeId = city?.recommendedActivityId
             )
         }
 

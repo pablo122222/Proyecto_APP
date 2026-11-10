@@ -11,6 +11,7 @@ import me.pablorincon.proyecto_app.data.AdminAccess
 import me.pablorincon.proyecto_app.data.AuthRepository
 import me.pablorincon.proyecto_app.data.CurriculumProgressLoader
 import me.pablorincon.proyecto_app.data.CurriculumProgressLoader.LoadResult
+import me.pablorincon.proyecto_app.data.GlitchCityRepository
 import me.pablorincon.proyecto_app.data.ProgressRepository
 import me.pablorincon.proyecto_app.domain.AchievementUnlock
 import me.pablorincon.proyecto_app.domain.Boss
@@ -34,6 +35,7 @@ class HomeViewModel(
     private val auth: AuthRepository = AuthRepository(),
     private val loader: CurriculumProgressLoader = CurriculumProgressLoader(),
     private val progress: ProgressRepository = ProgressRepository(),
+    private val glitchCity: GlitchCityRepository = GlitchCityRepository(),
     private val curriculum: Curriculum = Curriculum.Base
 ) : ViewModel() {
 
@@ -56,9 +58,11 @@ class HomeViewModel(
             // Primero se entregan los logros pendientes, así las gemas ya aparecen sumadas
             val unlocks = progress.claimPendingAchievements(uid)
             val result = loader.load(uid, auth.currentName().orEmpty(), AdminAccess.isAdmin(auth.currentEmail()))
+            // Si no se puede leer Glitch City, Inicio igual se muestra (con el repaso en lugar del reto)
+            val city = glitchCity.loadProgress(uid)
             _uiState.value = when (result) {
                 is LoadResult.Loaded -> HomeUiState.Ready(
-                    HomeSummary.build(result.profile, result.progress, curriculum, LocalDate.now(), ::titleOf),
+                    HomeSummary.build(result.profile, result.progress, curriculum, LocalDate.now(), ::titleOf, city),
                     unlocks = unlocks.ifEmpty { (_uiState.value as? HomeUiState.Ready)?.unlocks.orEmpty() }
                 )
                 else -> if (silent && _uiState.value is HomeUiState.Ready) _uiState.value else HomeUiState.Error
