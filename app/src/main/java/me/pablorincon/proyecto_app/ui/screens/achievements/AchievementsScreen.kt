@@ -239,6 +239,15 @@ private fun AchievementCard(item: AchievementProgress, modifier: Modifier = Modi
                 contentColor = MintInk
             )
         }
+        // Guía §6: gemas del siguiente nivel, u "obtenida" cuando ya no quedan niveles
+        Spacer(Modifier.height(6.dp))
+        val nextGems = item.nextGems
+        Text(
+            text = if (nextGems != null) stringResource(R.string.achievements_card_reward, nextGems)
+            else stringResource(R.string.achievements_card_reward_obtained),
+            style = TextStyle(fontFamily = InterFamily, fontSize = 9.sp, fontWeight = FontWeight.SemiBold),
+            color = if (nextGems != null) Primary else MintInk
+        )
     }
 }
 

@@ -483,7 +483,7 @@
     <string name="profile_reset_email_sent">Listo: revisa tu correo para crear una contraseña nueva.</string>
     <string name="profile_daily_goal_title">Meta diaria</string>
     <string name="profile_daily_goal_value">%1$d al día</string>
-    <string name="profile_daily_goal_text">¿Cuántas actividades quieres completar cada día? Cuentan las lecciones y los jefes.</string>
+    <string name="profile_daily_goal_text">¿Cuántas actividades quieres completar cada día? Cuentan las lecciones, los jefes y los retos de Glitch City que te dan recompensa.</string>
     <string name="profile_daily_goal_note">Puedes cambiar tu objetivo cuando quieras; lo importante es mantener un ritmo sostenible.</string>
     <string name="daily_goal_pace_1">Ritmo tranquilo</string>
     <string name="daily_goal_pace_2">Ritmo recomendado</string>
@@ -530,6 +530,8 @@
     <string name="achievements_max_level">Nivel máximo</string>
     <string name="achievements_tier_goal">Llegar a %1$d</string>
     <string name="achievements_tier_obtained">✓ Obtenido</string>
+    <string name="achievements_card_reward">Recompensa: +%1$d ◆</string>
+    <string name="achievements_card_reward_obtained">Recompensa obtenida</string>
     <string name="achievements_current_value">Llevas: %1$d</string>
     <string name="achievements_gems_earned">Ganaste %1$d ◆ con este logro</string>
     <string name="achievement_tier_bronze">Bronce</string>
