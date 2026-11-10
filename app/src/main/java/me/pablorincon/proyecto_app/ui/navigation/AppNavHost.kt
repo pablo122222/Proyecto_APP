@@ -23,10 +23,12 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import me.pablorincon.proyecto_app.R
+import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityCatalog
 import me.pablorincon.proyecto_app.ui.components.AppBottomBar
 import me.pablorincon.proyecto_app.ui.screens.boss.BossScreen
 import me.pablorincon.proyecto_app.ui.screens.forgotpassword.ForgotPasswordScreen
 import me.pablorincon.proyecto_app.ui.screens.glitchcity.GlitchCityScreen
+import me.pablorincon.proyecto_app.ui.screens.lab.LabScreen
 import me.pablorincon.proyecto_app.ui.screens.home.HomeScreen
 import me.pablorincon.proyecto_app.ui.screens.learningpath.LearningPathScreen
 import me.pablorincon.proyecto_app.ui.screens.lesson.LessonScreen
@@ -228,12 +230,21 @@ private fun NavGraphBuilder.tabGraphs(navController: NavHostController) {
         composable(AppRoutes.GLITCH_CITY) {
             GlitchCityScreen(onOpenActivity = { navController.navigate(AppRoutes.activity(it)) })
         }
-        // Pantalla provisional hasta las Fases 14 y 15 (laboratorios y dron)
+        // Laboratorios de Explorar; las creaciones y el dron siguen provisionales (Fases 14c y 15)
         composable(
             route = AppRoutes.ACTIVITY,
             arguments = listOf(navArgument(AppRoutes.ACTIVITY_ARG) { type = NavType.StringType })
-        ) {
-            PlaceholderScreen(title = R.string.title_activity, onBack = navController::goBack)
+        ) { entry ->
+            val activityId = entry.arguments?.getString(AppRoutes.ACTIVITY_ARG).orEmpty()
+            if (GlitchCityCatalog.lab(activityId) != null) {
+                LabScreen(
+                    activityId = activityId,
+                    onBack = navController::goBack,
+                    onOpenAchievements = { navController.navigate(AppRoutes.ACHIEVEMENTS) }
+                )
+            } else {
+                PlaceholderScreen(title = R.string.title_activity, onBack = navController::goBack)
+            }
         }
     }
     navigation(startDestination = AppRoutes.TUTOR, route = AppRoutes.TAB_TUTOR) {

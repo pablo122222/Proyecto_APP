@@ -641,4 +641,62 @@
     <string name="city_reset_yes">Sí, reiniciar</string>
     <string name="city_reset_close">Cerrar</string>
     <string name="city_reset_done">Listo: Glitch City empieza de cero.</string>
+
+    <!-- Laboratorio de Glitch City (guía §5.2) -->
+    <string name="lab_title">%1$s %2$s</string>
+    <string name="lab_explore_subtitle">Sin vidas ni castigos: cambia los valores y observa qué pasa.</string>
+    <string name="lab_discoveries">Descubrimientos</string>
+    <string name="lab_goal_done">cumplido</string>
+    <string name="lab_goal_pending">pendiente</string>
+    <string name="lab_reward">¡Descubrimiento! +%1$d XP · +%2$d ◆</string>
+    <string name="lab_save_no_connection">Sin conexión: no pudimos guardar tu descubrimiento. Se guardará cuando lo vuelvas a lograr con internet.</string>
+    <string name="lab_save_failed">No pudimos guardar tu descubrimiento. Inténtalo de nuevo.</string>
+    <string name="lab_choice_description">%1$s: %2$s. Toca para cambiar</string>
+
+    <string name="lab_param_time">Segundos restantes</string>
+    <string name="lab_param_price">Precio unitario</string>
+    <string name="lab_param_quantity">Cantidad</string>
+    <string name="lab_param_discount" formatted="false">Descuento por 5 o más (%)</string>
+    <string name="lab_param_last_floor">Último piso</string>
+    <string name="lab_param_step">Saltar de a</string>
+    <string name="lab_param_packages">Paquetes</string>
+    <string name="lab_param_packages_placeholder">Números separados por comas</string>
+    <string name="lab_param_function">Función</string>
+    <string name="lab_param_min_purchase">Descuento desde (compra mínima)</string>
+    <string name="lab_param_percent">Porcentaje de descuento</string>
+    <string name="lab_param_flee">Huye si el jugador está a ≤</string>
+    <string name="lab_param_greet">Saluda si está a ≤</string>
+    <string name="lab_param_test_distance">Prueba: distancia del jugador</string>
+
+    <string name="lab_light">Luz %1$s</string>
+    <string name="lab_light_green">verde</string>
+    <string name="lab_light_yellow">amarilla</string>
+    <string name="lab_light_red">roja</string>
+    <string name="lab_total">Total: %1$s</string>
+    <plurals name="lab_floors">
+        <item quantity="one">Pisos: %1$s (%2$d vuelta)</item>
+        <item quantity="other">Pisos: %1$s (%2$d vueltas)</item>
+    </plurals>
+    <string name="lab_robot_result">Resultado: %1$s</string>
+    <string name="lab_robot_empty">La lista está vacía</string>
+    <string name="lab_price_line">compra %1$d → paga %2$s</string>
+    <string name="lab_npc_result">Con distancia %1$d: %2$s</string>
+    <string name="lab_npc_flee">huir</string>
+    <string name="lab_npc_greet">saludar</string>
+    <string name="lab_npc_wander">pasear</string>
+
+    <string name="lab_goal_traffic_light_red">Deja el semáforo en rojo</string>
+    <string name="lab_goal_traffic_light_green">Consigue luz verde</string>
+    <string name="lab_goal_cashier_bulk_discount">Paga menos de 40 comprando 5 o más</string>
+    <string name="lab_goal_cashier_no_discount">Comprueba que con menos de 5 no hay descuento</string>
+    <string name="lab_goal_elevator_five_stops">Haz que el ascensor se detenga en 5 pisos</string>
+    <string name="lab_goal_elevator_skip_three">Salta de 3 en 3 hasta un piso 10 o más</string>
+    <string name="lab_goal_robot_all_functions">Prueba las tres funciones del robot</string>
+    <string name="lab_goal_robot_six_packages">Usa una lista de 6 o más paquetes</string>
+    <string name="lab_goal_offers_shop_no_discount_30">La compra de 30 no recibe descuento</string>
+    <string name="lab_goal_offers_shop_discount_60">La compra de 60 recibe descuento</string>
+    <string name="lab_goal_offers_shop_max_72_for_90">La compra de 90 cuesta 72 o menos</string>
+    <string name="lab_goal_npc_rules_flee_1">Huye cuando el jugador está a 1 de distancia</string>
+    <string name="lab_goal_npc_rules_greet_4">Saluda cuando está a 4</string>
+    <string name="lab_goal_npc_rules_wander_8">Pasea cuando está a 8 o más</string>
 </resources>
