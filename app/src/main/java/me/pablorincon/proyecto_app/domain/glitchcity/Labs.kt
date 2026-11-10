@@ -268,16 +268,3 @@ fun formatHundredths(hundredths: Int): String {
         else -> "$whole.${rest.toString().padStart(2, '0')}"
     }
 }
-
-// Pregunta "¿Por qué funciona?" (decisión D) tras publicar por primera vez. Los textos viven
-// en strings.xml; aquí solo cuántas opciones hay y cuál es la correcta.
-data class WhyQuestion(val activityId: String, val optionCount: Int, val correctIndex: Int)
-
-object WhyQuestions {
-    val all: List<WhyQuestion> = listOf(
-        WhyQuestion(GlitchCityCatalog.OFFERS_SHOP, optionCount = 3, correctIndex = 1),
-        WhyQuestion(GlitchCityCatalog.NPC_RULES, optionCount = 3, correctIndex = 2)
-    )
-
-    fun forActivity(activityId: String): WhyQuestion? = all.firstOrNull { it.activityId == activityId }
-}

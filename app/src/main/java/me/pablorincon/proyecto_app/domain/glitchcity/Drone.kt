@@ -62,6 +62,25 @@ sealed interface DroneOutcome {
     data class Delivered(val blocks: Int, val stars: Int) : DroneOutcome
 }
 
+// Programa que arma el usuario (sección "Tu programa"): máximo 12 bloques.
+data class DroneProgram(val blocks: List<DroneBlock> = emptyList()) {
+    val canAdd: Boolean get() = blocks.size < MAX_BLOCKS
+
+    fun add(move: DroneMove, times: Int): DroneProgram =
+        if (canAdd) copy(blocks = blocks + DroneBlock(move, times)) else this
+
+    fun removeLast(): DroneProgram = copy(blocks = blocks.dropLast(1))
+
+    fun clear(): DroneProgram = DroneProgram()
+
+    companion object {
+        const val MAX_BLOCKS = 12
+
+        // Cada visita empieza con el programa precargado del nivel (vacío salvo el de depuración).
+        fun startOf(level: DroneLevel) = DroneProgram(level.starter)
+    }
+}
+
 // path: casillas recorridas desde la salida; crash: el muro con el que chocó, si chocó.
 data class DroneRun(val path: List<Cell>, val crash: Cell?, val outcome: DroneOutcome)
 

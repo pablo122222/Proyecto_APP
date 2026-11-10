@@ -725,4 +725,24 @@
     <string name="why_npc_rules_elif">Porque elif se revisa siempre, aunque el if ya se haya cumplido.</string>
     <string name="why_npc_rules_else">Porque else se ejecuta antes que el if.</string>
     <string name="why_npc_rules_correct">Porque Python revisa las condiciones en orden y usa la primera verdadera: por eso a distancia 1 huye, aunque también cumpla la de saludar.</string>
+    <string name="why_d1">¿Por qué →×4 cuenta como un solo bloque?</string>
+    <string name="why_d1_correct">Porque repite el mismo movimiento 4 veces, como un bucle.</string>
+    <string name="why_d1_jump">Porque el dron salta 4 casillas sin pasar por las del medio.</string>
+    <string name="why_d1_free">Porque los bloques con ×4 no cuentan en el programa.</string>
+    <string name="why_d2">¿Por qué el dron tiene que bajar antes de avanzar?</string>
+    <string name="why_d2_last_row">Porque el dron solo puede avanzar desde la última fila.</string>
+    <string name="why_d2_correct">Porque justo a la derecha de la salida hay un muro.</string>
+    <string name="why_d2_stars">Porque bajar primero siempre da más estrellas.</string>
+    <string name="why_d3">¿Por qué →↓ ×4 llega a la meta?</string>
+    <string name="why_d3_walls">Porque el bloque →↓ atraviesa los muros.</string>
+    <string name="why_d3_any_cell">Porque el dron se detiene en cualquier casilla libre.</string>
+    <string name="why_d3_correct">Porque el camino repite el mismo patrón (una a la derecha y una abajo) 4 veces.</string>
+    <string name="why_d4">¿Cuál era el error del programa precargado?</string>
+    <string name="why_d4_missing">Le faltaba un bloque al inicio.</string>
+    <string name="why_d4_correct">Después de bajar, el bloque →×2 sacaba al dron del mapa: sobraba.</string>
+    <string name="why_d4_wall">El dron chocaba con un muro en la primera fila.</string>
+    <string name="why_d5">¿Por qué no basta con bajar todo y luego avanzar?</string>
+    <string name="why_d5_correct">Porque abajo a la izquierda hay un muro: hay que desviarse antes.</string>
+    <string name="why_d5_three">Porque el dron no puede bajar más de 3 veces seguidas.</string>
+    <string name="why_d5_forward">Porque avanzar primero siempre usa menos bloques.</string>
 </resources>

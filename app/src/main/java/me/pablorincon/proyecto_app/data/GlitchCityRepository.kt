@@ -10,6 +10,7 @@ import me.pablorincon.proyecto_app.domain.CompletionOutcome
 import me.pablorincon.proyecto_app.domain.CompletionStats
 import me.pablorincon.proyecto_app.domain.UserProfile
 import me.pablorincon.proyecto_app.domain.glitchcity.Creation
+import me.pablorincon.proyecto_app.domain.glitchcity.DroneLevel
 import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityProgress
 import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityRules
 import me.pablorincon.proyecto_app.domain.glitchcity.GlitchCityState
@@ -58,6 +59,11 @@ class GlitchCityRepository(private val db: FirebaseFirestore = FirebaseFirestore
     // Publicar por primera vez o actualizar (guarda los valores; solo la primera vez da recompensa).
     suspend fun publish(uid: String, creation: Creation, values: Map<String, Int>, today: LocalDate = LocalDate.now()): SaveResult =
         applyEvent(uid, today) { GlitchCityRules.publish(it, creation, values) }
+
+    // Nivel del dron entregado con `blocks` bloques: la primera vez lo completa; después solo
+    // cuenta si mejora el récord.
+    suspend fun completeDrone(uid: String, level: DroneLevel, blocks: Int, today: LocalDate = LocalDate.now()): SaveResult =
+        applyEvent(uid, today) { GlitchCityRules.completeDrone(it, level, blocks) }
 
     // Aplica un evento de Glitch City y, si da recompensa, suma XP y gemas y registra la actividad
     // del día (racha, meta diaria y logros), todo junto y una sola vez. Usa una transacción: sin red

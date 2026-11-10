@@ -59,6 +59,11 @@ internal object LabText {
             R.string.why_npc_rules_elif,
             R.string.why_npc_rules_else,
             R.string.why_npc_rules_correct
-        ))
+        )),
+        "d1" to (R.string.why_d1 to listOf(R.string.why_d1_correct, R.string.why_d1_jump, R.string.why_d1_free)),
+        "d2" to (R.string.why_d2 to listOf(R.string.why_d2_last_row, R.string.why_d2_correct, R.string.why_d2_stars)),
+        "d3" to (R.string.why_d3 to listOf(R.string.why_d3_walls, R.string.why_d3_any_cell, R.string.why_d3_correct)),
+        "d4" to (R.string.why_d4 to listOf(R.string.why_d4_missing, R.string.why_d4_correct, R.string.why_d4_wall)),
+        "d5" to (R.string.why_d5 to listOf(R.string.why_d5_correct, R.string.why_d5_three, R.string.why_d5_forward))
     )
 }
