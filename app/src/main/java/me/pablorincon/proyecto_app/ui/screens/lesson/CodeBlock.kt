@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -40,14 +41,15 @@ internal val CodeTextStyle = TextStyle(
 
 // Bloque de código (CodeBg, números de línea, scroll horizontal, resaltado de sintaxis).
 // Con onLineClick cada línea se puede tocar (ejercicio "Caza el bug"); markedLine pinta la
-// línea elegida de verde (markedGood = true) o de rojo.
+// línea elegida de verde (markedGood = true) o de rojo; markColor, si se da, reemplaza ese color.
 @Composable
 internal fun CodeBlock(
     code: String,
     modifier: Modifier = Modifier,
     onLineClick: ((Int) -> Unit)? = null,
     markedLine: Int? = null,
-    markedGood: Boolean? = null
+    markedGood: Boolean? = null,
+    markColor: Color? = null
 ) {
     val description = stringResource(R.string.lesson_code_description)
     val lines = code.lines()
@@ -63,6 +65,7 @@ internal fun CodeBlock(
         lines.forEachIndexed { index, line ->
             val mark = when {
                 index != markedLine -> null
+                markColor != null -> markColor
                 markedGood == true -> AnswerCorrectBg.copy(alpha = 0.25f)
                 else -> AnswerWrongBg.copy(alpha = 0.25f)
             }

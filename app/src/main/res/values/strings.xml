@@ -796,4 +796,16 @@
     <string name="drone_idea_d3">Prueba el bloque →↓ repetido varias veces.</string>
     <string name="drone_idea_d4">Tras bajar 2, el dron se sale por la derecha. Quita lo que sobra.</string>
     <string name="drone_idea_d5">Baja, avanza, baja y avanza otra vez.</string>
+
+    <!-- El programa del dron en Python (código visible) -->
+    <string name="drone_python_title">Tu programa en Python</string>
+    <string name="drone_python_intro">Cada flecha es una función que mueve el dron, y cada ×n es un bucle for que la repite n veces.</string>
+    <string name="drone_python_step">%1$s() mueve el dron %2$s.</string>
+    <string name="drone_python_loop_step">Vuelta %1$d de %2$d del for: %3$s() mueve el dron %4$s.</string>
+    <string name="drone_python_out_of_map">En esta línea el dron se sale del mapa.</string>
+    <string name="drone_python_wall">En esta línea el dron choca con un muro.</string>
+    <string name="drone_dir_up">hacia arriba</string>
+    <string name="drone_dir_down">hacia abajo</string>
+    <string name="drone_dir_left">a la izquierda</string>
+    <string name="drone_dir_right">a la derecha</string>
 </resources>

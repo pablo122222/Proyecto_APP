@@ -55,8 +55,10 @@ import kotlinx.coroutines.delay
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.domain.glitch.Cell
 import me.pablorincon.proyecto_app.domain.glitchcity.DroneBlock
+import me.pablorincon.proyecto_app.domain.glitchcity.DroneDirection
 import me.pablorincon.proyecto_app.domain.glitchcity.DroneMove
 import me.pablorincon.proyecto_app.domain.glitchcity.DroneOutcome
+import me.pablorincon.proyecto_app.domain.glitchcity.DronePython
 import me.pablorincon.proyecto_app.ui.components.AchievementUnlockedDialog
 import me.pablorincon.proyecto_app.ui.components.BackButton
 import me.pablorincon.proyecto_app.ui.components.Pill
@@ -65,11 +67,13 @@ import me.pablorincon.proyecto_app.ui.components.SecondaryButton
 import me.pablorincon.proyecto_app.ui.components.SectionHeading
 import me.pablorincon.proyecto_app.ui.screens.glitchcity.GlitchCityText
 import me.pablorincon.proyecto_app.ui.screens.lab.WhySheet
+import me.pablorincon.proyecto_app.ui.screens.lesson.CodeBlock
 import me.pablorincon.proyecto_app.ui.theme.AnswerWrongBorder
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
 import me.pablorincon.proyecto_app.ui.theme.AppDimens
 import me.pablorincon.proyecto_app.ui.theme.AppShapes
 import me.pablorincon.proyecto_app.ui.theme.AppTextStyles
+import me.pablorincon.proyecto_app.ui.theme.ErrorRed
 import me.pablorincon.proyecto_app.ui.theme.FeedbackBadBg
 import me.pablorincon.proyecto_app.ui.theme.FeedbackBadText
 import me.pablorincon.proyecto_app.ui.theme.FeedbackGoodBg
@@ -114,10 +118,11 @@ fun DroneScreen(
         }
     }
     val animationDone = visibleSteps >= path.size
-    // Al terminar, se baja hasta el mensaje del resultado (queda debajo de los botones)
+    // Al ejecutar se sube hasta el mapa: el vuelo, la línea en curso y el resultado se ven juntos
+    // (el botón Ejecutar queda más abajo)
     val scroll = rememberScrollState()
-    LaunchedEffect(attemptId, animationDone) {
-        if (attemptId != null && animationDone) scroll.animateScrollTo(scroll.maxValue)
+    LaunchedEffect(attemptId) {
+        if (attemptId != null) scroll.animateScrollTo(0)
     }
 
     Column(
@@ -258,6 +263,17 @@ private fun ReadyBody(state: DroneUiState.Ready, visibleSteps: Int, animationDon
         Grid(state, visibleSteps, animationDone, Modifier.widthIn(max = GridMaxWidth))
     }
 
+    // Justo bajo el mapa, para ver a la vez el dron, la línea que lo mueve y el resultado
+    if (state.program.blocks.isNotEmpty()) {
+        Spacer(Modifier.height(16.dp))
+        PythonView(state, visibleSteps, animationDone)
+    }
+    val attempt = state.attempt
+    if (attempt != null && animationDone) {
+        Spacer(Modifier.height(12.dp))
+        Feedback(attempt)
+    }
+
     // Repetir: ×1 ×2 ×3 ×4
     Spacer(Modifier.height(16.dp))
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -330,12 +346,6 @@ private fun ReadyBody(state: DroneUiState.Ready, visibleSteps: Int, animationDon
                 color = YellowInk
             )
         }
-    }
-
-    val attempt = state.attempt
-    if (attempt != null && animationDone) {
-        Spacer(Modifier.height(12.dp))
-        Feedback(attempt)
     }
 }
 
@@ -474,4 +484,47 @@ private fun ideaOf(levelId: String): Int = when (levelId) {
     "d3" -> R.string.drone_idea_d3
     "d4" -> R.string.drone_idea_d4
     else -> R.string.drone_idea_d5
+}
+
+// El programa en Python: mientras el dron vuela se resalta la línea que lo mueve (en rojo si
+// en esa línea choca o se sale) y debajo se explica qué hace.
+@Composable
+private fun PythonView(state: DroneUiState.Ready, visibleSteps: Int, animationDone: Boolean) {
+    val code = remember(state.program) { DronePython.of(state.program.blocks) }
+    val run = state.attempt?.run
+    val step = run?.let { DronePython.stepAt(code, it, visibleSteps, animationDone) }
+    val failed = run?.outcome == DroneOutcome.OutOfMap || run?.outcome == DroneOutcome.HitWall
+    val failing = failed && animationDone
+
+    Text(stringResource(R.string.drone_python_title), style = AppTextStyles.RowTitle, color = Ink)
+    Spacer(Modifier.height(8.dp))
+    CodeBlock(
+        code = code.lines.joinToString("\n"),
+        markedLine = step?.line,
+        // Azul mientras vuela; rojo en la línea donde choca o se sale
+        markColor = if (failing) ErrorRed.copy(alpha = 0.55f) else Primary.copy(alpha = 0.5f)
+    )
+    Spacer(Modifier.height(8.dp))
+    val caption = when {
+        step == null -> stringResource(R.string.drone_python_intro)
+        failing && run?.outcome == DroneOutcome.OutOfMap -> stringResource(R.string.drone_python_out_of_map)
+        failing -> stringResource(R.string.drone_python_wall)
+        step.times > 1 -> stringResource(
+            R.string.drone_python_loop_step, step.iteration, step.times, step.direction.function, stringResource(directionText(step.direction))
+        )
+        else -> stringResource(R.string.drone_python_step, step.direction.function, stringResource(directionText(step.direction)))
+    }
+    Text(
+        text = caption,
+        style = AppTextStyles.SmallBody,
+        color = if (failing) FeedbackBadText else Muted,
+        modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }
+    )
+}
+
+private fun directionText(direction: DroneDirection): Int = when (direction) {
+    DroneDirection.Up -> R.string.drone_dir_up
+    DroneDirection.Down -> R.string.drone_dir_down
+    DroneDirection.Left -> R.string.drone_dir_left
+    DroneDirection.Right -> R.string.drone_dir_right
 }
