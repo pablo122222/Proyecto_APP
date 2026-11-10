@@ -1,7 +1,16 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.services)
+}
+
+// Firma de la versión release: se lee de keystore.properties (en la raíz del proyecto, fuera de
+// git) para que la clave y sus contraseñas nunca se suban al repositorio.
+val keystoreFile: File = rootProject.file("keystore.properties")
+val keystore = Properties().apply {
+    if (keystoreFile.exists()) keystoreFile.inputStream().use { load(it) }
 }
 
 android {
@@ -20,11 +29,28 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        if (keystoreFile.exists()) {
+            create("release") {
+                storeFile = rootProject.file(keystore.getProperty("storeFile"))
+                storePassword = keystore.getProperty("storePassword")
+                keyAlias = keystore.getProperty("keyAlias")
+                keyPassword = keystore.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            // R8: reduce el instalable y quita el código que no se usa en release
+            // (por ejemplo, la cuenta de ejemplo del login, que solo existe en debug)
             optimization {
-                enable = false
+                enable = true
             }
+            // Sin keystore.properties se firma con la clave de depuración, solo para poder
+            // instalar y probar la release en el emulador. Play Store rechaza esa firma.
+            signingConfig = if (keystoreFile.exists()) signingConfigs.getByName("release")
+            else signingConfigs.getByName("debug")
         }
     }
     compileOptions {
