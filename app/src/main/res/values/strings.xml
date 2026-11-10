@@ -188,6 +188,15 @@
     <string name="lesson_eyebrow">Concepto clave · Python</string>
     <string name="lesson_code_description">Código de ejemplo</string>
     <string name="lesson_expected_output">Salida esperada</string>
+    <!-- "Ver paso a paso" del ejemplo (código visible) -->
+    <string name="lesson_walk_start">▶ Ver paso a paso</string>
+    <string name="lesson_walk_step">Paso %1$d de %2$d · línea %3$d</string>
+    <string name="lesson_walk_variables">Variables</string>
+    <string name="lesson_walk_output">Salida</string>
+    <string name="lesson_walk_none">(todavía nada)</string>
+    <string name="lesson_walk_previous">◀ Anterior</string>
+    <string name="lesson_walk_next">Siguiente ▶</string>
+    <string name="lesson_walk_done">Terminar</string>
     <string name="lesson_check_title">Comprueba lo aprendido</string>
     <string name="lesson_quick_question">Pregunta rápida</string>
     <string name="lesson_correct_counter">%1$d de %2$d acertadas</string>

@@ -236,9 +236,8 @@ private fun ReadyBody(
     Text(text = content.explanation, style = AppTextStyles.Subtitle, color = Ink)
 
     Spacer(Modifier.height(20.dp))
-    CodeBlock(code = content.code)
-    Spacer(Modifier.height(12.dp))
-    ExpectedOutput(output = content.expectedOutput)
+    // Ejemplo con "Ver paso a paso" si la lección lo trae
+    ExampleCode(content) { ExpectedOutput(output = content.expectedOutput) }
 
     SectionHeading(title = stringResource(R.string.lesson_check_title))
     if (quiz.isComplete) {
