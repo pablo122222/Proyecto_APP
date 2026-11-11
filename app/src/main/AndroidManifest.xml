@@ -6,8 +6,11 @@
          cuando el teléfono se reinicia. -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Tutor IA: hablar con Ollama en el PC (Firebase ya la trae, aquí queda explícita). -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:networkSecurityConfig="@xml/network_security_config"
         android:name=".CodeMentorApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

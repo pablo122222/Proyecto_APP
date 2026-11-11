@@ -8,13 +8,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.pablorincon.proyecto_app.data.DemoTutorRepository
+import me.pablorincon.proyecto_app.data.OllamaTutorRepository
 import me.pablorincon.proyecto_app.domain.tutor.TutorChat
 import me.pablorincon.proyecto_app.domain.tutor.TutorRepository
 
 // Chat del tutor. La conversación vive mientras la app está abierta (no se guarda en Firebase:
-// es una demo y las preguntas pueden tener datos personales).
+// las preguntas pueden tener datos personales). Con Ollama configurado responde la IA local;
+// si no, la demo.
 class TutorViewModel(
-    private val repository: TutorRepository = DemoTutorRepository()
+    private val repository: TutorRepository =
+        OllamaTutorRepository.fromBuildConfig() ?: DemoTutorRepository()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TutorChat())

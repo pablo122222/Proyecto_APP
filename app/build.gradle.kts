@@ -13,6 +13,19 @@ val keystore = Properties().apply {
     if (keystoreFile.exists()) keystoreFile.inputStream().use { load(it) }
 }
 
+// Tutor IA con Ollama en el PC (solo debug). Por defecto la app busca Ollama en su propio
+// localhost, que se conecta con el del PC con:  adb reverse tcp:11434 tcp:11434
+// (sirve para el emulador y para un teléfono por USB; en este emulador 10.0.2.2 no llega desde
+// la app). Para un teléfono por wifi, en local.properties (fuera de git):
+//   ollama.url=http://<IP-del-PC>:11434
+//   ollama.model=qwen2.5:3b
+val localProps = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+val ollamaUrl: String = localProps.getProperty("ollama.url", "http://127.0.0.1:11434")
+val ollamaModel: String = localProps.getProperty("ollama.model", "qwen2.5:3b")
+
 android {
     namespace = "me.pablorincon.proyecto_app"
     compileSdk {
@@ -41,7 +54,14 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "OLLAMA_URL", "\"$ollamaUrl\"")
+            buildConfigField("String", "OLLAMA_MODEL", "\"$ollamaModel\"")
+        }
         release {
+            // Sin servidor propio todavía: la release usa siempre la demo del tutor
+            buildConfigField("String", "OLLAMA_URL", "\"\"")
+            buildConfigField("String", "OLLAMA_MODEL", "\"\"")
             // R8: reduce el instalable y quita el código que no se usa en release
             // (por ejemplo, la cuenta de ejemplo del login, que solo existe en debug)
             optimization {
