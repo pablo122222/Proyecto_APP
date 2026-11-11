@@ -2,6 +2,8 @@
 <!-- Solo debug: permite HTTP sin cifrar para hablar con Ollama en el PC (emulador o wifi de casa).
      Android no deja limitarlo a "cualquier IP de la red local", por eso se abre solo en debug;
      la release usa la configuración de main, que lo prohíbe. -->
-<network-security-config>
-    <base-config cleartextTrafficPermitted="true" />
+<network-security-config xmlns:tools="http://schemas.android.com/tools">
+    <base-config
+        cleartextTrafficPermitted="true"
+        tools:ignore="InsecureBaseConfiguration" />
 </network-security-config>

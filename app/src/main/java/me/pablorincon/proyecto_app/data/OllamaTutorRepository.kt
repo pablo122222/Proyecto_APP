@@ -25,6 +25,8 @@ class OllamaTutorRepository(
     private val onError: (Exception) -> Unit = {}
 ) : TutorRepository {
 
+    override val usesAi: Boolean = true
+
     override suspend fun reply(
         question: String,
         history: List<TutorMessage>,

@@ -98,6 +98,14 @@ class OllamaTutorTest {
     }
 
     @Test
+    fun elModoIaSeIndicaYSeConservaAlEmpezarDeNuevo() {
+        assertTrue(OllamaTutorRepository(chat = { _, _ -> "" }, fallback = demo).usesAi)
+        assertFalse(demo.usesAi)
+        val chat = TutorChat(usesAi = true).ask("hola", true)!!.withReply(TutorReply.Free("¡Hola!"))
+        assertTrue(chat.cleared().usesAi)
+    }
+
+    @Test
     fun sinPreguntaPendienteNoSeAgregaTextoEnCurso() {
         assertEquals(TutorChat(), TutorChat().withPartial("hola"))
     }

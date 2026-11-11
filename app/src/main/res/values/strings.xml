@@ -223,6 +223,12 @@
     <string name="tutor_clear">Nueva conversación</string>
     <string name="tutor_counter">%1$d / %2$d</string>
     <string name="tutor_notice">Demostración visual: las respuestas son ejemplos predefinidos. Esta versión no está conectada a un servicio de IA.</string>
+    <!-- Tutor con IA local (Ollama, solo en la versión de desarrollo) -->
+    <string name="tutor_ai_pill">IA local</string>
+    <string name="tutor_ai_greeting">¡Hola! Soy tu tutor de programación. Pregúntame lo que no entiendas de Python y lo vemos paso a paso.</string>
+    <string name="tutor_ai_notice">Responde un modelo de IA local y puede equivocarse: prueba el código antes de confiar en él. Tus preguntas no salen de ese equipo ni se guardan.</string>
+    <string name="tutor_fallback_caption">El tutor IA no está disponible ahora: esta es una respuesta de demostración.</string>
+    <string name="tutor_ai_unavailable">No pude conectarme con el tutor IA. Revisa que el equipo donde corre el modelo esté encendido y vuelve a preguntar. Mientras tanto, puedes probar una de las preguntas sugeridas.</string>
     <string name="tutor_answer_else">if evalúa una condición. else define qué hacer cuando esa condición resulta falsa. Por eso normalmente va después de un bloque if.</string>
     <string name="tutor_answer_if">Un if permite ejecutar un bloque solo cuando una condición es verdadera. Ejemplo: if edad >= 18: print(\"Mayor de edad\"). Si la condición es falsa, puedes usar else para indicar qué hacer en el otro caso.</string>
     <string name="tutor_answer_variable">Una variable es un nombre asociado a un dato. En Python, edad = 20 guarda el valor 20 bajo el nombre edad. Luego puedes usarlo en operaciones y condiciones.</string>
@@ -414,7 +420,7 @@
     <string name="settings_notifications_blocked_toast">Sin permiso de notificaciones no podemos recordarte practicar.</string>
     <string name="settings_open_system_notifications">Abrir ajustes de notificaciones</string>
     <string name="settings_section_data">Datos y privacidad</string>
-    <string name="settings_data_note">Tu progreso, tus logros y estas preferencias se guardan en tu cuenta de CodeMentor AI (Firebase), así no los pierdes si cambias de teléfono. Las conversaciones con el tutor no se guardan.</string>
+    <string name="settings_data_note">Tu progreso, tus logros y estas preferencias se guardan en tu cuenta de CodeMentor AI (Firebase), así no los pierdes si cambias de teléfono. Las conversaciones con el tutor no se guardan y no se envían a servicios externos: el tutor IA funciona en un equipo local.</string>
     <string name="settings_reset_progress">Restablecer mi progreso</string>
     <string name="settings_reset_progress_subtitle">Empieza la ruta de nuevo, desde cero.</string>
     <string name="settings_reset_confirm_title">¿Restablecer tu progreso?</string>

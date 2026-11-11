@@ -13,14 +13,14 @@ import me.pablorincon.proyecto_app.domain.tutor.TutorChat
 import me.pablorincon.proyecto_app.domain.tutor.TutorRepository
 
 // Chat del tutor. La conversación vive mientras la app está abierta (no se guarda en Firebase:
-// las preguntas pueden tener datos personales). Con Ollama configurado responde la IA local;
-// si no, la demo.
+// las preguntas pueden tener datos personales). Con Ollama configurado responde la IA local
+// (las preguntas solo viajan a ese equipo); si no, la demo.
 class TutorViewModel(
     private val repository: TutorRepository =
         OllamaTutorRepository.fromBuildConfig() ?: DemoTutorRepository()
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(TutorChat())
+    private val _uiState = MutableStateFlow(TutorChat(usesAi = repository.usesAi))
     val uiState: StateFlow<TutorChat> = _uiState.asStateFlow()
 
     // Enter en el teclado envía la pregunta en lugar de agregar un salto de línea.

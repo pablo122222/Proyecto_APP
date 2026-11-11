@@ -164,9 +164,9 @@ private fun TutorContent(
             ),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            item { TopLine() }
+            item { TopLine(usesAi = state.usesAi) }
             item { HeaderCard() }
-            items(state.messages, key = { it.id }) { message -> MessageBubble(message) }
+            items(state.messages, key = { it.id }) { message -> MessageBubble(message, state.usesAi) }
             if (state.awaitingFirstWords) item(key = "typing") { TypingBubble() }
             item(key = "suggestions") {
                 Column {
@@ -223,7 +223,7 @@ private fun TutorContent(
 
 // topline: "Siempre puedes preguntar" + "Tutor IA" y pill "Demo".
 @Composable
-private fun TopLine() {
+private fun TopLine(usesAi: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -237,7 +237,7 @@ private fun TopLine() {
             Text(text = stringResource(R.string.tab_tutor), style = AppTextStyles.ScreenTitleSmall, color = Ink)
         }
         Spacer(Modifier.width(AppDimens.TopLineGap))
-        Pill(text = stringResource(R.string.tutor_demo_pill))
+        Pill(text = stringResource(if (usesAi) R.string.tutor_ai_pill else R.string.tutor_demo_pill))
     }
 }
 
@@ -279,12 +279,18 @@ private fun HeaderCard() {
 }
 
 @Composable
-private fun MessageBubble(message: TutorMessage) {
+private fun MessageBubble(message: TutorMessage, usesAi: Boolean) {
     when (message) {
-        is TutorMessage.Greeting -> TutorBubble(stringResource(R.string.tutor_greeting))
+        is TutorMessage.Greeting -> TutorBubble(stringResource(if (usesAi) R.string.tutor_ai_greeting else R.string.tutor_greeting))
         is TutorMessage.FromTutor -> when (val reply = message.reply) {
             is TutorReply.Free -> ModelReplyBubble(reply.text)
-            is TutorReply.Topic -> TutorBubble(replyText(reply))
+            // Con IA, una respuesta por tema significa que contestó la demo de respaldo: se avisa.
+            // Si la demo tampoco tiene respuesta para esa pregunta, solo se explica qué pasó.
+            is TutorReply.Topic -> when {
+                !usesAi -> TutorBubble(replyText(reply))
+                reply.topic == TutorTopic.UNKNOWN -> TutorBubble(stringResource(R.string.tutor_ai_unavailable))
+                else -> TutorBubble(replyText(reply), caption = stringResource(R.string.tutor_fallback_caption))
+            }
         }
         is TutorMessage.FromUser -> UserBubble(message.text)
     }
@@ -340,21 +346,32 @@ private fun replyText(reply: TutorReply): String = when (reply) {
     )
 }
 
-// Burbuja del tutor: blanca, a la izquierda, ancho máximo 94 %.
+// Burbuja del tutor: blanca, a la izquierda, ancho máximo 94 %. caption: nota pequeña debajo
+// (respuesta de la demo cuando la IA no respondió; no está en el mockup).
 @Composable
-private fun TutorBubble(text: String) {
+private fun TutorBubble(text: String, caption: String? = null) {
     BoxWithConstraints(Modifier.fillMaxWidth()) {
-        Text(
-            text = text,
-            style = BubbleText,
-            color = Ink,
-            modifier = Modifier
-                .widthIn(max = maxWidth * 0.94f)
-                .clip(TutorBubbleShape)
-                .background(Paper)
-                .border(AppDimens.BorderWidth, Line, TutorBubbleShape)
-                .padding(horizontal = 13.dp, vertical = 11.dp)
-        )
+        Column(Modifier.widthIn(max = maxWidth * 0.94f)) {
+            Text(
+                text = text,
+                style = BubbleText,
+                color = Ink,
+                modifier = Modifier
+                    .clip(TutorBubbleShape)
+                    .background(Paper)
+                    .border(AppDimens.BorderWidth, Line, TutorBubbleShape)
+                    .padding(horizontal = 13.dp, vertical = 11.dp)
+            )
+            if (caption != null) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = caption,
+                    style = TextStyle(fontSize = 9.sp, lineHeight = 13.sp),
+                    color = FinePrintText,
+                    modifier = Modifier.padding(start = 4.dp)
+                )
+            }
+        }
     }
 }
 
@@ -494,7 +511,7 @@ private fun QuestionInput(
         }
         Spacer(Modifier.height(8.dp))
         Text(
-            text = stringResource(R.string.tutor_notice),
+            text = stringResource(if (state.usesAi) R.string.tutor_ai_notice else R.string.tutor_notice),
             style = TextStyle(fontSize = 9.sp, lineHeight = 13.sp),
             color = FinePrintText
         )

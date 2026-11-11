@@ -6,6 +6,7 @@ data class TutorChat(
     val messages: List<TutorMessage> = listOf(TutorMessage.Greeting(id = 0)),
     val input: String = "",
     val isAnswering: Boolean = false,   // El tutor está "escribiendo…"
+    val usesAi: Boolean = false,        // Responde un modelo de IA (si no, solo la demo)
     private val nextId: Int = 1
 ) {
     val canSend: Boolean get() = input.isNotBlank() && !isAnswering
@@ -46,5 +47,5 @@ data class TutorChat(
         if (messages.lastOrNull()?.id == nextId) messages.dropLast(1) else messages
 
     // Empieza de cero (solo el saludo), sin perder lo que se está escribiendo.
-    fun cleared(): TutorChat = if (isAnswering) this else TutorChat(input = input)
+    fun cleared(): TutorChat = if (isAnswering) this else TutorChat(input = input, usesAi = usesAi)
 }

@@ -24,6 +24,9 @@ sealed interface TutorMessage {
 // proyecto: aislar las respuestas detrás de esta interfaz). onPartial recibe el texto que va
 // llegando (todo lo escrito hasta ahora) para mostrarlo mientras el tutor escribe.
 interface TutorRepository {
+    // true si responde un modelo de IA (aunque a veces tenga que contestar la demo de respaldo)
+    val usesAi: Boolean get() = false
+
     suspend fun reply(
         question: String,
         history: List<TutorMessage>,
