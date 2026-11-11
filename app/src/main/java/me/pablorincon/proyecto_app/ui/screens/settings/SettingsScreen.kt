@@ -42,6 +42,7 @@ import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.domain.TextSize
+import me.pablorincon.proyecto_app.domain.ThemeMode
 import me.pablorincon.proyecto_app.ui.components.ChoiceOption
 import me.pablorincon.proyecto_app.ui.components.ConfirmSheet
 import me.pablorincon.proyecto_app.ui.components.FormError
@@ -131,6 +132,13 @@ fun SettingsScreen(
             value = stringResource(textSizeLabel(state.prefs.textSize)),
             onClick = { viewModel.openSheet(SettingsSheet.TextSize) }
         )
+        SettingsRow(
+            icon = R.drawable.ic_row_theme,
+            title = stringResource(R.string.settings_theme),
+            subtitle = stringResource(R.string.settings_theme_subtitle),
+            value = stringResource(themeLabel(state.prefs.themeMode)),
+            onClick = { viewModel.openSheet(SettingsSheet.Theme) }
+        )
         SettingsToggleRow(
             icon = R.drawable.ic_row_contrast,
             title = stringResource(R.string.settings_high_contrast),
@@ -145,7 +153,6 @@ fun SettingsScreen(
             checked = state.prefs.reduceMotion,
             onCheckedChange = viewModel::setReduceMotion
         )
-        SettingsNote(stringResource(R.string.settings_dark_mode_soon))
 
         // ---------- Sonido y vibración ----------
         SettingsBandDivider()
@@ -223,6 +230,7 @@ fun SettingsScreen(
 
     when (state.sheet) {
         SettingsSheet.TextSize -> TextSizeSheet(state.prefs.textSize, viewModel::setTextSize, viewModel::closeSheet)
+        SettingsSheet.Theme -> ThemeSheet(state.prefs.themeMode, viewModel::setThemeMode, viewModel::closeSheet)
         SettingsSheet.ReminderTime -> ReminderTimeDialog(
             hour = state.prefs.reminderHour,
             minute = state.prefs.reminderMinute,
@@ -261,6 +269,46 @@ internal fun textSizeLabel(size: TextSize): Int = when (size) {
     TextSize.Standard -> R.string.settings_text_standard
     TextSize.Large -> R.string.settings_text_large
     TextSize.ExtraLarge -> R.string.settings_text_extra_large
+}
+
+internal fun themeLabel(mode: ThemeMode): Int = when (mode) {
+    ThemeMode.Light -> R.string.settings_theme_light
+    ThemeMode.Dark -> R.string.settings_theme_dark
+    ThemeMode.System -> R.string.settings_theme_system
+}
+
+// Hoja para elegir el tema: claro, oscuro o el mismo del teléfono.
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ThemeSheet(current: ThemeMode, onSelect: (ThemeMode) -> Unit, onDismiss: () -> Unit) {
+    ModalBottomSheet(onDismissRequest = onDismiss, containerColor = Paper, scrimColor = SheetScrim, shape = SheetShape) {
+        Column(Modifier.padding(start = 22.dp, end = 22.dp, top = 4.dp, bottom = 30.dp)) {
+            SheetTitle(stringResource(R.string.settings_theme))
+            Text(text = stringResource(R.string.settings_theme_subtitle), style = AppTextStyles.SmallBody, color = Muted)
+            Spacer(Modifier.height(16.dp))
+            Column(Modifier.selectableGroup(), verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                ThemeMode.entries.forEach { mode ->
+                    ChoiceOption(
+                        icon = when (mode) {
+                            ThemeMode.Light -> "☀️"
+                            ThemeMode.Dark -> "🌙"
+                            ThemeMode.System -> "📱"
+                        },
+                        title = stringResource(themeLabel(mode)),
+                        subtitle = stringResource(
+                            when (mode) {
+                                ThemeMode.Light -> R.string.settings_theme_light_hint
+                                ThemeMode.Dark -> R.string.settings_theme_dark_hint
+                                ThemeMode.System -> R.string.settings_theme_system_hint
+                            }
+                        ),
+                        selected = mode == current,
+                        onClick = { onSelect(mode) }
+                    )
+                }
+            }
+        }
+    }
 }
 
 // Hora con el formato del teléfono (por ejemplo, "7:00 p. m.").

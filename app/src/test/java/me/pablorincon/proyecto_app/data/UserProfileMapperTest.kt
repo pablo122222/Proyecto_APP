@@ -3,6 +3,7 @@ package me.pablorincon.proyecto_app.data
 import me.pablorincon.proyecto_app.domain.LearningGoal
 import me.pablorincon.proyecto_app.domain.LearningLevel
 import me.pablorincon.proyecto_app.domain.TextSize
+import me.pablorincon.proyecto_app.domain.ThemeMode
 import me.pablorincon.proyecto_app.domain.UserPreferences
 import me.pablorincon.proyecto_app.domain.UserProfile
 import org.junit.Assert.assertEquals
@@ -80,5 +81,15 @@ class UserProfileMapperTest {
         )
         assertEquals(40, profile.xp)
         assertEquals(3, profile.dailyGoal)
+    }
+
+    @Test
+    fun `el tema se guarda y se lee, sin tema o con uno desconocido queda en claro`() {
+        ThemeMode.entries.forEach { mode ->
+            val map = UserProfileMapper.preferencesToMap(UserPreferences(themeMode = mode))
+            assertEquals(mode, UserProfileMapper.preferencesFromMap(map).themeMode)
+        }
+        assertEquals(ThemeMode.Light, UserProfileMapper.preferencesFromMap(emptyMap<String, Any>()).themeMode)
+        assertEquals(ThemeMode.Light, UserProfileMapper.preferencesFromMap(mapOf("themeMode" to "azul")).themeMode)
     }
 }

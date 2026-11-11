@@ -12,6 +12,7 @@ import me.pablorincon.proyecto_app.data.AccountRepository
 import me.pablorincon.proyecto_app.data.AuthRepository
 import me.pablorincon.proyecto_app.data.PreferencesRepository
 import me.pablorincon.proyecto_app.domain.TextSize
+import me.pablorincon.proyecto_app.domain.ThemeMode
 import me.pablorincon.proyecto_app.domain.UserPreferences
 import me.pablorincon.proyecto_app.notifications.ReminderScheduler
 
@@ -21,7 +22,7 @@ enum class SettingsMessage {
 }
 
 // Hoja abierta en la pantalla (solo una a la vez).
-enum class SettingsSheet { TextSize, ReminderTime, ResetProgress, DeleteAccount, SignOut }
+enum class SettingsSheet { TextSize, Theme, ReminderTime, ResetProgress, DeleteAccount, SignOut }
 
 data class SettingsUiState(
     val prefs: UserPreferences,
@@ -56,6 +57,10 @@ class SettingsViewModel(
 
     fun setTextSize(size: TextSize) {
         change { it.copy(textSize = size) }
+        closeSheet()
+    }
+    fun setThemeMode(mode: ThemeMode) {
+        change { it.copy(themeMode = mode) }
         closeSheet()
     }
     fun setHighContrast(on: Boolean) = change { it.copy(highContrast = on) }

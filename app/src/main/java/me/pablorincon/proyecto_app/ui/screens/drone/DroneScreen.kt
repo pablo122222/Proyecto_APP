@@ -352,8 +352,8 @@ private fun ReadyBody(state: DroneUiState.Ready, visibleSteps: Int, animationDon
 private val CellShape = RoundedCornerShape(10.dp)
 private val GridMaxWidth = 300.dp
 private val FeedbackShape = RoundedCornerShape(12.dp)
-private val PathColor = PrimarySoftBorder        // #C5D6F7: camino recorrido
-private val CrashColor = AnswerWrongBorder       // #F3A9A6: choque
+private val PathColor: Color get() = PrimarySoftBorder        // #C5D6F7: camino recorrido
+private val CrashColor: Color get() = AnswerWrongBorder       // #F3A9A6: choque
 
 // Cuadrícula 5×5: libre, muro, camino recorrido y choque; 🚁 donde va el dron y 📦 en la meta.
 @Composable

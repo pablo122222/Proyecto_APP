@@ -35,11 +35,24 @@ enum class TextSize(val id: String) {
     }
 }
 
+// Tema de la app (Configuración). Empieza en Claro: la app se ve como el mockup hasta que
+// el usuario elija Oscuro o que siga al teléfono (Sistema).
+enum class ThemeMode(val id: String) {
+    Light("claro"),
+    Dark("oscuro"),
+    System("sistema");
+
+    companion object {
+        fun fromId(id: String?): ThemeMode = entries.firstOrNull { it.id == id } ?: Light
+    }
+}
+
 // Preferencias de Configuración y accesibilidad (todas se aplican de verdad).
 // El recordatorio viene apagado: Android exige pedir permiso de notificaciones al activarlo.
 // (Subtítulos se quitó: la app no tiene audio ni video.)
 data class UserPreferences(
     val textSize: TextSize = TextSize.Standard,
+    val themeMode: ThemeMode = ThemeMode.Light,
     val highContrast: Boolean = false,
     val reduceMotion: Boolean = false,
     val soundCues: Boolean = false,

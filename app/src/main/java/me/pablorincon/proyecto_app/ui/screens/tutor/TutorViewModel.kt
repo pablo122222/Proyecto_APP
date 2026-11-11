@@ -7,17 +7,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import me.pablorincon.proyecto_app.data.DemoTutorRepository
-import me.pablorincon.proyecto_app.data.OllamaTutorRepository
+import me.pablorincon.proyecto_app.data.AiTutorRepository
 import me.pablorincon.proyecto_app.domain.tutor.TutorChat
 import me.pablorincon.proyecto_app.domain.tutor.TutorRepository
 
 // Chat del tutor. La conversación vive mientras la app está abierta (no se guarda en Firebase:
-// las preguntas pueden tener datos personales). Con Ollama configurado responde la IA local
-// (las preguntas solo viajan a ese equipo); si no, la demo.
+// las preguntas pueden tener datos personales). Responde Gemini en la nube (u Ollama si se
+// configuró en debug); si el modelo no responde, contesta la demo.
 class TutorViewModel(
-    private val repository: TutorRepository =
-        OllamaTutorRepository.fromBuildConfig() ?: DemoTutorRepository()
+    private val repository: TutorRepository = AiTutorRepository.create()
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TutorChat(usesAi = repository.usesAi))

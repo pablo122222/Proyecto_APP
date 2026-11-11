@@ -3,6 +3,7 @@ package me.pablorincon.proyecto_app.data
 import android.content.Context
 import androidx.core.content.edit
 import me.pablorincon.proyecto_app.domain.TextSize
+import me.pablorincon.proyecto_app.domain.ThemeMode
 import me.pablorincon.proyecto_app.domain.UserPreferences
 
 // Copia de las preferencias en el teléfono. Firestore es la fuente de verdad, pero esta copia
@@ -16,6 +17,7 @@ class LocalPreferences(context: Context) {
         val d = UserPreferences()
         return UserPreferences(
             textSize = TextSize.fromId(prefs.getString(TEXT_SIZE, null)),
+            themeMode = ThemeMode.fromId(prefs.getString(THEME_MODE, null)),
             highContrast = prefs.getBoolean(HIGH_CONTRAST, d.highContrast),
             reduceMotion = prefs.getBoolean(REDUCE_MOTION, d.reduceMotion),
             soundCues = prefs.getBoolean(SOUND_CUES, d.soundCues),
@@ -28,6 +30,7 @@ class LocalPreferences(context: Context) {
 
     fun save(value: UserPreferences) = prefs.edit {
         putString(TEXT_SIZE, value.textSize.id)
+        putString(THEME_MODE, value.themeMode.id)
         putBoolean(HIGH_CONTRAST, value.highContrast)
         putBoolean(REDUCE_MOTION, value.reduceMotion)
         putBoolean(SOUND_CUES, value.soundCues)
@@ -43,6 +46,7 @@ class LocalPreferences(context: Context) {
     private companion object {
         const val FILE = "preferencias"
         const val TEXT_SIZE = "textSize"
+        const val THEME_MODE = "themeMode"
         const val HIGH_CONTRAST = "highContrast"
         const val REDUCE_MOTION = "reduceMotion"
         const val SOUND_CUES = "soundCues"

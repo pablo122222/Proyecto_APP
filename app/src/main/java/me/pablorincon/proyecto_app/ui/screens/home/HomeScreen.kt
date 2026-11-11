@@ -31,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -280,7 +281,7 @@ private fun HeroCard(next: NextUp, onOpenStep: (PathStep) -> Unit, onOpenPath: (
                         Text(
                             text = stringResource(R.string.home_hero_progress, next.doneInLevel, next.stepsInLevel),
                             style = AppTextStyles.HeroText,
-                            color = Paper
+                            color = Color.White
                         )
                     }
                     Spacer(Modifier.height(6.dp))
@@ -327,7 +328,7 @@ private fun HeroTitleText(text: String) {
     Text(
         text = text,
         style = AppTextStyles.HeroTitle,
-        color = Paper,
+        color = Color.White,
         modifier = Modifier.widthIn(max = AppDimens.HeroTitleMaxWidth)
     )
     Spacer(Modifier.height(6.dp))

@@ -7,12 +7,13 @@ import me.pablorincon.proyecto_app.data.LocalPreferences
 import me.pablorincon.proyecto_app.notifications.ReminderScheduler
 import me.pablorincon.proyecto_app.ui.theme.AppAppearance
 
-// Arranque de la app: aplica las preferencias guardadas en el teléfono antes de dibujar
+// Arranque de la app: activa App Check, aplica las preferencias guardadas en el teléfono antes de dibujar
 // la primera pantalla y crea el canal de notificaciones del recordatorio.
 class CodeMentorApp : Application() {
     override fun onCreate() {
         super.onCreate()
         context = applicationContext
+        AppCheckSetup.install() // antes de cualquier llamada a Firebase (lo exige el tutor IA)
         AppAppearance.apply(LocalPreferences(this).load())
         ReminderScheduler.createChannel(this)
     }

@@ -42,6 +42,14 @@ import me.pablorincon.proyecto_app.domain.AchievementCategory
 import me.pablorincon.proyecto_app.domain.AchievementUnlock
 import me.pablorincon.proyecto_app.domain.Tier
 import me.pablorincon.proyecto_app.ui.theme.AppAppearance
+import me.pablorincon.proyecto_app.ui.theme.TierBronze
+import me.pablorincon.proyecto_app.ui.theme.TierBronzeBg
+import me.pablorincon.proyecto_app.ui.theme.TierGold
+import me.pablorincon.proyecto_app.ui.theme.TierGoldBg
+import me.pablorincon.proyecto_app.ui.theme.TierNone
+import me.pablorincon.proyecto_app.ui.theme.TierNoneBg
+import me.pablorincon.proyecto_app.ui.theme.TierSilver
+import me.pablorincon.proyecto_app.ui.theme.TierSilverBg
 import me.pablorincon.proyecto_app.ui.theme.AppTextStyles
 import me.pablorincon.proyecto_app.ui.theme.InterFamily
 import me.pablorincon.proyecto_app.ui.theme.Ink
@@ -96,17 +104,17 @@ fun tierName(tier: Tier): Int = when (tier) {
 
 // Colores de las medallas (no están en el mockup): bronce, plata y oro, con su fondo suave.
 fun tierColor(tier: Tier?): Color = when (tier) {
-    Tier.Bronze -> Color(0xFFC0773A)
-    Tier.Silver -> Color(0xFF8C98AE)
-    Tier.Gold -> Color(0xFFE0A21B)
-    null -> Color(0xFFCBD3E6)
+    Tier.Bronze -> TierBronze
+    Tier.Silver -> TierSilver
+    Tier.Gold -> TierGold
+    null -> TierNone
 }
 
 fun tierBackground(tier: Tier?): Color = when (tier) {
-    Tier.Bronze -> Color(0xFFFBE9DA)
-    Tier.Silver -> Color(0xFFEDF0F5)
-    Tier.Gold -> Color(0xFFFDF0D2)       // Fondo de la medalla de la guía §6
-    null -> Color(0xFFF1F3F8)
+    Tier.Bronze -> TierBronzeBg
+    Tier.Silver -> TierSilverBg
+    Tier.Gold -> TierGoldBg       // Fondo de la medalla de la guía §6
+    null -> TierNoneBg
 }
 
 // Medalla redonda con el emoji del logro y el anillo del color de su nivel.

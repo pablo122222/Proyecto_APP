@@ -49,6 +49,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -259,14 +260,14 @@ private fun HeaderCard() {
                 .background(TutorHeaderIconBg),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "✦", fontSize = 22.sp, color = Paper, modifier = Modifier.decorative())
+            Text(text = "✦", fontSize = 22.sp, color = Color.White, modifier = Modifier.decorative())
         }
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
             Text(
                 text = stringResource(R.string.tutor_header_title),
                 style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight(800), lineHeight = 21.sp),
-                color = Paper
+                color = Color.White
             )
             Spacer(Modifier.height(4.dp))
             Text(
@@ -506,7 +507,7 @@ private fun QuestionInput(
                     .semantics { contentDescription = sendDescription },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "➤", color = Paper, fontSize = 16.sp)
+                Text(text = "➤", color = Color.White, fontSize = 16.sp)
             }
         }
         Spacer(Modifier.height(8.dp))

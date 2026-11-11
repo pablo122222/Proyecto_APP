@@ -3,6 +3,7 @@ package me.pablorincon.proyecto_app.data
 import me.pablorincon.proyecto_app.domain.LearningGoal
 import me.pablorincon.proyecto_app.domain.LearningLevel
 import me.pablorincon.proyecto_app.domain.TextSize
+import me.pablorincon.proyecto_app.domain.ThemeMode
 import me.pablorincon.proyecto_app.domain.UserPreferences
 import me.pablorincon.proyecto_app.domain.UserProfile
 
@@ -30,6 +31,7 @@ internal object UserProfileMapper {
     const val PREFERENCES = "preferences"
 
     private const val TEXT_SIZE = "textSize"
+    private const val THEME_MODE = "themeMode"
     private const val HIGH_CONTRAST = "highContrast"
     private const val REDUCE_MOTION = "reduceMotion"
     private const val SOUND_CUES = "soundCues"
@@ -59,6 +61,7 @@ internal object UserProfileMapper {
 
     fun preferencesToMap(prefs: UserPreferences): Map<String, Any> = mapOf(
         TEXT_SIZE to prefs.textSize.id,
+        THEME_MODE to prefs.themeMode.id,
         HIGH_CONTRAST to prefs.highContrast,
         REDUCE_MOTION to prefs.reduceMotion,
         SOUND_CUES to prefs.soundCues,
@@ -97,6 +100,7 @@ internal object UserProfileMapper {
         val d = UserPreferences()
         return UserPreferences(
             textSize = TextSize.fromId(p[TEXT_SIZE] as? String),
+            themeMode = ThemeMode.fromId(p[THEME_MODE] as? String),
             highContrast = p[HIGH_CONTRAST] as? Boolean ?: d.highContrast,
             reduceMotion = p[REDUCE_MOTION] as? Boolean ?: d.reduceMotion,
             soundCues = p[SOUND_CUES] as? Boolean ?: d.soundCues,

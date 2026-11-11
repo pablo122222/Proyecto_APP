@@ -1,7 +1,8 @@
 package me.pablorincon.proyecto_app.domain
 
 import kotlinx.coroutines.runBlocking
-import me.pablorincon.proyecto_app.data.OllamaTutorRepository
+import me.pablorincon.proyecto_app.data.AiTutorRepository
+import me.pablorincon.proyecto_app.data.GeminiClient
 import me.pablorincon.proyecto_app.domain.tutor.TutorBlock
 import me.pablorincon.proyecto_app.domain.tutor.TutorBlock.Run
 import me.pablorincon.proyecto_app.domain.tutor.TutorChat
@@ -17,7 +18,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class OllamaTutorTest {
+class AiTutorTest {
 
     private val demo = object : TutorRepository {
         override suspend fun reply(question: String, history: List<TutorMessage>, onPartial: (String) -> Unit) =
@@ -47,10 +48,34 @@ class OllamaTutorTest {
         assertEquals(TutorTurn(TutorTurn.Role.ASSISTANT, "respuesta 10"), turns[turns.size - 2])
     }
 
+    // ---------- Lo que se envía a Gemini ----------
+    @Test
+    fun aGeminiLasInstruccionesVanAparteYLaPreguntaAlFinal() {
+        val history = listOf(
+            TutorMessage.FromUser(1, "¿Qué es un if?"),
+            TutorMessage.FromTutor(2, TutorReply.Free("Un if decide."))
+        )
+        val conversation = GeminiClient.conversation(TutorPrompt.turns("¿Y un else?", history))
+        assertTrue(conversation.none { it.role == TutorTurn.Role.SYSTEM })
+        assertEquals(TutorTurn(TutorTurn.Role.USER, "¿Y un else?"), conversation.last())
+        assertEquals(TutorPrompt.examples.size + 3, conversation.size)
+    }
+
+    @Test
+    fun losRolesDeGeminiSonUserYModel() {
+        assertEquals("user", GeminiClient.roleFor(TutorTurn(TutorTurn.Role.USER, "hola")))
+        assertEquals("model", GeminiClient.roleFor(TutorTurn(TutorTurn.Role.ASSISTANT, "hola")))
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun sinPreguntaAlFinalNoSeLlamaAGemini() {
+        GeminiClient.conversation(listOf(TutorTurn(TutorTurn.Role.ASSISTANT, "hola")))
+    }
+
     // ---------- Respuesta y respaldo ----------
     @Test
     fun elTextoLlegaPorPartesYTerminaComoTextoLibre() = runBlocking {
-        val repo = OllamaTutorRepository(chat = { _, onPartial ->
+        val repo = AiTutorRepository(chat = { _, onPartial ->
             onPartial("Un for")
             onPartial("Un for repite.  ")
             "Un for repite.  "
@@ -61,16 +86,16 @@ class OllamaTutorTest {
     }
 
     @Test
-    fun sinOllamaOConRespuestaVaciaContestaLaDemo() = runBlocking {
-        val caido = OllamaTutorRepository(chat = { _, _ -> error("sin conexión") }, fallback = demo)
-        val vacio = OllamaTutorRepository(chat = { _, _ -> "   " }, fallback = demo)
+    fun sinConexionOConRespuestaVaciaContestaLaDemo() = runBlocking {
+        val caido = AiTutorRepository(chat = { _, _ -> error("sin conexión") }, fallback = demo)
+        val vacio = AiTutorRepository(chat = { _, _ -> "   " }, fallback = demo)
         assertEquals(TutorReply.Topic(TutorTopic.UNKNOWN), caido.reply("for", emptyList()))
         assertEquals(TutorReply.Topic(TutorTopic.UNKNOWN), vacio.reply("for", emptyList()))
     }
 
     @Test
     fun siSeCortaAMitadSeQuedaLoYaEscrito() = runBlocking {
-        val cortado = OllamaTutorRepository(chat = { _, onPartial ->
+        val cortado = AiTutorRepository(chat = { _, onPartial ->
             onPartial("Un for repite")
             error("se cortó la wifi")
         }, fallback = demo)
@@ -99,7 +124,7 @@ class OllamaTutorTest {
 
     @Test
     fun elModoIaSeIndicaYSeConservaAlEmpezarDeNuevo() {
-        assertTrue(OllamaTutorRepository(chat = { _, _ -> "" }, fallback = demo).usesAi)
+        assertTrue(AiTutorRepository(chat = { _, _ -> "" }, fallback = demo).usesAi)
         assertFalse(demo.usesAi)
         val chat = TutorChat(usesAi = true).ask("hola", true)!!.withReply(TutorReply.Free("¡Hola!"))
         assertTrue(chat.cleared().usesAi)

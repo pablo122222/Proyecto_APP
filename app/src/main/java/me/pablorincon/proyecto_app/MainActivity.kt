@@ -17,8 +17,8 @@ import me.pablorincon.proyecto_app.ui.theme.CodeMentorTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Barras del sistema transparentes con íconos oscuros,
-        // incluso si el teléfono está en modo oscuro.
+        // Barras del sistema transparentes. El color de sus íconos (oscuros o claros)
+        // lo ajusta CodeMentorTheme según el tema elegido en Configuración.
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.light(AndroidColor.TRANSPARENT, AndroidColor.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(AndroidColor.TRANSPARENT, AndroidColor.TRANSPARENT)
