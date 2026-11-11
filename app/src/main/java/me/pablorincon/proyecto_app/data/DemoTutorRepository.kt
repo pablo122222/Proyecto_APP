@@ -10,7 +10,11 @@ import me.pablorincon.proyecto_app.domain.tutor.TutorRepository
 // La pausa imita el tiempo que tardaría un servicio real, para que se vea "escribiendo…".
 class DemoTutorRepository(private val thinkingMillis: Long = THINKING_MILLIS) : TutorRepository {
 
-    override suspend fun reply(question: String, history: List<TutorMessage>): TutorReply {
+    override suspend fun reply(
+        question: String,
+        history: List<TutorMessage>,
+        onPartial: (String) -> Unit
+    ): TutorReply {
         delay(thinkingMillis)
         return TutorReply.Topic(DemoTutorAnswers.topicFor(question))
     }

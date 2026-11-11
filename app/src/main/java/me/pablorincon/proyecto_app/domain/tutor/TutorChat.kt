@@ -26,11 +26,24 @@ data class TutorChat(
         )
     }
 
+    // Aún no llega ninguna palabra: se muestra "escribiendo…" en lugar de la burbuja en curso.
+    val awaitingFirstWords: Boolean get() = isAnswering && messages.lastOrNull()?.id != nextId
+
+    // Texto que va llegando del tutor: se muestra como su mensaje en curso (mismo id que tendrá
+    // la respuesta final, así la burbuja crece en su sitio).
+    fun withPartial(text: String): TutorChat {
+        if (!isAnswering || text.isBlank()) return this
+        return copy(messages = withoutPending() + TutorMessage.FromTutor(nextId, TutorReply.Free(text)))
+    }
+
     fun withReply(reply: TutorReply): TutorChat = copy(
-        messages = messages + TutorMessage.FromTutor(nextId, reply),
+        messages = withoutPending() + TutorMessage.FromTutor(nextId, reply),
         isAnswering = false,
         nextId = nextId + 1
     )
+
+    private fun withoutPending(): List<TutorMessage> =
+        if (messages.lastOrNull()?.id == nextId) messages.dropLast(1) else messages
 
     // Empieza de cero (solo el saludo), sin perder lo que se está escribiendo.
     fun cleared(): TutorChat = if (isAnswering) this else TutorChat(input = input)

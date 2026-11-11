@@ -2,6 +2,7 @@ package me.pablorincon.proyecto_app.data
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 import me.pablorincon.proyecto_app.BuildConfig
 import me.pablorincon.proyecto_app.domain.tutor.TutorMessage
@@ -13,21 +14,33 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.coroutines.cancellation.CancellationException
 
 // Tutor con un modelo de IA local (Ollama corriendo en el PC). Si Ollama no responde
 // (PC apagado, otra red, modelo sin descargar), contesta la demo: el chat nunca se queda sin respuesta.
+// Si se corta a mitad de la respuesta, se queda lo que ya se había escrito.
 class OllamaTutorRepository(
-    private val chat: suspend (List<TutorTurn>) -> String,
+    private val chat: suspend (turns: List<TutorTurn>, onPartial: (String) -> Unit) -> String,
     private val fallback: TutorRepository = DemoTutorRepository(),
     private val onError: (Exception) -> Unit = {}
 ) : TutorRepository {
 
-    override suspend fun reply(question: String, history: List<TutorMessage>): TutorReply {
+    override suspend fun reply(
+        question: String,
+        history: List<TutorMessage>,
+        onPartial: (String) -> Unit
+    ): TutorReply {
+        var shown = ""
         val text = try {
-            chat(TutorPrompt.turns(question, history)).trim()
+            chat(TutorPrompt.turns(question, history)) { partial ->
+                shown = partial
+                onPartial(partial)
+            }.trim()
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             onError(e)
-            ""
+            shown.trim()
         }
         return if (text.isNotEmpty()) TutorReply.Free(text) else fallback.reply(question, history)
     }
@@ -49,9 +62,10 @@ class OllamaTutorRepository(
 }
 
 // Llamada a la API de Ollama (/api/chat) con lo que Android ya trae: sin librerías extra.
+// Con stream = true, Ollama manda una línea JSON por cada trozo de texto, hasta "done".
 class OllamaClient(private val baseUrl: String, private val model: String) {
 
-    suspend fun chat(turns: List<TutorTurn>): String = withContext(Dispatchers.IO) {
+    suspend fun chat(turns: List<TutorTurn>, onPartial: (String) -> Unit): String = withContext(Dispatchers.IO) {
         val connection = URL(baseUrl.trimEnd('/') + "/api/chat").openConnection() as HttpURLConnection
         try {
             connection.requestMethod = "POST"
@@ -63,8 +77,24 @@ class OllamaClient(private val baseUrl: String, private val model: String) {
 
             val code = connection.responseCode
             check(code == HttpURLConnection.HTTP_OK) { "Ollama respondió HTTP $code" }
-            val body = connection.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-            JSONObject(body).optJSONObject("message")?.optString("content").orEmpty()
+
+            val text = StringBuilder()
+            connection.inputStream.bufferedReader(Charsets.UTF_8).useLines { lines ->
+                for (line in lines) {
+                    ensureActive() // si se cierra el chat, deja de leer
+                    if (line.isBlank()) continue
+                    val chunk = JSONObject(line)
+                    val error = chunk.optString("error")
+                    check(error.isEmpty()) { "Ollama: $error" }
+                    val piece = chunk.optJSONObject("message")?.optString("content").orEmpty()
+                    if (piece.isNotEmpty()) {
+                        text.append(piece)
+                        onPartial(text.toString())
+                    }
+                    if (chunk.optBoolean("done")) break
+                }
+            }
+            text.toString()
         } finally {
             connection.disconnect()
         }
@@ -72,8 +102,11 @@ class OllamaClient(private val baseUrl: String, private val model: String) {
 
     private fun requestBody(turns: List<TutorTurn>): String = JSONObject()
         .put("model", model)
-        .put("stream", false)
+        .put("stream", true)
         .put("keep_alive", KEEP_ALIVE) // el modelo sigue cargado entre preguntas
+        .put("options", JSONObject()
+            .put("temperature", TEMPERATURE)
+            .put("num_predict", MAX_TOKENS))
         .put("messages", JSONArray().apply {
             turns.forEach { turn ->
                 put(JSONObject().put("role", turn.role.name.lowercase()).put("content", turn.text))
@@ -85,5 +118,7 @@ class OllamaClient(private val baseUrl: String, private val model: String) {
         const val CONNECT_TIMEOUT_MS = 3_000   // si el PC no está, pasar rápido a la demo
         const val READ_TIMEOUT_MS = 90_000     // la primera pregunta carga el modelo y tarda más
         const val KEEP_ALIVE = "15m"
+        const val TEMPERATURE = 0.4            // explicaciones estables, no creativas
+        const val MAX_TOKENS = 400             // tope de seguridad (~250 palabras)
     }
 }

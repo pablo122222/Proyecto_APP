@@ -55,7 +55,12 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,11 +69,14 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.pablorincon.proyecto_app.R
 import me.pablorincon.proyecto_app.domain.tutor.TUTOR_MAX_QUESTION
+import me.pablorincon.proyecto_app.domain.tutor.TutorBlock
 import me.pablorincon.proyecto_app.domain.tutor.TutorChat
+import me.pablorincon.proyecto_app.domain.tutor.TutorFormat
 import me.pablorincon.proyecto_app.domain.tutor.TutorMessage
 import me.pablorincon.proyecto_app.domain.tutor.TutorReply
 import me.pablorincon.proyecto_app.domain.tutor.TutorTopic
 import me.pablorincon.proyecto_app.ui.components.Pill
+import me.pablorincon.proyecto_app.ui.screens.lesson.CodeBlock
 import me.pablorincon.proyecto_app.ui.components.decorative
 import me.pablorincon.proyecto_app.ui.theme.AppAppearance
 import me.pablorincon.proyecto_app.ui.theme.AppBackground
@@ -133,8 +141,9 @@ private fun TutorContent(
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
-    // Cada mensaje nuevo (o el "escribiendo…") se deja a la vista
-    LaunchedEffect(state.messages.size, state.isAnswering) {
+    // Cada mensaje nuevo (o el "escribiendo…") se deja a la vista; también mientras la
+    // respuesta del tutor va creciendo (cambia el último mensaje).
+    LaunchedEffect(state.messages.size, state.isAnswering, state.messages.lastOrNull()) {
         if (state.hasConversation) listState.animateScrollToItem(listState.layoutInfo.totalItemsCount.coerceAtLeast(1) - 1)
     }
 
@@ -158,7 +167,7 @@ private fun TutorContent(
             item { TopLine() }
             item { HeaderCard() }
             items(state.messages, key = { it.id }) { message -> MessageBubble(message) }
-            if (state.isAnswering) item(key = "typing") { TypingBubble() }
+            if (state.awaitingFirstWords) item(key = "typing") { TypingBubble() }
             item(key = "suggestions") {
                 Column {
                     Spacer(Modifier.height(6.dp))
@@ -273,8 +282,47 @@ private fun HeaderCard() {
 private fun MessageBubble(message: TutorMessage) {
     when (message) {
         is TutorMessage.Greeting -> TutorBubble(stringResource(R.string.tutor_greeting))
-        is TutorMessage.FromTutor -> TutorBubble(replyText(message.reply))
+        is TutorMessage.FromTutor -> when (val reply = message.reply) {
+            is TutorReply.Free -> ModelReplyBubble(reply.text)
+            is TutorReply.Topic -> TutorBubble(replyText(reply))
+        }
         is TutorMessage.FromUser -> UserBubble(message.text)
+    }
+}
+
+// Respuesta del modelo de IA: párrafos con negritas y código en línea, y los bloques de
+// código con el mismo estilo que en las lecciones.
+@Composable
+private fun ModelReplyBubble(text: String) {
+    val blocks = TutorFormat.blocks(text)
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .widthIn(max = maxWidth * 0.94f)
+                .clip(TutorBubbleShape)
+                .background(Paper)
+                .border(AppDimens.BorderWidth, Line, TutorBubbleShape)
+                .padding(horizontal = 13.dp, vertical = 11.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            blocks.forEach { block ->
+                when (block) {
+                    is TutorBlock.Prose -> Text(text = proseText(block), style = BubbleText, color = Ink)
+                    is TutorBlock.Code -> CodeBlock(code = block.code)
+                }
+            }
+        }
+    }
+}
+
+private fun proseText(block: TutorBlock.Prose): AnnotatedString = buildAnnotatedString {
+    block.runs.forEach { run ->
+        val style = when {
+            run.code -> SpanStyle(fontFamily = FontFamily.Monospace, color = PrimaryDark)
+            run.bold -> SpanStyle(fontWeight = FontWeight.Bold)
+            else -> null
+        }
+        if (style == null) append(run.text) else withStyle(style) { append(run.text) }
     }
 }
 

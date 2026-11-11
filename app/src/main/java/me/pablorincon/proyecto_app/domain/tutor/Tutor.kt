@@ -20,10 +20,15 @@ sealed interface TutorMessage {
     data class FromTutor(override val id: Int, val reply: TutorReply) : TutorMessage
 }
 
-// Quien responde las preguntas. Hoy es la demo; mañana puede ser un servicio de IA
-// sin tocar la pantalla (decisión del proyecto: aislar las respuestas detrás de esta interfaz).
+// Quien responde las preguntas: la demo o un modelo de IA, sin tocar la pantalla (decisión del
+// proyecto: aislar las respuestas detrás de esta interfaz). onPartial recibe el texto que va
+// llegando (todo lo escrito hasta ahora) para mostrarlo mientras el tutor escribe.
 interface TutorRepository {
-    suspend fun reply(question: String, history: List<TutorMessage>): TutorReply
+    suspend fun reply(
+        question: String,
+        history: List<TutorMessage>,
+        onPartial: (String) -> Unit = {}
+    ): TutorReply
 }
 
 // Reglas de la demo: busca palabras clave en la pregunta, sin importar mayúsculas ni tildes.

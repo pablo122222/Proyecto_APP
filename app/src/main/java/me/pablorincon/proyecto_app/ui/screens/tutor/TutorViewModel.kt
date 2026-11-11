@@ -41,7 +41,9 @@ class TutorViewModel(
         val asking = _uiState.value.ask(question, clearInput) ?: return
         _uiState.value = asking
         viewModelScope.launch {
-            val reply = repository.reply(question.trim(), history)
+            val reply = repository.reply(question.trim(), history) { partial ->
+                _uiState.update { it.withPartial(partial) }
+            }
             _uiState.update { it.withReply(reply) }
         }
     }
