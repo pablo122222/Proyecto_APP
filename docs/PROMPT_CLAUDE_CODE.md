@@ -25,7 +25,7 @@ Eres el desarrollador Android de **CodeMentor AI**, una app educativa para apren
 5. **Cambios mínimos y localizados.** No refactorices código de fases anteriores sin permiso. Si ves un problema en lo ya hecho, avísame y espera.
 6. **Dependencias:** nada nuevo sin aprobación. Dime cuál, por qué y qué alternativa hay. Las versiones van en `gradle/libs.versions.toml` (las de Firebase, vía el BOM ya existente). Ya está **aprobado**: `firebase-firestore` (Fase 7) y Navigation Compose (Fase 6).
 7. **Verifica siempre.** Al terminar el código ejecuta `gradlew.bat assembleDebug` y `gradlew.bat testDebugUnitTest`. Si falla, lo arreglas o me reportas el error completo. No digas "listo" si no compiló. Di explícitamente qué NO pudiste probar (lo que requiere emulador, dispositivo o consola de Firebase).
-8. **Secretos y Firebase:** no imprimas ni modifiques `app/google-services.json`. Todo lo que haya que configurar en la consola de Firebase (habilitar Firestore, reglas, índices) me lo das como **pasos exactos y copiables** para que yo lo haga; no asumas que ya está hecho.
+8. **Secretos y Firebase:** no imprimas ni modifiques `app/google-services.json`. La base de datos de Firestore **ya está creada** (proyecto `code-mentor-c9ef1`, base `(default)`, ubicación `us-east1`) y la Firebase CLI ya está instalada y con sesión iniciada. Las reglas viven en `firestore.rules` (con `firebase.json`, `.firebaserc` y `firestore.indexes.json` en la raíz). Si cambias reglas o índices, edita esos archivos y **no despliegues tú**: dame el comando `firebase deploy --only firestore:rules` (o `firestore:indexes`) para que yo lo ejecute. Cualquier otra cosa de la consola de Firebase me la das como **pasos exactos y copiables**.
 9. **Comentarios y textos en español.** Todo texto visible va en `res/values/strings.xml` (nada hardcodeado en Compose).
 10. **Orden y claridad:** una responsabilidad por archivo, nombres descriptivos, comentarios breves que expliquen el "por qué".
 
@@ -69,7 +69,7 @@ Quiero tener tiempo real de revisar y hacer el commit antes de que sigas. Por es
 
 ## ESTADO ACTUAL DEL PROYECTO (verifícalo en la Fase 0)
 
-Paquete `me.pablorincon.proyecto_app`. AGP 9.4.1, Kotlin 2.2.10, Compose BOM 2026.02.01, Firebase BOM 34.19.0, minSdk 28, compileSdk/targetSdk 37. Dependencias actuales: Compose, lifecycle-viewmodel-compose y `firebase-auth`. **No hay** Navigation Compose, Firestore, DataStore ni Room.
+Paquete `me.pablorincon.proyecto_app`. AGP 9.4.1, Kotlin 2.2.10, Compose BOM 2026.02.01, Firebase BOM 34.19.0, minSdk 28, compileSdk/targetSdk 37. Dependencias actuales: Compose, lifecycle-viewmodel-compose y `firebase-auth`. **No hay** Navigation Compose, la dependencia de Firestore en la app, DataStore ni Room. En la nube ya existe la base de Firestore con reglas desplegadas que solo permiten a cada usuario leer y escribir bajo `/users/{uid}` (ver `firestore.rules`).
 
 **Ya implementado (último commit: inicio de sesión con recuperación de contraseña):**
 - `ui/theme`: `Color.kt`, `Dimens.kt`, `Shape.kt`, `Type.kt` (Inter), `Theme.kt` → `CodeMentorTheme`.
@@ -147,7 +147,7 @@ No las vuelvas a preguntar. Solo avísame si al implementarlas encuentras un con
 - Propón el **modelo de datos de Firestore** (colecciones/documentos por `uid`: perfil, preferencias, progreso del currículo, progreso de Glitch City, logros, títulos, récords, actividad diaria) y espera mi aprobación. Piensa en: documentos pequeños, lecturas mínimas, y que un usuario nuevo se cree con valores iniciales reales (decisión E).
 - Agrega `firebase-firestore` (aprobado). Crea el repositorio en `data/` con la misma filosofía que `AuthRepository` (resultados simples, sin exponer excepciones de Firebase) y tests de lo que se pueda probar sin red.
 - Al registrarse, crear el documento inicial del usuario. Decidir cómo se maneja sin conexión (la persistencia offline de Firestore) y errores de red.
-- **Dame los pasos exactos para la consola de Firebase** (habilitar Firestore, modo de producción, ubicación) y las **reglas de seguridad** listas para copiar: cada usuario solo puede leer/escribir sus propios documentos. Nada de reglas abiertas.
+- Firestore ya está creado y `firestore.rules` ya protege todo bajo `/users/{uid}`. **Diseña el modelo de datos dentro de `/users/{uid}`** (documento y subcolecciones) para que esas reglas sigan sirviendo. Si el modelo necesita otra ruta o validaciones extra, actualiza `firestore.rules` y dame el comando de despliegue. Nada de reglas abiertas.
 - Decisión B (cuenta de ejemplo, ya tomada): dame los pasos para crearla en la consola de Firebase.
 - (`feat: Firestore - perfil y progreso del usuario`)
 

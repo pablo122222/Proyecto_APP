@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "148704969535",
-    "project_id": "code-mentor-ia",
-    "storage_bucket": "code-mentor-ia.firebasestorage.app"
+    "project_number": "644947388009",
+    "project_id": "code-mentor-c9ef1",
+    "storage_bucket": "code-mentor-c9ef1.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:148704969535:android:759c01d41354152dd5098a",
+        "mobilesdk_app_id": "1:644947388009:android:dff0c3291f0579a425e4f8",
         "android_client_info": {
           "package_name": "me.pablorincon.proyecto_app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCAB9vjZAt_2Jg3NQkRd6yAUUGOGFhi6iA"
+          "current_key": "AIzaSyCE7a2yUKhx2dwrj247HlauFsGAnEvr4pc"
         }
       ],
       "services": {

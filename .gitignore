@@ -19,3 +19,8 @@ local.properties
 keystore.properties
 *.jks
 *.keystore
+
+# Firebase CLI
+.firebase/
+firebase-debug.log
+firestore-debug.log
